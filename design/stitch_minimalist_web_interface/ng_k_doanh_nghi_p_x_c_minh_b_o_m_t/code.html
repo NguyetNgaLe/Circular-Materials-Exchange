@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Đăng ký Doanh nghiệp &amp; Xác minh bảo mật</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#001d33",
+                        "secondary-fixed": "#d8e2ff",
+                        "surface-container-highest": "#e3e2e2",
+                        "outline": "#727a69",
+                        "inverse-primary": "#98d86c",
+                        "tertiary-container": "#63a2dd",
+                        "on-primary-container": "#193d00",
+                        "tertiary": "#136299",
+                        "inverse-on-surface": "#f1f0f0",
+                        "on-background": "#1a1c1c",
+                        "surface-container-high": "#e9e8e8",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "on-surface-variant": "#42493b",
+                        "primary-fixed": "#b3f585",
+                        "outline-variant": "#c1c9b6",
+                        "tertiary-fixed-dim": "#98cbff",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#cfe5ff",
+                        "ocean-blue": "#4472C4",
+                        "on-primary-fixed": "#0a2100",
+                        "primary-fixed-dim": "#98d86c",
+                        "on-secondary-fixed": "#001a41",
+                        "secondary": "#2b5cad",
+                        "primary": "#336b07",
+                        "exchange-orange": "#ED7D31",
+                        "surface-tint": "#336b07",
+                        "surface-bright": "#faf9f9",
+                        "on-secondary-fixed-variant": "#004494",
+                        "on-tertiary-fixed-variant": "#004a77",
+                        "primary-container": "#70ad47",
+                        "on-error-container": "#93000a",
+                        "on-surface": "#1a1c1c",
+                        "background": "#faf9f9",
+                        "earth-gray": "#333333",
+                        "on-tertiary": "#ffffff",
+                        "leaf-green": "#70AD47",
+                        "surface-white": "#FFFFFF",
+                        "on-tertiary-container": "#00375b",
+                        "surface-container-low": "#f4f3f3",
+                        "secondary-container": "#7ca8fe",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#235100",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#dadada",
+                        "on-secondary-container": "#003b82",
+                        "inverse-surface": "#2f3131",
+                        "surface": "#faf9f9",
+                        "error": "#ba1a1a",
+                        "sky-info": "#5B9BD5",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#e3e2e2",
+                        "surface-container": "#eeeeed",
+                        "warning-amber": "#FFC000"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "unit": "4px",
+                        "margin-desktop": "64px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .step-active { color: theme('colors.leaf-green'); font-weight: 600; border-color: theme('colors.leaf-green'); }
+        .step-inactive { color: theme('colors.outline'); font-weight: 400; border-color: theme('colors.outline-variant'); }
+        .input-glow:focus { border-color: theme('colors.ocean-blue'); box-shadow: 0 0 0 3px rgba(68, 114, 196, 0.2); outline: none; }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-sans antialiased min-h-screen flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+<div class="max-w-3xl w-full bg-surface-white rounded-xl shadow-sm border border-surface-container overflow-hidden">
+<!-- Header -->
+<div class="px-8 py-6 border-b border-surface-container bg-surface-container-lowest">
+<h1 class="font-headline-lg text-headline-lg text-on-surface text-center mb-2">Đăng ký Doanh nghiệp &amp; Xác minh bảo mật</h1>
+<p class="font-body-md text-body-md text-on-surface-variant text-center">Hoàn thành các bước dưới đây để thiết lập tài khoản trao đổi vật liệu tuần hoàn an toàn của bạn.</p>
+</div>
+<!-- Stepper -->
+<div class="px-8 py-6 bg-surface-container-low">
+<div class="flex items-center justify-between relative">
+<div class="absolute left-0 top-1/2 transform -translate-y-1/2 w-full h-0.5 bg-outline-variant z-0"></div>
+<!-- Step 1 -->
+<div class="relative z-10 flex flex-col items-center bg-surface-container-low px-2">
+<div class="w-8 h-8 rounded-full bg-leaf-green text-surface-white flex items-center justify-center font-label-md text-label-md mb-2">1</div>
+<span class="font-label-md text-label-md text-leaf-green">Thông tin pháp lý</span>
+</div>
+<!-- Step 2 -->
+<div class="relative z-10 flex flex-col items-center bg-surface-container-low px-2">
+<div class="w-8 h-8 rounded-full bg-surface-white border-2 border-outline-variant text-outline flex items-center justify-center font-label-md text-label-md mb-2">2</div>
+<span class="font-label-md text-label-md text-outline">Xác minh đại diện</span>
+</div>
+<!-- Step 3 -->
+<div class="relative z-10 flex flex-col items-center bg-surface-container-low px-2">
+<div class="w-8 h-8 rounded-full bg-surface-white border-2 border-outline-variant text-outline flex items-center justify-center font-label-md text-label-md mb-2">3</div>
+<span class="font-label-md text-label-md text-outline">Thiết lập bảo mật</span>
+</div>
+</div>
+</div>
+<!-- Form Content (Step 1) -->
+<div class="p-8">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-6 flex items-center">
+<span class="material-symbols-outlined mr-2 text-leaf-green" style="font-variation-settings: 'FILL' 1;">corporate_fare</span>
+                Thông tin pháp lý Doanh nghiệp
+            </h2>
+<form class="space-y-6">
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-1" for="company-name">Tên Doanh nghiệp (Theo Giấy phép ĐKKD)</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2 text-body-md font-body-md text-on-surface input-glow transition-all" id="company-name" name="company-name" placeholder="Nhập tên doanh nghiệp đầy đủ" type="text"/>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-1" for="tax-id">Mã số thuế (MST)</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2 text-body-md font-body-md text-on-surface input-glow transition-all" id="tax-id" name="tax-id" placeholder="Nhập mã số thuế" type="text"/>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-1" for="business-type">Loại hình Doanh nghiệp</label>
+<select class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2 text-body-md font-body-md text-on-surface input-glow transition-all appearance-none" id="business-type" name="business-type">
+<option value="">Chọn loại hình</option>
+<option value="tnhh">Công ty TNHH</option>
+<option value="cp">Công ty Cổ phần</option>
+<option value="tn">Doanh nghiệp Tư nhân</option>
+</select>
+</div>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-1">Tải lên Giấy phép Kinh doanh</label>
+<div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-outline-variant border-dashed rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer">
+<div class="space-y-1 text-center">
+<span class="material-symbols-outlined text-4xl text-outline mb-2">upload_file</span>
+<div class="flex text-sm text-on-surface-variant justify-center">
+<span class="relative cursor-pointer bg-transparent rounded-md font-medium text-leaf-green hover:text-primary focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-leaf-green">
+<span>Tải file lên</span>
+<input class="sr-only" id="file-upload" name="file-upload" type="file"/>
+</span>
+<p class="pl-1">hoặc kéo thả vào đây</p>
+</div>
+<p class="text-xs text-outline">PDF, PNG, JPG (Tối đa 10MB)</p>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="pt-6 border-t border-surface-container flex items-center justify-end space-x-4">
+<button class="px-6 py-2 border border-ocean-blue text-ocean-blue rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors" type="button">
+                        Hủy
+                    </button>
+<button class="px-6 py-2 bg-leaf-green text-surface-white rounded-lg font-label-md text-label-md hover:bg-primary shadow-sm transition-all flex items-center" type="button">
+                        Tiếp tục
+                        <span class="material-symbols-outlined ml-2 text-sm">arrow_forward</span>
+</button>
+</div>
+</form>
+</div>
+</div>
+</body></html>

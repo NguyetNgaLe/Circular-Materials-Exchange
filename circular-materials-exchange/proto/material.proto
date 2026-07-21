@@ -1,0 +1,146 @@
+syntax = "proto3";
+package material;
+option go_package = "./pb";
+
+service MaterialService {
+  rpc ListCategories(ListCategoriesRequest) returns (ListCategoriesResponse);
+  rpc CreateCategory(CreateCategoryRequest) returns (Category);
+  rpc CreateListing(CreateListingRequest) returns (SupplyListing);
+  rpc GetListing(GetListingRequest) returns (SupplyListing);
+  rpc ListListings(ListListingsRequest) returns (ListListingsResponse);
+  rpc UpdateListing(UpdateListingRequest) returns (SupplyListing);
+  rpc DeleteListing(DeleteListingRequest) returns (Empty);
+  rpc CreateDemand(CreateDemandRequest) returns (DemandListing);
+  rpc GetDemand(GetDemandRequest) returns (DemandListing);
+  rpc ListDemands(ListDemandsRequest) returns (ListDemandsResponse);
+}
+
+message Category {
+  string id = 1;
+  string name = 2;
+  string icon = 3;
+}
+
+message SupplyListing {
+  string id = 1;
+  string title = 2;
+  string category_id = 3;
+  string seller_id = 4;
+  string company_id = 5;
+  string description = 6;
+  map<string, string> specs = 7;
+  double quantity = 8;
+  string unit = 9;
+  double price_per_unit = 10;
+  string currency = 11;
+  string location = 12;
+  double min_order_quantity = 13;
+  string packaging = 14;
+  string status = 15;
+  repeated string images = 16;
+  string created_at = 17;
+}
+
+message DemandListing {
+  string id = 1;
+  string title = 2;
+  string category_id = 3;
+  string buyer_id = 4;
+  string company_id = 5;
+  string description = 6;
+  double quantity = 7;
+  string unit = 8;
+  double target_price = 9;
+  string location = 10;
+  string deadline = 11;
+  string status = 12;
+  string created_at = 13;
+}
+
+message CreateListingRequest {
+  string title = 1;
+  string category_id = 2;
+  string seller_id = 3;
+  string company_id = 4;
+  string description = 5;
+  map<string, string> specs = 6;
+  double quantity = 7;
+  string unit = 8;
+  double price_per_unit = 9;
+  string currency = 10;
+  string location = 11;
+  double min_order_quantity = 12;
+  string packaging = 13;
+}
+
+message GetListingRequest {
+  string id = 1;
+}
+
+message ListListingsRequest {
+  string category_id = 1;
+  string keyword = 2;
+  string location = 3;
+  int32 page = 4;
+  int32 page_size = 5;
+}
+
+message ListListingsResponse {
+  repeated SupplyListing listings = 1;
+  int32 total = 2;
+}
+
+message UpdateListingRequest {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  double quantity = 4;
+  double price_per_unit = 5;
+  string status = 6;
+}
+
+message DeleteListingRequest {
+  string id = 1;
+}
+
+message CreateDemandRequest {
+  string title = 1;
+  string category_id = 2;
+  string buyer_id = 3;
+  string company_id = 4;
+  string description = 5;
+  double quantity = 6;
+  string unit = 7;
+  double target_price = 8;
+  string location = 9;
+  string deadline = 10;
+}
+
+message GetDemandRequest {
+  string id = 1;
+}
+
+message ListDemandsRequest {
+  string category_id = 1;
+  string keyword = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+message ListDemandsResponse {
+  repeated DemandListing demands = 1;
+  int32 total = 2;
+}
+
+message ListCategoriesRequest {}
+
+message ListCategoriesResponse {
+  repeated Category categories = 1;
+}
+
+message CreateCategoryRequest {
+  string name = 1;
+  string icon = 2;
+}
+
+message Empty {}

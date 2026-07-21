@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Thanh toán giao dịch - Circular Exchange</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-surface": "#2f3131",
+                      "error": "#ba1a1a",
+                      "tertiary": "#136299",
+                      "on-secondary-fixed": "#001a41",
+                      "sky-info": "#5B9BD5",
+                      "primary-fixed": "#b3f585",
+                      "on-background": "#1a1c1c",
+                      "inverse-primary": "#98d86c",
+                      "on-tertiary-fixed-variant": "#004a77",
+                      "earth-gray": "#333333",
+                      "secondary": "#2b5cad",
+                      "outline": "#727a69",
+                      "surface-container-highest": "#e3e2e2",
+                      "on-tertiary-fixed": "#001d33",
+                      "on-secondary": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "tertiary-fixed": "#cfe5ff",
+                      "secondary-fixed": "#d8e2ff",
+                      "primary-fixed-dim": "#98d86c",
+                      "surface-container": "#eeeeed",
+                      "on-tertiary": "#ffffff",
+                      "ocean-blue": "#4472C4",
+                      "secondary-fixed-dim": "#adc6ff",
+                      "on-secondary-fixed-variant": "#004494",
+                      "primary-container": "#70ad47",
+                      "surface-dim": "#dadada",
+                      "surface-container-lowest": "#ffffff",
+                      "outline-variant": "#c1c9b6",
+                      "on-surface": "#1a1c1c",
+                      "on-primary-fixed-variant": "#235100",
+                      "surface-variant": "#e3e2e2",
+                      "on-secondary-container": "#003b82",
+                      "on-primary-container": "#193d00",
+                      "on-error": "#ffffff",
+                      "surface-bright": "#faf9f9",
+                      "on-surface-variant": "#42493b",
+                      "leaf-green": "#70AD47",
+                      "on-primary-fixed": "#0a2100",
+                      "surface-container-high": "#e9e8e8",
+                      "warning-amber": "#FFC000",
+                      "exchange-orange": "#ED7D31",
+                      "tertiary-container": "#63a2dd",
+                      "surface-tint": "#336b07",
+                      "surface-white": "#FFFFFF",
+                      "on-tertiary-container": "#00375b",
+                      "secondary-container": "#7ca8fe",
+                      "inverse-on-surface": "#f1f0f0",
+                      "surface": "#faf9f9",
+                      "primary": "#336b07",
+                      "on-primary": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed-dim": "#98cbff",
+                      "background": "#faf9f9",
+                      "surface-container-low": "#f4f3f3"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "64px",
+                      "margin-mobile": "16px",
+                      "gutter": "24px",
+                      "unit": "4px",
+                      "container-max": "1280px"
+              },
+              "fontFamily": {
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Inter"
+                      ],
+                      "title-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-md": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "title-lg": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+          .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+          }
+          .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1;
+          }
+      </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen">
+<!-- Header: Màn hình Transactional nên bị chặn Nav, nhưng theo yêu cầu "Sử dụng TopAppBar từ hệ thống", tôi sẽ giữ lại TopAppBar nhưng không render active links (suppression rule) -->
+<header class="bg-surface dark:bg-on-background border-b border-outline-variant docked full-width top-0 flat no shadows z-50">
+<div class="flex justify-between items-center w-full px-margin-desktop max-w-container-max mx-auto h-16">
+<div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary tracking-tight">Circular Exchange</span>
+</div>
+<nav class="hidden md:flex gap-8">
+<!-- Navigation links are suppressed on checkout screen as per Semantic Shell Mandate (Linear/Transactional) -->
+</nav>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors duration-200 scale-95 active:opacity-80 transition-all flex items-center justify-center p-2 rounded-full hover:bg-surface-container-high">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors duration-200 scale-95 active:opacity-80 transition-all flex items-center justify-center p-2 rounded-full hover:bg-surface-container-high">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden ml-2 border border-outline-variant">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="A small, professional headshot of an industrial materials buyer in a hardhat, well-lit, corporate style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmJbNUrP_pebg8EgVQ08soCbfm6NxZQLIijSrCl2vaOr44kaJhcPZpmgbNGlaPza0zssTaKvn9k1TLKO5MGY8qTXrvXA3pn5LEoBcV1usHtvdSqeRmhMoWTsIgH4q_UjjTApXtuIXsirXHJTT5PJeWiJuwraU1nhDo3qwhvWSqyVm2cQD4JRd6nS0JBiy2wiw7HzD2jw7S4vHUFSCg9IO6XzxHXr8y67KFSUkcGVgBjLWE0KLE-PrWos0Dh3VrBKO705qR4JLoeA"/>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-12">
+<div class="mb-8">
+<div class="flex items-center gap-2 text-on-surface-variant mb-2">
+<button class="hover:text-primary flex items-center gap-1 font-label-md text-label-md transition-colors"><span class="material-symbols-outlined text-[18px]">arrow_back</span> Quay lại</button>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface">Thanh toán giao dịch</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Hoàn tất thanh toán an toàn cho đơn hàng của bạn.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Order Summary & Payment Methods -->
+<div class="lg:col-span-8 flex flex-col gap-8">
+<!-- Order Summary Card -->
+<section class="bg-surface-white rounded-xl border border-outline-variant p-6 shadow-sm">
+<div class="flex justify-between items-center mb-4 border-b border-surface-container-highest pb-4">
+<h2 class="font-title-lg text-title-lg text-on-surface">Tóm tắt đơn hàng</h2>
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-md text-label-md">Đang xử lý</span>
+</div>
+<div class="flex flex-col md:flex-row gap-6 items-start">
+<div class="w-full md:w-32 h-32 rounded-lg bg-surface-container overflow-hidden shrink-0 border border-outline-variant">
+<img alt="Nhựa HDPE tái chế" class="w-full h-full object-cover" data-alt="A clean, well-lit industrial stock photo showing pristine recycled HDPE plastic pellets piled neatly, showcasing sustainable material exchange." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKe051-DUB1UDldMIJaIKLecZPpoIz_mHSHZZAm27LHyEGpoyRAzhITWS-jbT0htFazKWlEZhQQsQ5_eyztmrWow8H7o7VIsF3IUOYibTRbjotHc3-gwYXd4cKR2Z_EHx3MbKiOnzK1dh8A05BBNnjUhcljUVO3taLl1yFS3-qG4SYR4z6n-9FfXbKwncLLxFySoPBDvqpHaEw40SQXmsK6A-tBIAfFO_PqZ1IdDcZd4atJ2LGHCRUByCzaCXc_bnQUZEr0W9aoA"/>
+</div>
+<div class="flex-grow">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Nhựa HDPE tái chế (Hạt mầu trắng)</h3>
+<div class="grid grid-cols-2 gap-4 mt-4">
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant uppercase">Số lượng</p>
+<p class="font-body-lg text-body-lg text-on-surface font-medium">40 MT</p>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant uppercase">Đơn giá</p>
+<p class="font-body-lg text-body-lg text-on-surface font-medium">$1,220 / MT</p>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant uppercase">Nhà cung cấp</p>
+<p class="font-body-md text-body-md text-tertiary hover:underline cursor-pointer">EcoPlast Industries Ltd.</p>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant uppercase">Lịch giao hàng dự kiến</p>
+<p class="font-body-md text-body-md text-on-surface">15-20 Tháng 11, 2023</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Payment Methods -->
+<section class="bg-surface-white rounded-xl border border-outline-variant p-6 shadow-sm">
+<h2 class="font-title-lg text-title-lg text-on-surface mb-6">Phương thức thanh toán</h2>
+<div class="flex flex-col gap-4">
+<!-- Escrow Option (Selected) -->
+<label class="relative flex p-4 border rounded-lg cursor-pointer transition-all duration-200 border-leaf-green bg-primary-fixed/5 ring-1 ring-leaf-green shadow-sm">
+<div class="flex items-center h-5">
+<input checked="" class="h-4 w-4 text-leaf-green focus:ring-leaf-green border-outline-variant rounded-full mt-1" name="payment_method" type="radio" value="escrow"/>
+</div>
+<div class="ml-4 flex-grow flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-body-lg text-body-lg text-on-surface font-medium">Thanh toán đảm bảo (Escrow)</span>
+<span class="bg-leaf-green text-surface-white px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Khuyến nghị</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">An toàn nhất. Tiền được giữ cho đến khi bạn xác nhận nhận hàng thành công.</p>
+</div>
+<div class="flex gap-2 opacity-70 shrink-0">
+<span class="material-symbols-outlined text-[32px] text-tertiary">shield</span>
+</div>
+</div>
+</label>
+<!-- Bank Transfer Option -->
+<label class="relative flex p-4 border border-outline-variant rounded-lg cursor-pointer hover:bg-surface-container-lowest hover:shadow-sm transition-all duration-200">
+<div class="flex items-center h-5">
+<input class="h-4 w-4 text-leaf-green focus:ring-leaf-green border-outline-variant rounded-full mt-1" name="payment_method" type="radio" value="bank"/>
+</div>
+<div class="ml-4 flex-grow flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<span class="font-body-lg text-body-lg text-on-surface font-medium block">Chuyển khoản ngân hàng (T/T)</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Chuyển khoản trực tiếp. Phí xử lý thấp hơn.</p>
+</div>
+<div class="flex gap-2 opacity-70 shrink-0">
+<span class="material-symbols-outlined text-[32px] text-on-surface-variant">account_balance</span>
+</div>
+</div>
+</label>
+<!-- L/C Option -->
+<label class="relative flex p-4 border border-outline-variant rounded-lg cursor-pointer hover:bg-surface-container-lowest hover:shadow-sm transition-all duration-200">
+<div class="flex items-center h-5">
+<input class="h-4 w-4 text-leaf-green focus:ring-leaf-green border-outline-variant rounded-full mt-1" name="payment_method" type="radio" value="lc"/>
+</div>
+<div class="ml-4 flex-grow flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<span class="font-body-lg text-body-lg text-on-surface font-medium block">Thư tín dụng (L/C)</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Phù hợp cho các đơn hàng quốc tế giá trị lớn.</p>
+</div>
+<div class="flex gap-2 opacity-70 shrink-0">
+<span class="material-symbols-outlined text-[32px] text-on-surface-variant">description</span>
+</div>
+</div>
+</label>
+</div>
+<!-- Escrow Explanation Box (Contextual based on selection) -->
+<div class="mt-6 bg-surface-container-high rounded-lg p-5 border border-outline-variant/50">
+<h4 class="font-title-lg text-title-lg text-on-surface flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-leaf-green" data-weight="fill">verified</span>
+                            Cách Escrow hoạt động
+                        </h4>
+<div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between relative">
+<!-- Progress Line behind steps (Desktop) -->
+<div class="hidden md:block absolute top-1/2 left-8 right-8 h-0.5 bg-outline-variant -z-0"></div>
+<div class="flex flex-col items-center text-center z-10 w-full md:w-1/3 bg-surface-container-high px-2">
+<div class="w-10 h-10 rounded-full bg-leaf-green text-surface-white flex items-center justify-center font-bold mb-2 shadow-sm">1</div>
+<p class="font-body-sm text-body-sm text-on-surface font-medium">Bạn thanh toán</p>
+<p class="text-[11px] text-on-surface-variant mt-1">Tiền được giữ an toàn trên nền tảng</p>
+</div>
+<div class="flex flex-col items-center text-center z-10 w-full md:w-1/3 bg-surface-container-high px-2">
+<div class="w-10 h-10 rounded-full bg-surface-container text-on-surface-variant border border-outline flex items-center justify-center font-bold mb-2 shadow-sm">2</div>
+<p class="font-body-sm text-body-sm text-on-surface font-medium">Người bán giao hàng</p>
+<p class="text-[11px] text-on-surface-variant mt-1">Hàng hóa được kiểm định &amp; vận chuyển</p>
+</div>
+<div class="flex flex-col items-center text-center z-10 w-full md:w-1/3 bg-surface-container-high px-2">
+<div class="w-10 h-10 rounded-full bg-surface-container text-on-surface-variant border border-outline flex items-center justify-center font-bold mb-2 shadow-sm">3</div>
+<p class="font-body-sm text-body-sm text-on-surface font-medium">Giải ngân</p>
+<p class="text-[11px] text-on-surface-variant mt-1">Tiền chuyển cho người bán khi bạn xác nhận</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Order Total & CTAs -->
+<div class="lg:col-span-4 flex flex-col gap-6">
+<!-- Total Calculation Card -->
+<div class="bg-surface-white rounded-xl border border-outline-variant p-6 shadow-sm sticky top-24">
+<h2 class="font-title-lg text-title-lg text-on-surface mb-6 border-b border-surface-container-highest pb-4">Tổng thanh toán</h2>
+<div class="space-y-4 mb-6">
+<div class="flex justify-between items-center">
+<span class="font-body-md text-body-md text-on-surface-variant">Tiền hàng (40 MT)</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">$48,800.00</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1">Phí nền tảng (0.5%) 
+                                <span class="material-symbols-outlined text-[16px] cursor-help" title="Phí duy trì nền tảng và dịch vụ">info</span>
+</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">$244.00</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1">Phí Escrow (1.2%)
+                                <span class="material-symbols-outlined text-[16px] cursor-help" title="Phí dịch vụ thanh toán đảm bảo">info</span>
+</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">$585.60</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="font-body-md text-body-md">Thuế (VAT 0% - XK)</span>
+<span class="font-body-md text-body-md font-medium">$0.00</span>
+</div>
+</div>
+<div class="border-t border-surface-container-highest pt-4 pb-6 mb-6">
+<div class="flex justify-between items-baseline">
+<span class="font-headline-md text-headline-md text-on-surface">Tổng cộng</span>
+<span class="font-display-lg text-display-lg text-primary font-bold">$49,629.60</span>
+</div>
+<p class="text-right text-[12px] text-on-surface-variant mt-1">Đã bao gồm các loại thuế phí cơ bản</p>
+</div>
+<!-- Actions -->
+<div class="flex flex-col gap-3">
+<button class="w-full bg-leaf-green text-surface-white font-body-md text-body-md font-semibold py-3 px-4 rounded-lg hover:shadow-md hover:bg-surface-tint transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+                            Xác nhận &amp; Thanh toán
+                            <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<button class="w-full bg-transparent border border-ocean-blue text-ocean-blue font-body-md text-body-md font-medium py-3 px-4 rounded-lg hover:bg-secondary-fixed/50 transition-all active:scale-[0.98]">
+                            Hủy giao dịch
+                        </button>
+</div>
+<div class="mt-6 pt-4 border-t border-surface-container-highest flex items-start gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined text-leaf-green">lock</span>
+<p class="text-[12px] leading-relaxed">Thông tin giao dịch của bạn được mã hóa an toàn 256-bit. <a class="text-ocean-blue hover:underline" href="#">Chính sách bảo mật</a></p>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

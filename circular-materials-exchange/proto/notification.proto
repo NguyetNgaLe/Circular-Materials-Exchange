@@ -1,0 +1,57 @@
+syntax = "proto3";
+package notification;
+option go_package = "./pb";
+
+service NotificationService {
+  rpc CreateNotification(CreateNotificationRequest) returns (Notification);
+  rpc ListNotifications(ListNotificationsRequest) returns (ListNotificationsResponse);
+  rpc MarkRead(MarkReadRequest) returns (Notification);
+  rpc MarkAllRead(MarkAllReadRequest) returns (Empty);
+  rpc GetUnreadCount(GetUnreadCountRequest) returns (UnreadCountResponse);
+}
+
+message Notification {
+  string id = 1;
+  string user_id = 2;
+  string title = 3;
+  string message = 4;
+  string type = 5;
+  bool read = 6;
+  string created_at = 7;
+}
+
+message CreateNotificationRequest {
+  string user_id = 1;
+  string title = 2;
+  string message = 3;
+  string type = 4;
+}
+
+message ListNotificationsRequest {
+  string user_id = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+}
+
+message ListNotificationsResponse {
+  repeated Notification notifications = 1;
+  int32 total = 2;
+}
+
+message MarkReadRequest {
+  string id = 1;
+}
+
+message MarkAllReadRequest {
+  string user_id = 1;
+}
+
+message GetUnreadCountRequest {
+  string user_id = 1;
+}
+
+message UnreadCountResponse {
+  int32 count = 1;
+}
+
+message Empty {}

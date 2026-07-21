@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Đánh giá Người bán - CircuTrade</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#faf9f9",
+                        "on-tertiary-fixed-variant": "#004a77",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-tint": "#336b07",
+                        "secondary-fixed": "#d8e2ff",
+                        "on-primary-container": "#193d00",
+                        "on-secondary-fixed": "#001a41",
+                        "primary-fixed-dim": "#98d86c",
+                        "on-surface": "#1a1c1c",
+                        "outline": "#727a69",
+                        "inverse-surface": "#2f3131",
+                        "on-secondary-container": "#003b82",
+                        "ocean-blue": "#4472C4",
+                        "on-background": "#1a1c1c",
+                        "outline-variant": "#c1c9b6",
+                        "on-secondary-fixed-variant": "#004494",
+                        "primary-container": "#70ad47",
+                        "surface-dim": "#dadada",
+                        "earth-gray": "#333333",
+                        "surface-variant": "#e3e2e2",
+                        "tertiary-fixed": "#cfe5ff",
+                        "leaf-green": "#70AD47",
+                        "secondary-container": "#7ca8fe",
+                        "background": "#faf9f9",
+                        "tertiary-fixed-dim": "#98cbff",
+                        "inverse-on-surface": "#f1f0f0",
+                        "warning-amber": "#FFC000",
+                        "primary": "#336b07",
+                        "exchange-orange": "#ED7D31",
+                        "on-error": "#ffffff",
+                        "surface-white": "#FFFFFF",
+                        "on-tertiary-fixed": "#001d33",
+                        "error": "#ba1a1a",
+                        "tertiary": "#136299",
+                        "on-primary-fixed": "#0a2100",
+                        "primary-fixed": "#b3f585",
+                        "secondary": "#2b5cad",
+                        "surface-container-highest": "#e3e2e2",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#faf9f9",
+                        "on-primary-fixed-variant": "#235100",
+                        "surface-container": "#eeeeed",
+                        "inverse-primary": "#98d86c",
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#42493b",
+                        "tertiary-container": "#63a2dd",
+                        "surface-container-high": "#e9e8e8",
+                        "sky-info": "#5B9BD5",
+                        "surface-container-low": "#f4f3f3",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-container": "#00375b",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "64px",
+                        "gutter": "24px",
+                        "unit": "4px",
+                        "margin-mobile": "16px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .star-rating .material-symbols-outlined {
+            cursor: pointer;
+            transition: color 0.2s, transform 0.2s;
+        }
+        .star-rating .material-symbols-outlined:hover,
+        .star-rating .material-symbols-outlined.active {
+            color: #FFC000;
+            font-variation-settings: 'FILL' 1;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- Navbar is suppressed for transactional page (Reviewing an order is a focused task) -->
+<main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 md:py-12 min-h-screen flex items-center justify-center">
+<div class="w-full max-w-2xl bg-surface-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.05)] border border-surface-container-highest p-6 md:p-8">
+<header class="mb-8 border-b border-surface-container-highest pb-6">
+<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2">Đánh giá Người bán</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Phản hồi của bạn giúp xây dựng cộng đồng giao thương uy tín và bền vững.</p>
+</header>
+<div class="space-y-8">
+<!-- Transaction Summary -->
+<section class="bg-surface-container-low rounded-lg p-5 border border-surface-variant flex gap-4 items-start">
+<div class="w-16 h-16 rounded overflow-hidden flex-shrink-0 bg-surface-variant">
+<img alt="Vật liệu" class="w-full h-full object-cover" data-alt="A clean, minimalist 3D rendering of a stack of recycled industrial steel plates sitting on a wooden pallet, brightly lit in a modern warehouse setting with a soft depth of field. High quality, professional industrial aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB5PK-9fnKsl8pV77y88HIutefHhUkPW8LUXQBtjqoRYv8SlQURIUIXgjwY2HMhAJnjfOXQhc4pWpZlHXmvOKReOIArMQL-oIHC1LznNGLT5LgEOWGIjhhT3bQdpX3FzCGZffsGcdWksIYJabPhN8ls2dXuRoAy5viux80Tx4UjjmdeMulhinKeCZDQLSjuBacyhv3_MwXJr94I4jm5u6uqXnpUVixLLZS6y2sEaxwLFSWFgo9WdAmB1i1AkEoav4-8qXgNGC4KDw"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h2 class="font-title-lg text-title-lg text-on-surface">Thép Phế Liệu Công Nghiệp Loại A</h2>
+<span class="font-label-md text-label-md bg-secondary-fixed text-on-secondary-fixed px-2 py-1 rounded">Hoàn tất</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-y-2 mt-3 font-body-sm text-body-sm text-on-surface-variant">
+<div>
+<span class="font-medium text-on-surface">Mã đơn hàng:</span> ORD-2023-8472
+                            </div>
+<div>
+<span class="font-medium text-on-surface">Nhà cung cấp:</span> Industrial Eco-Corp
+                            </div>
+<div>
+<span class="font-medium text-on-surface">Khối lượng:</span> 50 Tấn
+                            </div>
+<div>
+<span class="font-medium text-on-surface">Ngày nhận:</span> 24/10/2023
+                            </div>
+</div>
+</div>
+</section>
+<!-- Rating Criteria -->
+<section class="space-y-6">
+<h3 class="font-title-lg text-title-lg text-on-surface border-l-4 border-leaf-green pl-3">Xếp hạng tiêu chí</h3>
+<div class="space-y-5 pl-4">
+<!-- Criterion 1 -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div class="font-body-md text-body-md text-on-surface">Chất lượng vật liệu</div>
+<div class="flex gap-1 star-rating text-surface-dim" data-criterion="quality">
+<span class="material-symbols-outlined text-2xl" data-value="1">star</span>
+<span class="material-symbols-outlined text-2xl" data-value="2">star</span>
+<span class="material-symbols-outlined text-2xl" data-value="3">star</span>
+<span class="material-symbols-outlined text-2xl" data-value="4">star</span>
+<span class="material-symbols-outlined text-2xl" data-value="5">star</span>
+</div>
+</div>
+<!-- Criterion 2 -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div class="font-body-md text-body-md text-on-surface">Thời gian giao hàng</div>
+<div class="flex gap-1 star-rating text-surface-dim" data-criterion="delivery">
+<span class="material-symbols-outlined text-2xl" data-value="1">star</span>
+<span class="material-symbols-outlined text-2xl" data-value="2">star</span>
+<span class="material-symbols-outlined text-2xl" data-value="3">star</span>
+<span class="material-symbols-outlined text-2xl" data-value="4">star</span>
+<span class="material-symbols-outlined text-2xl" data-value="5">star</span>
+</div>
+</div>
+<!-- Criterion 3 -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div class="font-body-md text-body-md text-on-surface">Thái độ phục vụ</div>
+<div class="flex gap-1 star-rating text-surface-dim" data-criterion="service">
+<span class="material-symbols-outlined text-2xl" data-value="1">star</span>
+<span class="material-symbols-outlined text-2xl" data-value="2">star</span>
+<span class="material-symbols-outlined text-2xl" data-value="3">star</span>
+<span class="material-symbols-outlined text-2xl" data-value="4">star</span>
+<span class="material-symbols-outlined text-2xl" data-value="5">star</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Detailed Review -->
+<section class="space-y-3">
+<label class="font-label-md text-label-md text-on-surface block" for="review-text">Nhận xét chi tiết</label>
+<textarea class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg p-3 font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-ocean-blue focus:ring-2 focus:ring-ocean-blue/20 transition-all placeholder:text-outline" id="review-text" placeholder="Chia sẻ trải nghiệm của bạn về chất lượng vật liệu, quy trình giao nhận..." rows="4"></textarea>
+</section>
+<!-- Media Upload -->
+<section class="space-y-3">
+<label class="font-label-md text-label-md text-on-surface block">Hình ảnh/Video thực tế</label>
+<div class="border-2 border-dashed border-outline-variant rounded-lg p-6 flex flex-col items-center justify-center text-center hover:bg-surface-container-low transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-4xl text-outline mb-2 group-hover:text-leaf-green transition-colors">cloud_upload</span>
+<p class="font-body-sm text-body-sm text-on-surface mb-1"><span class="font-medium text-ocean-blue">Nhấp để tải lên</span> hoặc kéo thả file vào đây</p>
+<p class="font-label-md text-label-md text-outline">Hỗ trợ JPG, PNG, MP4 (Tối đa 5MB/file)</p>
+</div>
+</section>
+<!-- Commitment -->
+<section class="flex items-start gap-3 bg-tertiary-fixed/30 p-4 rounded-lg">
+<span class="material-symbols-outlined text-tertiary mt-0.5">verified_user</span>
+<p class="font-body-sm text-body-sm text-on-surface">Tôi cam kết những đánh giá trên là đúng sự thật và dựa trên trải nghiệm giao dịch thực tế. CircuTrade bảo mật thông tin cá nhân của bạn theo chính sách nền tảng.</p>
+</section>
+<!-- Actions -->
+<div class="flex flex-col-reverse sm:flex-row justify-end gap-4 pt-4 border-t border-surface-container-highest mt-8">
+<button class="px-6 py-2.5 rounded-lg border border-ocean-blue text-ocean-blue font-label-md text-label-md hover:bg-surface-container-low transition-colors shadow-sm hover:shadow active:scale-95 duration-200" type="button">Để sau</button>
+<button class="px-6 py-2.5 rounded-lg bg-leaf-green text-on-primary font-label-md text-label-md hover:shadow-md hover:bg-primary transition-all active:scale-95 duration-200" type="button">Gửi đánh giá</button>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Simple star rating interaction
+        document.querySelectorAll('.star-rating').forEach(container => {
+            const stars = container.querySelectorAll('.material-symbols-outlined');
+            
+            stars.forEach((star, index) => {
+                star.addEventListener('click', () => {
+                    // Reset all
+                    stars.forEach(s => s.classList.remove('active'));
+                    // Highlight up to clicked
+                    for(let i = 0; i <= index; i++) {
+                        stars[i].classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body></html>

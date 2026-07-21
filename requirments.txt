@@ -1,0 +1,58 @@
+Danh sách sơ đồ nên có trong báo cáo
+
+Một báo cáo đầy đủ thường có các sơ đồ sau: 
+| STT | Sơ đồ                                    | Vị trí   |
+| --: | ---------------------------------------- | -------- |
+|   1 | Sơ đồ cơ cấu tổ chức                     | Chương 2 |
+|   2 | Activity Diagram hoặc BPMN               | Chương 2 |
+|   3 | Domain Class Diagram                     | Chương 2 |
+|   4 | Functional Decomposition/Package Diagram | Chương 3 |
+|   5 | Use Case Diagram tổng quan               | Chương 3 |
+|   6 | Use Case Diagram theo nhóm               | Chương 3 |
+|   7 | Logical Architecture Diagram             | Chương 4 |
+|   8 | Deployment Diagram                       | Chương 4 |
+|   9 | ERD                                      | Chương 4 |
+|  10 | Design Class Diagram                     | Chương 4 |
+|  11 | Sequence Diagram                         | Chương 4 |
+|  12 | State Machine Diagram                    | Chương 4 |
+|  13 | Mô hình triển khai Docker/server         | Chương 5 |
+
+
+
+Domain Class Diagram và Design Class Diagram
+
+Domain Class Diagram:
+
+Dùng trong phân tích.
+Chỉ mô tả đối tượng nghiệp vụ.
+Không có Controller, Service, Repository.
+Không cần phương thức kỹ thuật chi tiết.
+
+Design Class Diagram:
+
+Dùng trong thiết kế.
+Có các lớp phần mềm.
+Có thuộc tính, phương thức.
+Có Controller, Service, Repository, Entity.
+Activity Diagram và Sequence Diagram
+
+Activity Diagram:
+
+Mô tả quy trình hoặc luồng nghiệp vụ.
+Tập trung vào các bước và điều kiện.
+
+Sequence Diagram:
+
+Mô tả các đối tượng gọi nhau theo thời gian.
+Tập trung vào luồng xử lý bên trong phần mềm.
+ERD và Class Diagram
+
+ERD:
+
+Mô tả các bảng trong cơ sở dữ liệu.
+Có khóa chính, khóa ngoại và quan hệ.
+
+Class Diagram:
+
+Mô tả các lớp trong phần mềm.
+Có thuộc tính, phương thức và quan hệ giữa lớp.

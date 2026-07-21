@@ -1,0 +1,228 @@
+version: '3.8'
+
+services:
+  # ========== PostgreSQL (shared, multiple databases) ==========
+  postgres:
+    image: postgres:15
+    container_name: cme-postgres
+    environment:
+      POSTGRES_USER: cme
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: auth_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./scripts/init-databases.sql:/docker-entrypoint-initdb.d/init.sql
+      - pg-data:/var/lib/postgresql/data
+    networks:
+      - cme-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cme"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ========== NATS ==========
+  nats:
+    image: nats:latest
+    container_name: cme-nats
+    command: "-js"
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    networks:
+      - cme-network
+
+  # ========== MinIO (Object Storage) ==========
+  minio:
+    image: minio/minio:latest
+    container_name: cme-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: cme_minio
+      MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD}
+      MINIO_API_ANONYMOUS_ACCESS: "on"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio-data:/data
+    networks:
+      - cme-network
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ========== Services ==========
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: cme-auth-service
+    ports:
+      - "50051:50051"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: auth_db
+      DB_USER: cme
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      GRPC_PORT: "50051"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - cme-network
+
+  company-service:
+    build:
+      context: ./company-service
+      dockerfile: Dockerfile
+    container_name: cme-company-service
+    ports:
+      - "50052:50052"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: company_db
+      DB_USER: cme
+      DB_PASSWORD: ${DB_PASSWORD}
+      NATS_URL: nats://nats:4222
+      GRPC_PORT: "50052"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      nats:
+        condition: service_started
+    restart: on-failure
+    networks:
+      - cme-network
+
+  material-service:
+    build:
+      context: ./material-service
+      dockerfile: Dockerfile
+    container_name: cme-material-service
+    ports:
+      - "50053:50053"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: material_db
+      DB_USER: cme
+      DB_PASSWORD: ${DB_PASSWORD}
+      GRPC_PORT: "50053"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - cme-network
+
+  order-service:
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile
+    container_name: cme-order-service
+    ports:
+      - "50054:50054"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: order_db
+      DB_USER: cme
+      DB_PASSWORD: ${DB_PASSWORD}
+      NATS_URL: nats://nats:4222
+      MATERIAL_SERVICE_ADDR: material-service:50053
+      GRPC_PORT: "50054"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      nats:
+        condition: service_started
+      material-service:
+        condition: service_started
+    restart: on-failure
+    networks:
+      - cme-network
+
+  review-service:
+    build:
+      context: ./review-service
+      dockerfile: Dockerfile
+    container_name: cme-review-service
+    ports:
+      - "50055:50055"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: review_db
+      DB_USER: cme
+      DB_PASSWORD: ${DB_PASSWORD}
+      GRPC_PORT: "50055"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - cme-network
+
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    container_name: cme-notification-service
+    ports:
+      - "50056:50056"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: notif_db
+      DB_USER: cme
+      DB_PASSWORD: ${DB_PASSWORD}
+      NATS_URL: nats://nats:4222
+      GRPC_PORT: "50056"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      nats:
+        condition: service_started
+    restart: on-failure
+    networks:
+      - cme-network
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: cme-api-gateway
+    network_mode: host
+    environment:
+      AUTH_SERVICE_ADDR: localhost:50051
+      COMPANY_SERVICE_ADDR: localhost:50052
+      MATERIAL_SERVICE_ADDR: localhost:50053
+      ORDER_SERVICE_ADDR: localhost:50054
+      REVIEW_SERVICE_ADDR: localhost:50055
+      NOTIFICATION_SERVICE_ADDR: localhost:50056
+      JWT_SECRET: ${JWT_SECRET}
+      HTTP_PORT: "8085"
+    depends_on:
+      - auth-service
+      - company-service
+      - material-service
+      - order-service
+      - review-service
+      - notification-service
+    restart: on-failure
+
+volumes:
+  pg-data:
+  minio-data:
+
+networks:
+  cme-network:
+    driver: bridge

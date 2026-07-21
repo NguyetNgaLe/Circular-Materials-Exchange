@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nguồn cung của tôi - Circular Materials Exchange</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../_shared/cme-ui.css">
+</head>
+<body>
+  <div class="mobile-top"><strong>Nguồn cung</strong><span class="material-symbols-outlined">menu</span></div>
+  <div class="app-shell">
+    <aside class="side-nav">
+      <div class="brand"><span class="brand-mark material-symbols-outlined icon-fill">recycling</span>Circular Materials</div>
+      <div class="company-card"><strong>GreenTech Manufacturing</strong><span>Seller workspace</span></div>
+      <nav class="nav-group">
+        <a class="nav-link" href="#"><span class="material-symbols-outlined">dashboard</span>Dashboard</a>
+        <a class="nav-link active" href="#"><span class="material-symbols-outlined icon-fill">inventory_2</span>Nguồn cung</a>
+        <a class="nav-link" href="#"><span class="material-symbols-outlined">handshake</span>Offer nhận được</a>
+        <a class="nav-link" href="#"><span class="material-symbols-outlined">sync_alt</span>Giao dịch bán</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">UC019-UC021 · Seller</p>
+          <h1>Danh sách nguồn cung của tôi</h1>
+          <p class="muted">Quản lý tin đăng, khối lượng còn lại, trạng thái kiểm duyệt và offer liên quan.</p>
+        </div>
+        <button class="btn primary"><span class="material-symbols-outlined">add</span>Đăng nguồn cung</button>
+      </header>
+
+      <section class="toolbar">
+        <div class="filters">
+          <div class="field"><label>Tìm kiếm</label><input placeholder="Tên vật liệu, mã listing"></div>
+          <div class="field"><label>Trạng thái</label><select><option>Tất cả</option><option>active</option><option>draft</option><option>closed</option></select></div>
+          <div class="field"><label>Danh mục</label><select><option>Tất cả</option><option>Nhựa</option><option>Kim loại</option></select></div>
+          <div class="field"><label>Sắp xếp</label><select><option>Mới nhất</option><option>Nhiều offer nhất</option></select></div>
+        </div>
+      </section>
+
+      <section class="table-wrap">
+        <table>
+          <thead><tr><th>Nguồn cung</th><th>Khối lượng</th><th>Giá</th><th>Offer</th><th>Trạng thái</th><th>Hành động</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div class="row-title"><div class="thumb"><span class="material-symbols-outlined">polymer</span></div><div><strong>Hạt nhựa HDPE tái sinh</strong><br><span class="muted">LST-2049 · Bình Dương</span></div></div></td>
+              <td>24 tấn · còn 18 tấn</td>
+              <td>11.800đ/kg</td>
+              <td><span class="status amber">3 chờ xử lý</span></td>
+              <td><span class="status green">active</span></td>
+              <td><button class="btn ghost">Sửa</button> <button class="btn secondary">Xem offer</button></td>
+            </tr>
+            <tr>
+              <td><div class="row-title"><div class="thumb"><span class="material-symbols-outlined">inventory_2</span></div><div><strong>Thùng carton OCC ép kiện</strong><br><span class="muted">LST-2037 · TP. HCM</span></div></div></td>
+              <td>12 tấn · còn 12 tấn</td>
+              <td>2.200đ/kg</td>
+              <td><span class="status blue">1 mới</span></td>
+              <td><span class="status amber">pending_review</span></td>
+              <td><button class="btn ghost">Sửa</button> <button class="btn warn">Đóng</button></td>
+            </tr>
+            <tr>
+              <td><div class="row-title"><div class="thumb"><span class="material-symbols-outlined">precision_manufacturing</span></div><div><strong>Nhôm phế liệu loại 1</strong><br><span class="muted">LST-1998 · Đồng Nai</span></div></div></td>
+              <td>6 tấn · còn 0 tấn</td>
+              <td>38.000đ/kg</td>
+              <td><span class="status green">đã tạo giao dịch</span></td>
+              <td><span class="status blue">sold_out</span></td>
+              <td><button class="btn secondary">Giao dịch</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

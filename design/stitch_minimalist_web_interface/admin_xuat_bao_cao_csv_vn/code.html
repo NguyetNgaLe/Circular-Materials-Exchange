@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin xuất báo cáo - Circular Materials Exchange</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../_shared/cme-ui.css">
+</head>
+<body>
+  <div class="mobile-top"><strong>Xuất báo cáo</strong><span class="material-symbols-outlined">menu</span></div>
+  <div class="app-shell">
+    <aside class="side-nav">
+      <div class="brand"><span class="brand-mark material-symbols-outlined icon-fill">admin_panel_settings</span>Admin CME</div>
+      <div class="company-card"><strong>System Admin</strong><span>Reports export</span></div>
+      <nav class="nav-group">
+        <a class="nav-link" href="#"><span class="material-symbols-outlined">dashboard</span>Dashboard</a>
+        <a class="nav-link active" href="#"><span class="material-symbols-outlined icon-fill">download</span>Xuất báo cáo</a>
+        <a class="nav-link" href="#"><span class="material-symbols-outlined">bar_chart</span>Thống kê</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">UC056-UC057 · Export</p>
+          <h1>Xuất báo cáo giao dịch</h1>
+          <p class="muted">Bản MVP nên ưu tiên CSV vì dễ triển khai và đủ để demo chức năng báo cáo.</p>
+        </div>
+        <button class="btn primary"><span class="material-symbols-outlined">download</span>Xuất CSV</button>
+      </header>
+
+      <section class="panel">
+        <div class="section-title"><h2>Bộ lọc dữ liệu</h2><span class="status blue">preview</span></div>
+        <div class="filters">
+          <div class="field"><label>Khoảng thời gian</label><select><option>30 ngày gần nhất</option><option>Quý này</option><option>Năm nay</option></select></div>
+          <div class="field"><label>Trạng thái</label><select><option>Tất cả</option><option>completed</option><option>in_progress</option><option>cancelled</option></select></div>
+          <div class="field"><label>Loại vật liệu</label><select><option>Tất cả</option><option>Nhựa</option><option>Kim loại</option><option>Giấy</option></select></div>
+          <div class="field"><label>Định dạng</label><select><option>CSV</option><option>PDF demo</option></select></div>
+        </div>
+      </section>
+
+      <section class="grid three" style="margin-top:18px">
+        <div class="card metric"><div class="metric-icon"><span class="material-symbols-outlined">sync_alt</span></div><div><strong>142</strong><span>Giao dịch</span></div></div>
+        <div class="card metric"><div class="metric-icon"><span class="material-symbols-outlined">scale</span></div><div><strong>1.240 tấn</strong><span>Khối lượng</span></div></div>
+        <div class="card metric"><div class="metric-icon"><span class="material-symbols-outlined">paid</span></div><div><strong>manual</strong><span>Thanh toán demo</span></div></div>
+      </section>
+
+      <section class="table-wrap" style="margin-top:18px">
+        <table>
+          <thead><tr><th>Transaction</th><th>Buyer</th><th>Seller</th><th>Vật liệu</th><th>Khối lượng</th><th>Trạng thái</th><th>Payment</th></tr></thead>
+          <tbody>
+            <tr><td>TX-9088</td><td>EcoPack Vietnam</td><td>GreenTech</td><td>Nhôm phế liệu</td><td>5 tấn</td><td><span class="status blue">in_progress</span></td><td>manual_offline</td></tr>
+            <tr><td>TX-9042</td><td>VinaPack</td><td>Saigon Paper Hub</td><td>Carton OCC</td><td>10 tấn</td><td><span class="status green">completed</span></td><td>bypassed_demo</td></tr>
+            <tr><td>TX-9019</td><td>Mekong Reuse</td><td>MetalLoop</td><td>Nhôm</td><td>3 tấn</td><td><span class="status red">cancelled</span></td><td>not_required</td></tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

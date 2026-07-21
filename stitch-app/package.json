@@ -1,0 +1,23 @@
+{
+    "name": "stitch-app",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "lucide-react": "^1.23.0",
+        "react": "18.2.0",
+        "react-dom": "18.2.0",
+        "react-router-dom": "6.14.1"
+    },
+    "devDependencies": {
+        "@types/react": "^19.2.17",
+        "@types/react-dom": "^19.2.3",
+        "@vitejs/plugin-react": "4.0.0",
+        "typescript": "5.4.2",
+        "vite": "5.0.9"
+    }
+}

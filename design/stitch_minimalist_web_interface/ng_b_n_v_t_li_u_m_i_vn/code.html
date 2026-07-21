@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Vật Liệu Tuần Hoàn - Đăng Vật Liệu</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary": "#2b5cad",
+                        "on-secondary-fixed": "#001a41",
+                        "primary-fixed-dim": "#98d86c",
+                        "on-primary-fixed": "#0a2100",
+                        "ocean-blue": "#4472C4",
+                        "tertiary-fixed": "#cfe5ff",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#98cbff",
+                        "outline-variant": "#c1c9b6",
+                        "primary-fixed": "#b3f585",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "on-surface-variant": "#42493b",
+                        "surface-container-high": "#e9e8e8",
+                        "on-background": "#1a1c1c",
+                        "inverse-on-surface": "#f1f0f0",
+                        "tertiary": "#136299",
+                        "on-primary-container": "#193d00",
+                        "tertiary-container": "#63a2dd",
+                        "inverse-primary": "#98d86c",
+                        "outline": "#727a69",
+                        "surface-container-highest": "#e3e2e2",
+                        "secondary-fixed": "#d8e2ff",
+                        "on-tertiary-fixed": "#001d33",
+                        "warning-amber": "#FFC000",
+                        "surface-variant": "#e3e2e2",
+                        "surface-container": "#eeeeed",
+                        "on-error": "#ffffff",
+                        "sky-info": "#5B9BD5",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface": "#faf9f9",
+                        "inverse-surface": "#2f3131",
+                        "surface-dim": "#dadada",
+                        "on-secondary-container": "#003b82",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#235100",
+                        "on-secondary": "#ffffff",
+                        "secondary-container": "#7ca8fe",
+                        "surface-container-low": "#f4f3f3",
+                        "surface-white": "#FFFFFF",
+                        "on-tertiary-container": "#00375b",
+                        "leaf-green": "#70AD47",
+                        "on-tertiary": "#ffffff",
+                        "earth-gray": "#333333",
+                        "background": "#faf9f9",
+                        "on-surface": "#1a1c1c",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#70ad47",
+                        "on-tertiary-fixed-variant": "#004a77",
+                        "surface-tint": "#336b07",
+                        "surface-bright": "#faf9f9",
+                        "on-secondary-fixed-variant": "#004494",
+                        "exchange-orange": "#ED7D31",
+                        "primary": "#336b07"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "unit": "4px",
+                        "margin-desktop": "64px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #faf9f9; color: #1a1c1c; }
+        .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-weight: normal; font-style: normal; font-size: 24px; line-height: 1; letter-spacing: normal; text-transform: none; display: inline-block; white-space: nowrap; word-wrap: normal; direction: ltr; font-feature-settings: 'liga'; -webkit-font-smoothing: antialiased; }
+        .input-glow:focus { border-color: #4472C4; box-shadow: 0 0 0 3px rgba(68, 114, 196, 0.2); outline: none; }
+        .custom-file-upload { display: inline-block; cursor: pointer; }
+    </style>
+</head>
+<body class="bg-background min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<nav class="bg-surface dark:bg-surface-dim font-body-md text-body-md w-full sticky top-0 z-50 border-b border-outline-variant dark:border-outline shadow-sm dark:shadow-none">
+<div class="flex justify-between items-center max-w-container-max mx-auto px-margin-desktop w-full h-16">
+<div class="flex items-center gap-8">
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-leaf-green">Vật Liệu Tuần Hoàn</span>
+<div class="hidden md:flex gap-6 items-center h-full">
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-ocean-blue dark:hover:text-secondary-container transition-colors duration-200" href="#">Chợ</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-ocean-blue dark:hover:text-secondary-container transition-colors duration-200" href="#">Giải Pháp</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-ocean-blue dark:hover:text-secondary-container transition-colors duration-200" href="#">Tài Nguyên</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-ocean-blue dark:hover:text-secondary-container transition-colors duration-200" href="#">Giới Thiệu</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant dark:text-surface-variant hover:text-ocean-blue transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="bg-leaf-green hover:bg-opacity-90 text-on-primary font-label-md px-4 py-2 rounded-lg transition-all shadow-sm">Đăng Vật Liệu</button>
+<button class="text-on-surface-variant dark:text-surface-variant hover:text-ocean-blue transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant dark:text-surface-variant hover:text-ocean-blue transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-grow max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 w-full">
+<div class="mb-8">
+<h1 class="font-headline-lg text-headline-lg md:font-display-lg md:text-display-lg text-on-background mb-2">Đăng Vật Liệu Mới</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Cung cấp thông số kỹ thuật chi tiết để đảm bảo khớp nối chính xác trong chợ.</p>
+</div>
+<form class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Core Info -->
+<div class="lg:col-span-8 flex flex-col gap-6">
+<!-- Section 1: Basic Information -->
+<div class="bg-surface-white p-6 rounded-xl border border-surface-variant shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
+<h2 class="font-title-lg text-title-lg text-on-background mb-4 pb-2 border-b border-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">info</span> Thông Tin Cơ Bản
+                    </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="col-span-2">
+<label class="block font-label-md text-label-md text-on-surface mb-1">Tên Vật Liệu <span class="text-error">*</span></label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2 text-body-md font-body-md text-on-background input-glow transition-all" placeholder="vd: Hạt nhựa High-Density Polyethylene (HDPE)" type="text"/>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-1">Danh Mục <span class="text-error">*</span></label>
+<select class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2 text-body-md font-body-md text-on-background input-glow transition-all appearance-none cursor-pointer">
+<option disabled="" selected="" value="">Chọn danh mục...</option>
+<option value="plastic">Nhựa</option>
+<option value="metal">Kim loại</option>
+<option value="textile">Dệt may</option>
+<option value="glass">Thủy tinh</option>
+<option value="paper">Giấy/Bìa cứng</option>
+<option value="other">Khác</option>
+</select>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-1">Danh Mục Con / Loại</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2 text-body-md font-body-md text-on-background input-glow transition-all" placeholder="vd: PET, Nhôm, Bông" type="text"/>
+</div>
+</div>
+</div>
+<!-- Section 2: Logistics & Origin -->
+<div class="bg-surface-white p-6 rounded-xl border border-surface-variant shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
+<h2 class="font-title-lg text-title-lg text-on-background mb-4 pb-2 border-b border-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">local_shipping</span> Hậu Cần &amp; Nguồn Gốc
+                    </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-2">Nguồn Gốc Vật Liệu <span class="text-error">*</span></label>
+<div class="flex flex-col gap-2">
+<label class="flex items-center gap-2 cursor-pointer">
+<input class="text-primary focus:ring-primary h-4 w-4 border-outline-variant" name="origin" type="radio"/>
+<span class="font-body-md text-body-md text-on-background">Hậu Công Nghiệp</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer">
+<input class="text-primary focus:ring-primary h-4 w-4 border-outline-variant" name="origin" type="radio"/>
+<span class="font-body-md text-body-md text-on-background">Hậu Tiêu Dùng</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer">
+<input class="text-primary focus:ring-primary h-4 w-4 border-outline-variant" name="origin" type="radio"/>
+<span class="font-body-md text-body-md text-on-background">Hỗn Hợp / Không Rõ</span>
+</label>
+</div>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-1">Số Lượng Có Sẵn <span class="text-error">*</span></label>
+<div class="flex gap-2">
+<input class="w-2/3 bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2 text-body-md font-body-md text-on-background input-glow transition-all" placeholder="0.00" type="number"/>
+<select class="w-1/3 bg-surface-container-low border border-outline-variant rounded-lg px-2 py-2 text-body-md font-body-md text-on-background input-glow transition-all cursor-pointer">
+<option>kg</option>
+<option>tấn</option>
+<option>lbs</option>
+<option>đơn vị</option>
+</select>
+</div>
+<label class="block font-label-md text-label-md text-on-surface mb-1 mt-4">Tình Trạng Có Sẵn</label>
+<div class="flex items-center gap-2">
+<input class="text-primary focus:ring-primary rounded border-outline-variant" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Nguồn cung định kỳ (vd: hàng tháng)</span>
+</div>
+</div>
+<div class="col-span-2">
+<label class="block font-label-md text-label-md text-on-surface mb-1">Vị Trí <span class="text-error">*</span></label>
+<div class="flex relative">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-outline">location_on</span>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg pl-10 pr-4 py-2 text-body-md font-body-md text-on-background input-glow transition-all" placeholder="Thành phố, Khu vực, hoặc Mã Bưu Điện" type="text"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 3: Physical Properties -->
+<div class="bg-surface-white p-6 rounded-xl border border-surface-variant shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
+<h2 class="font-title-lg text-title-lg text-on-background mb-4 pb-2 border-b border-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">science</span> Tính Chất Vật Lý
+                    </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-1">Màu Sắc</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2 text-body-md font-body-md text-on-background input-glow transition-all" placeholder="vd: Trong suốt, Hỗn hợp, Đen" type="text"/>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-1">Dạng / Trạng Thái</label>
+<select class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2 text-body-md font-body-md text-on-background input-glow transition-all appearance-none cursor-pointer">
+<option>Hạt</option>
+<option>Vảy</option>
+<option>Đóng Kiện</option>
+<option>Lỏng</option>
+<option>Bột</option>
+<option>Các Bộ Phận Cứng</option>
+</select>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-1">Mức Độ Tạp Chất (%)</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2 text-body-md font-body-md text-on-background input-glow transition-all" placeholder="&lt; 1%" type="number"/>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-1">Độ Ẩm (%)</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2 text-body-md font-body-md text-on-background input-glow transition-all" placeholder="0.0" type="number"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Documents & Submission -->
+<div class="lg:col-span-4 flex flex-col gap-6">
+<!-- LCA & Certificates -->
+<div class="bg-surface-white p-6 rounded-xl border border-surface-variant shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
+<h2 class="font-title-lg text-title-lg text-on-background mb-4 pb-2 border-b border-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-leaf-green">eco</span> Dữ Liệu Bền Vững
+                    </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4">Tải lên tài liệu LCA, chứng chỉ chất lượng hoặc bảng dữ liệu an toàn vật liệu (MSDS) để tăng niềm tin của người mua.</p>
+<div class="border-2 border-dashed border-outline-variant rounded-lg p-6 flex flex-col items-center justify-center text-center hover:border-ocean-blue hover:bg-surface-container-low transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-4xl text-outline mb-2 group-hover:text-ocean-blue transition-colors">cloud_upload</span>
+<span class="font-label-md text-label-md text-on-background mb-1">Kéo và thả tệp vào đây</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mb-4">hoặc</span>
+<label class="custom-file-upload">
+<input class="hidden" multiple="" type="file"/>
+<span class="bg-surface-container border border-outline px-4 py-2 rounded-lg font-label-md text-label-md text-on-background hover:bg-surface-variant transition-colors inline-block">Duyệt Tệp</span>
+</label>
+<p class="font-body-sm text-body-sm text-outline mt-3 text-xs">Hỗ trợ: PDF, JPG, PNG (Tối đa 10MB)</p>
+</div>
+<div class="mt-4">
+<label class="flex items-start gap-2 cursor-pointer">
+<input class="mt-1 text-primary focus:ring-primary rounded border-outline-variant" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Tôi chứng nhận rằng dữ liệu LCA được cung cấp tuân thủ các tiêu chuẩn của nền tảng.</span>
+</label>
+</div>
+</div>
+<!-- Summary & Action -->
+<div class="bg-surface-container-low p-6 rounded-xl border border-surface-variant sticky top-24">
+<h3 class="font-title-lg text-title-lg text-on-background mb-4">Tóm Tắt Đăng Bán</h3>
+<div class="space-y-3 mb-6 font-body-sm text-body-sm text-on-surface">
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Phí Đăng:</span>
+<span class="font-medium">Miễn phí (Tiêu chuẩn)</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Hiển Thị:</span>
+<span class="font-medium">Chợ Công Khai</span>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<button class="w-full bg-leaf-green hover:bg-opacity-90 text-on-primary font-label-md text-label-md py-3 rounded-lg shadow-[0_2px_4px_rgba(0,0,0,0.1)] transition-all flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px]">publish</span> Đăng Vật Liệu
+                        </button>
+<button class="w-full bg-surface-white border border-ocean-blue text-ocean-blue hover:bg-surface-container-low font-label-md text-label-md py-3 rounded-lg transition-colors flex items-center justify-center gap-2" type="button">
+                            Lưu Làm Bản Nháp
+                        </button>
+</div>
+</div>
+</div>
+</form>
+</main>
+<!-- Footer -->
+<footer class="bg-earth-gray dark:bg-inverse-surface w-full py-12 flat no shadows font-body-sm text-body-sm text-on-primary mt-auto">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter max-w-container-max mx-auto px-margin-desktop">
+<div class="flex flex-col gap-4">
+<span class="font-title-lg text-title-lg font-semibold text-white">Vật Liệu Tuần Hoàn</span>
+<p class="text-surface-container-highest dark:text-surface-variant">© 2024 Sàn Giao Dịch Vật Liệu Tuần Hoàn. Đã đăng ký bản quyền.</p>
+</div>
+<div class="flex flex-col gap-2">
+<a class="text-surface-container-highest dark:text-surface-variant hover:text-leaf-green dark:hover:text-primary-fixed transition-colors" href="#">Báo Cáo Bền Vững</a>
+<a class="text-surface-container-highest dark:text-surface-variant hover:text-leaf-green dark:hover:text-primary-fixed transition-colors" href="#">Tài Liệu LCA</a>
+</div>
+<div class="flex flex-col gap-2">
+<a class="text-surface-container-highest dark:text-surface-variant hover:text-leaf-green dark:hover:text-primary-fixed transition-colors" href="#">Điều Khoản Dịch Vụ</a>
+<a class="text-surface-container-highest dark:text-surface-variant hover:text-leaf-green dark:hover:text-primary-fixed transition-colors" href="#">Chính Sách Bảo Mật</a>
+</div>
+<div class="flex flex-col gap-2">
+<a class="text-surface-container-highest dark:text-surface-variant hover:text-leaf-green dark:hover:text-primary-fixed transition-colors" href="#">Liên Hệ Hỗ Trợ</a>
+<a class="text-surface-container-highest dark:text-surface-variant hover:text-leaf-green dark:hover:text-primary-fixed transition-colors" href="#">Nghề Nghiệp</a>
+</div>
+</div>
+</footer>
+</body></html>

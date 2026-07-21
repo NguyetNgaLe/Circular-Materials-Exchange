@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Seller gửi báo giá cho nhu cầu mua - Circular Materials Exchange</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../_shared/cme-ui.css">
+</head>
+<body>
+  <div class="mobile-top"><strong>Gửi báo giá</strong><span class="material-symbols-outlined">menu</span></div>
+  <div class="app-shell">
+    <aside class="side-nav">
+      <div class="brand"><span class="brand-mark material-symbols-outlined icon-fill">recycling</span>Circular Materials</div>
+      <div class="company-card"><strong>GreenTech Manufacturing</strong><span>Seller · UC058</span></div>
+      <nav class="nav-group">
+        <a class="nav-link" href="#"><span class="material-symbols-outlined">travel_explore</span>Sàn nhu cầu</a>
+        <a class="nav-link active" href="#"><span class="material-symbols-outlined icon-fill">request_quote</span>Gửi báo giá</a>
+        <a class="nav-link" href="#"><span class="material-symbols-outlined">move_to_inbox</span>Offer đã gửi</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">UC058 · Seller to buyer offer</p>
+          <h1>Gửi báo giá cho nhu cầu mua</h1>
+          <p class="muted">Luồng bổ sung giúp phần “đăng nhu cầu mua” khép kín hơn.</p>
+        </div>
+        <button class="btn ghost"><span class="material-symbols-outlined">arrow_back</span>Quay lại nhu cầu</button>
+      </header>
+
+      <section class="split">
+        <div class="panel">
+          <div class="section-title"><h2>Báo giá của seller</h2><span class="status blue">seller_to_buyer</span></div>
+          <div class="grid two">
+            <div class="field"><label>Khối lượng có thể cung cấp</label><input value="12" type="number"></div>
+            <div class="field"><label>Đơn vị</label><select><option>Tấn</option><option>Kg</option></select></div>
+            <div class="field"><label>Đơn giá</label><input value="10.800đ/kg"></div>
+            <div class="field"><label>Ngày sẵn sàng giao</label><input value="2026-07-16" type="date"></div>
+            <div class="field"><label>Địa điểm lấy hàng</label><input value="KCN VSIP II, Bình Dương"></div>
+            <div class="field"><label>Nguồn cung liên kết</label><select><option>LST-2049 · HDPE tái sinh</option><option>Không liên kết listing</option></select></div>
+            <div class="field" style="grid-column:1/-1"><label>Ghi chú</label><textarea>Có thể cung cấp 12 tấn trước, phần còn lại giao theo đợt sau 7 ngày. Có ảnh và chứng chỉ chất lượng đính kèm.</textarea></div>
+          </div>
+        </div>
+        <aside class="panel">
+          <h2>Nhu cầu mua</h2>
+          <div class="detail-list" style="margin-top:12px">
+            <div class="detail-item"><span>Mã nhu cầu</span><strong>DEM-1182</strong></div>
+            <div class="detail-item"><span>Buyer</span><strong>EcoPack Vietnam</strong></div>
+            <div class="detail-item"><span>Cần mua</span><strong>30 tấn rPET/HDPE</strong></div>
+            <div class="detail-item"><span>Ngân sách</span><strong>10.500đ/kg</strong></div>
+            <div class="detail-item"><span>Deadline</span><strong>20/07/2026</strong></div>
+          </div>
+          <button class="btn primary" style="width:100%; margin-top:18px"><span class="material-symbols-outlined">send</span>Gửi báo giá</button>
+        </aside>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

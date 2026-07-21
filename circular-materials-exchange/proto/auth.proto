@@ -1,0 +1,57 @@
+syntax = "proto3";
+package auth;
+option go_package = "./pb";
+
+service AuthService {
+  rpc Register(RegisterRequest) returns (AuthResponse);
+  rpc Login(LoginRequest) returns (AuthResponse);
+  rpc VerifyToken(TokenRequest) returns (UserResponse);
+  rpc GetUser(GetUserRequest) returns (UserResponse);
+  rpc UpdateProfile(UpdateProfileRequest) returns (UserResponse);
+}
+
+message User {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+  string phone = 4;
+  string role = 5;
+  string avatar = 6;
+  string company_id = 7;
+}
+
+message RegisterRequest {
+  string name = 1;
+  string email = 2;
+  string password = 3;
+  string phone = 4;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message AuthResponse {
+  string token = 1;
+  User user = 2;
+}
+
+message TokenRequest {
+  string token = 1;
+}
+
+message GetUserRequest {
+  string id = 1;
+}
+
+message UpdateProfileRequest {
+  string id = 1;
+  string name = 2;
+  string phone = 3;
+  string avatar = 4;
+}
+
+message UserResponse {
+  User user = 1;
+}

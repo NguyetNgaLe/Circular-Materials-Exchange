@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Offer đã nhận - Circular Materials Exchange</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../_shared/cme-ui.css">
+</head>
+<body>
+  <div class="mobile-top"><strong>Offer nhận được</strong><span class="material-symbols-outlined">menu</span></div>
+  <div class="app-shell">
+    <aside class="side-nav">
+      <div class="brand"><span class="brand-mark material-symbols-outlined icon-fill">recycling</span>Circular Materials</div>
+      <div class="company-card"><strong>GreenTech Manufacturing</strong><span>Seller workspace</span></div>
+      <nav class="nav-group">
+        <a class="nav-link" href="#"><span class="material-symbols-outlined">inventory_2</span>Nguồn cung</a>
+        <a class="nav-link active" href="#"><span class="material-symbols-outlined icon-fill">move_to_inbox</span>Offer nhận được</a>
+        <a class="nav-link" href="#"><span class="material-symbols-outlined">sync_alt</span>Giao dịch bán</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">UC035-UC037 · Seller</p>
+          <h1>Offer đã nhận</h1>
+          <p class="muted">Seller xử lý đề nghị mua, chấp nhận để hệ thống tạo giao dịch tự động.</p>
+        </div>
+        <button class="btn ghost"><span class="material-symbols-outlined">filter_list</span>Lọc offer</button>
+      </header>
+
+      <section class="kanban">
+        <div class="kanban-col">
+          <h3>Pending</h3>
+          <article class="card">
+            <span class="status amber">OFF-5021</span>
+            <h3 style="margin-top:12px">EcoPack Vietnam</h3>
+            <p class="muted">8 tấn HDPE · 11.200đ/kg · nhận tại Long An</p>
+            <div class="actions"><button class="btn primary">Chấp nhận</button><button class="btn ghost">Từ chối</button></div>
+          </article>
+          <article class="card">
+            <span class="status amber">OFF-5020</span>
+            <h3 style="margin-top:12px">An Phát Packaging</h3>
+            <p class="muted">4 tấn HDPE · đề nghị lấy mẫu trước</p>
+            <div class="actions"><button class="btn secondary">Chi tiết</button></div>
+          </article>
+        </div>
+        <div class="kanban-col">
+          <h3>Accepted</h3>
+          <article class="card">
+            <span class="status green">OFF-5018</span>
+            <h3 style="margin-top:12px">VinaPack</h3>
+            <p class="muted">5 tấn nhôm phế liệu · đã tạo TX-9088</p>
+            <button class="btn secondary">Mở giao dịch</button>
+          </article>
+        </div>
+        <div class="kanban-col">
+          <h3>Rejected / Cancelled</h3>
+          <article class="card">
+            <span class="status red">OFF-5007</span>
+            <h3 style="margin-top:12px">Mekong Reuse</h3>
+            <p class="muted">Seller từ chối do số lượng vượt khả dụng.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

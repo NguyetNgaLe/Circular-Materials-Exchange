@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Circular Material Exchange</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "sky-info": "#5B9BD5",
+                    "on-surface": "#1a1c1c",
+                    "leaf-green": "#70AD47",
+                    "surface-container-lowest": "#ffffff",
+                    "on-background": "#1a1c1c",
+                    "surface": "#faf9f9",
+                    "surface-dim": "#dadada",
+                    "tertiary-container": "#63a2dd",
+                    "on-primary-fixed-variant": "#235100",
+                    "error-container": "#ffdad6",
+                    "surface-container-highest": "#e3e2e2",
+                    "on-secondary-container": "#003b82",
+                    "outline-variant": "#c1c9b6",
+                    "on-tertiary-fixed-variant": "#004a77",
+                    "error": "#ba1a1a",
+                    "surface-container-high": "#e9e8e8",
+                    "primary": "#336b07",
+                    "inverse-surface": "#2f3131",
+                    "surface-variant": "#e3e2e2",
+                    "surface-container-low": "#f4f3f3",
+                    "on-tertiary-fixed": "#001d33",
+                    "on-tertiary": "#ffffff",
+                    "ocean-blue": "#4472C4",
+                    "earth-gray": "#333333",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#faf9f9",
+                    "secondary-fixed": "#d8e2ff",
+                    "surface-container": "#eeeeed",
+                    "inverse-on-surface": "#f1f0f0",
+                    "exchange-orange": "#ED7D31",
+                    "primary-fixed-dim": "#98d86c",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "tertiary": "#136299",
+                    "on-primary-fixed": "#0a2100",
+                    "tertiary-fixed": "#cfe5ff",
+                    "tertiary-fixed-dim": "#98cbff",
+                    "primary-container": "#70ad47",
+                    "on-tertiary-container": "#00375b",
+                    "on-primary": "#ffffff",
+                    "on-secondary-fixed": "#001a41",
+                    "on-primary-container": "#193d00",
+                    "surface-tint": "#336b07",
+                    "secondary-container": "#7ca8fe",
+                    "inverse-primary": "#98d86c",
+                    "on-surface-variant": "#42493b",
+                    "primary-fixed": "#b3f585",
+                    "on-error-container": "#93000a",
+                    "secondary": "#2b5cad",
+                    "background": "#faf9f9",
+                    "on-error": "#ffffff",
+                    "surface-white": "#FFFFFF",
+                    "warning-amber": "#FFC000",
+                    "on-secondary-fixed-variant": "#004494",
+                    "outline": "#727a69"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "gutter": "24px",
+                    "margin-desktop": "64px",
+                    "container-max": "1280px",
+                    "unit": "4px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "title-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<nav class="bg-surface w-full sticky top-0 z-50 border-b border-outline-variant shadow-sm transition-colors duration-300">
+<div class="flex justify-between items-center max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop w-full h-16">
+<!-- Brand -->
+<a class="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">recycling</span>
+                Circular Materials
+            </a>
+<!-- Navigation Links (Desktop) -->
+<div class="hidden md:flex items-center gap-8 h-full">
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-ocean-blue transition-colors duration-200 flex items-center h-full border-b-2 border-transparent hover:border-outline-variant" href="#">Marketplace</a>
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-ocean-blue transition-colors duration-200 flex items-center h-full border-b-2 border-transparent hover:border-outline-variant" href="#">Solutions</a>
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-ocean-blue transition-colors duration-200 flex items-center h-full border-b-2 border-transparent hover:border-outline-variant" href="#">Resources</a>
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-ocean-blue transition-colors duration-200 flex items-center h-full border-b-2 border-transparent hover:border-outline-variant" href="#">About</a>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-4">
+<div class="hidden md:flex items-center gap-2 text-on-surface-variant">
+<button class="p-2 hover:bg-surface-container rounded-full transition-colors opacity-80 hover:opacity-100 flex items-center justify-center">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 hover:bg-surface-container rounded-full transition-colors opacity-80 hover:opacity-100 flex items-center justify-center">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+<button class="bg-leaf-green text-white font-label-md text-label-md px-6 py-2.5 rounded hover:bg-primary transition-all duration-200 shadow-sm hover:shadow-md flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                    List Materials
+                </button>
+</div>
+</div>
+</nav>
+<main>
+<!-- Hero Section -->
+<section class="relative pt-24 pb-32 overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-surface-container-lowest to-surface-container-low -z-10"></div>
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center">
+<!-- Text Content -->
+<div class="lg:col-span-6 flex flex-col gap-6 z-10">
+<div class="inline-flex items-center gap-2 bg-primary-container/20 text-on-primary-container font-label-md text-label-md px-3 py-1 rounded-full w-fit">
+<span class="material-symbols-outlined text-[16px]">eco</span>
+                        Sustainable Industrial Exchange
+                    </div>
+<h1 class="font-display-lg text-display-lg text-on-surface">
+                        Closing the Loop on <br class="hidden lg:block"/>
+<span class="text-primary">Industrial Waste</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl">
+                        Transform your operational byproducts into valuable resources. Connect with verified industrial partners, reduce your carbon footprint, and drive ecological responsibility through efficient material exchange.
+                    </p>
+<div class="flex flex-wrap items-center gap-4 mt-4">
+<button class="bg-leaf-green text-white font-label-md text-label-md px-8 py-4 rounded-lg hover:bg-primary transition-all duration-300 shadow-[0_2px_8px_rgba(0,0,0,0.1)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 flex items-center gap-2">
+                            Start Trading
+                            <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<button class="bg-transparent border border-ocean-blue text-ocean-blue font-label-md text-label-md px-8 py-4 rounded-lg hover:bg-ocean-blue/5 transition-colors duration-300 flex items-center gap-2">
+                            View Marketplace
+                        </button>
+</div>
+</div>
+<!-- Hero Imagery (Asymmetric overlapping layout) -->
+<div class="lg:col-span-6 relative h-[500px] w-full mt-12 lg:mt-0">
+<div class="absolute top-0 right-0 w-[80%] h-[90%] rounded-2xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.08)] border border-outline-variant">
+<img alt="Industrial Facility" class="w-full h-full object-cover" data-alt="A clean, bright, modern industrial facility emphasizing sustainability and technology. Sunlit interiors with pristine white surfaces, metallic accents, and vibrant green natural elements integrating into the architecture. The scene conveys efficiency, ecological responsibility, and forward-thinking material management. Shot in high-key lighting with a corporate, professional aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqgJA8gzK1tyJq0dlYAR2ukL4b_vW1owIxRAKHBYi3Nn5lz7a35EVWac8ieOuGe8sbLXlXxsMIQfvh2Qs-KLzh38sYGV-4Nd9nOF0Y85Z-eSAxTBtvrT-XblihO5uhJJJQMg5tH-onFtwUINxxMdzyBvytDr4UpPZINOXqOunEEBfmFM1Y6e4bCEMgMJTJnvjLBloxc1VI02r6-TJyi2anni4g4myclqVYMDj20W88Cx9KRt5rOFTrCqxPrVCZNEVg_Zjt7AuSmw"/>
+</div>
+<div class="absolute bottom-0 left-0 w-[50%] p-6 glass-panel rounded-xl shadow-lg border border-outline-variant flex flex-col gap-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-sky-info/20 flex items-center justify-center text-sky-info">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">analytics</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">Live Exchange Data</span>
+</div>
+<div class="font-headline-md text-headline-md text-primary mt-2">24.8k Tons</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Active material listings available this week.</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Statistics Strip -->
+<section class="bg-surface-container border-y border-outline-variant py-12">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 divide-y md:divide-y-0 md:divide-x divide-outline-variant">
+<!-- Stat 1 -->
+<div class="flex flex-col items-center text-center px-4 pt-4 md:pt-0">
+<span class="font-headline-lg text-headline-lg text-ocean-blue">500k+</span>
+<span class="font-title-lg text-title-lg text-on-surface mt-2">Tons Exchanged</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2 max-w-xs">Materials successfully repurposed across the global network.</p>
+</div>
+<!-- Stat 2 -->
+<div class="flex flex-col items-center text-center px-4 pt-8 md:pt-0">
+<span class="font-headline-lg text-headline-lg text-leaf-green">1.2M</span>
+<span class="font-title-lg text-title-lg text-on-surface mt-2">Tons CO₂ Saved</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2 max-w-xs">Verified emission reductions through circular supply chains.</p>
+</div>
+<!-- Stat 3 -->
+<div class="flex flex-col items-center text-center px-4 pt-8 md:pt-0">
+<span class="font-headline-lg text-headline-lg text-exchange-orange">2,500+</span>
+<span class="font-title-lg text-title-lg text-on-surface mt-2">Active Partners</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2 max-w-xs">Verified industrial facilities trading daily on the platform.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Featured Categories -->
+<section class="py-24 bg-surface-container-lowest">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Featured Material Categories</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2 max-w-2xl">Explore high-quality, verified secondary materials ready for integration into your manufacturing processes.</p>
+</div>
+<button class="bg-transparent text-ocean-blue font-label-md text-label-md hover:underline flex items-center gap-1 group">
+                        View All Categories
+                        <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Category Card 1: Plastics -->
+<div class="bg-surface-white rounded-[16px] p-4 border border-outline-variant shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-shadow duration-300 group cursor-pointer flex flex-col h-full">
+<div class="w-full h-48 rounded-lg overflow-hidden bg-surface-container relative mb-4">
+<img alt="Recycled Plastics" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Macro photography of sorted, high-quality recycled plastic pellets arranged neatly on a pristine white surface. The lighting is bright and even, casting soft shadows to emphasize the texture and purity of the materials. The color palette focuses on clean whites, translucent blues, and subtle greens, conveying a professional and sustainable industrial process." src="https://lh3.googleusercontent.com/aida-public/AB6AXuANqBfbWmX1v3_PNrkgnBwdXmJjgrQx4M0HdGUS8QbwqzeaWYsTxYuX9L7OMzyYl2o1_Ys1pq2-IsjstgSv3xoBJdIQhGvVwSEjjBNHjtruCOyB20t-fmtNVKIvmgJhdtR12X1pAMpmVmaNNBC1_MTmQy2n7195c0SPYTMnxG9dHqHwdKxxcZKoaupd8J-DnAtY_yofQMWd8dRBnOcGRsEYkBVFebjF2EQQDnP5Zygm5PYS3FVB2i48CJlqmwSbTlYIZJjCaWV11Q"/>
+<div class="absolute top-3 right-3 bg-surface-white/90 backdrop-blur px-3 py-1 rounded-full font-label-md text-label-md text-on-surface border border-outline-variant">
+                                420 Listings
+                            </div>
+</div>
+<h3 class="font-title-lg text-title-lg text-on-surface">Industrial Plastics</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2 flex-grow">HDPE, PET, and Polypropylene regrind and pellets sourced from verified manufacturing facilities.</p>
+<div class="mt-4 pt-4 border-t border-surface-container flex justify-between items-center text-sky-info font-label-md text-label-md">
+<span>Explore inventory</span>
+<span class="material-symbols-outlined">arrow_outward</span>
+</div>
+</div>
+<!-- Category Card 2: Metals -->
+<div class="bg-surface-white rounded-[16px] p-4 border border-outline-variant shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-shadow duration-300 group cursor-pointer flex flex-col h-full">
+<div class="w-full h-48 rounded-lg overflow-hidden bg-surface-container relative mb-4">
+<img alt="Scrap Metals" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Neatly stacked, polished aluminum ingots in a brightly lit, modern warehouse setting. The metallic surfaces reflect cool, clean light, highlighting the premium quality and orderliness of the industrial materials. The scene is minimal and highly organized, employing a color scheme of silvers, greys, and crisp whites, representing efficient circular economy practices." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoKnGoK5HJ_VPfYgB-kkKCuXTdGZ-JFLiRVmZRMrPk424lmcvCeepFPIFeycxjxqh0Rrkgu5dXyR-z_2JZ_XFuPSATfmQ_FsJvL8_vg4UxAGJopmpnQBDBshhgFahxuD3VvgYFIZ2kDlgDogVyTS2yhMhy19_j9CBFusxmXZP6BI8uiobMzcZrk6Xgmo9fqA3OYlUsT1CWkCqBiYGqFwd_OuJbROcmEw9jQbjezRNQCcjcuqWMp5nTCkwGKbpGyyfu8pXYy9X3ug"/>
+<div class="absolute top-3 right-3 bg-surface-white/90 backdrop-blur px-3 py-1 rounded-full font-label-md text-label-md text-on-surface border border-outline-variant">
+                                850 Listings
+                            </div>
+</div>
+<h3 class="font-title-lg text-title-lg text-on-surface">Ferrous &amp; Non-Ferrous Metals</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2 flex-grow">Clean aluminum, copper wire, and industrial steel offcuts ready for immediate melting or reuse.</p>
+<div class="mt-4 pt-4 border-t border-surface-container flex justify-between items-center text-sky-info font-label-md text-label-md">
+<span>Explore inventory</span>
+<span class="material-symbols-outlined">arrow_outward</span>
+</div>
+</div>
+<!-- Category Card 3: Textiles -->
+<div class="bg-surface-white rounded-[16px] p-4 border border-outline-variant shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-shadow duration-300 group cursor-pointer flex flex-col h-full">
+<div class="w-full h-48 rounded-lg overflow-hidden bg-surface-container relative mb-4">
+<img alt="Industrial Textiles" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Rolls of pristine, recycled industrial fabrics arranged in a structured, rhythmic pattern against a clean, light background. The lighting highlights the woven textures and high quality of the sustainable textiles. The color palette incorporates neutral earthy tones and soft whites, maintaining a minimalist, corporate aesthetic suitable for a modern material exchange platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6nN1iD5qWd1jusuHqjlPcsWSCPC9ceiapoSsJyTSDCo80L6THELhxf1jvexPCmtRHSHAaEMv2D0Ithd5-LKs1tZmAg4XTXkMnyWAtzWdEd9DZFQb_MPPkzk-f_bctjcLEZja_gQOk5iabh2k93QqHxZI3KGEhufxRSrKYGNmhP9FmKvGErAzQHGoXjElU9ayOnit_soRdnMltuCUbYQS0hLk5Cf9Pu9qXM2oT7NMnR4HO3bB82PStjq-0WzUGVlNa5PUMO_cYBg"/>
+<div class="absolute top-3 right-3 bg-surface-white/90 backdrop-blur px-3 py-1 rounded-full font-label-md text-label-md text-on-surface border border-outline-variant">
+                                120 Listings
+                            </div>
+</div>
+<h3 class="font-title-lg text-title-lg text-on-surface">Industrial Textiles</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2 flex-grow">Pre-consumer textile waste, synthetic fibers, and bulk natural offcuts for upcycling.</p>
+<div class="mt-4 pt-4 border-t border-surface-container flex justify-between items-center text-sky-info font-label-md text-label-md">
+<span>Explore inventory</span>
+<span class="material-symbols-outlined">arrow_outward</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Call to Action Section -->
+<section class="py-24 bg-surface-bright border-t border-outline-variant">
+<div class="max-w-4xl mx-auto px-margin-mobile md:px-margin-desktop text-center flex flex-col items-center">
+<div class="w-16 h-16 rounded-2xl bg-primary-container flex items-center justify-center mb-6 text-on-primary-container">
+<span class="material-symbols-outlined text-[32px]">handshake</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-4">Ready to Optimize Your Material Flow?</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-8 max-w-2xl">
+                     Join thousands of verified industrial partners who are turning waste into revenue and reducing their environmental impact.
+                 </p>
+<button class="bg-leaf-green text-white font-label-md text-label-md px-10 py-4 rounded-lg hover:bg-primary transition-all duration-300 shadow-sm hover:shadow-md">
+                     Create Free Account
+                 </button>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-earth-gray w-full py-12">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<!-- Brand Column -->
+<div class="flex flex-col gap-4">
+<a class="font-title-lg text-title-lg font-semibold text-white flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-leaf-green" style="font-variation-settings: 'FILL' 1;">recycling</span>
+                    Circular Materials
+                </a>
+<p class="font-body-sm text-body-sm text-surface-container-highest max-w-xs mt-2">
+                    Building the infrastructure for the global circular economy, one material exchange at a time.
+                </p>
+</div>
+<!-- Links Columns -->
+<div class="flex flex-col gap-3">
+<span class="font-label-md text-label-md text-white mb-2 uppercase tracking-wider">Platform</span>
+<a class="font-body-sm text-body-sm text-surface-container-highest hover:text-leaf-green transition-colors w-fit hover:underline" href="#">Sustainability Reports</a>
+<a class="font-body-sm text-body-sm text-surface-container-highest hover:text-leaf-green transition-colors w-fit hover:underline" href="#">LCA Documentation</a>
+<a class="font-body-sm text-body-sm text-surface-container-highest hover:text-leaf-green transition-colors w-fit hover:underline" href="#">Marketplace</a>
+</div>
+<div class="flex flex-col gap-3">
+<span class="font-label-md text-label-md text-white mb-2 uppercase tracking-wider">Company</span>
+<a class="font-body-sm text-body-sm text-surface-container-highest hover:text-leaf-green transition-colors w-fit hover:underline" href="#">About Us</a>
+<a class="font-body-sm text-body-sm text-surface-container-highest hover:text-leaf-green transition-colors w-fit hover:underline" href="#">Careers</a>
+<a class="font-body-sm text-body-sm text-surface-container-highest hover:text-leaf-green transition-colors w-fit hover:underline" href="#">Contact Support</a>
+</div>
+<div class="flex flex-col gap-3">
+<span class="font-label-md text-label-md text-white mb-2 uppercase tracking-wider">Legal</span>
+<a class="font-body-sm text-body-sm text-surface-container-highest hover:text-leaf-green transition-colors w-fit hover:underline" href="#">Terms of Service</a>
+<a class="font-body-sm text-body-sm text-surface-container-highest hover:text-leaf-green transition-colors w-fit hover:underline" href="#">Privacy Policy</a>
+</div>
+</div>
+<!-- Copyright -->
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop mt-12 pt-8 border-t border-earth-gray/50 flex flex-col md:flex-row justify-between items-center gap-4">
+<span class="font-body-sm text-body-sm text-surface-container-highest">© 2024 Circular Material Exchange. All rights reserved.</span>
+<div class="flex gap-4">
+<!-- Social placeholders -->
+<a class="text-surface-container-highest hover:text-leaf-green transition-colors" href="#"><span class="material-symbols-outlined">language</span></a>
+</div>
+</div>
+</footer>
+</body></html>

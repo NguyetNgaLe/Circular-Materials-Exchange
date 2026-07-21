@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Đánh giá Người mua - CircuTrade</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface": "#faf9f9",
+                      "on-tertiary-fixed-variant": "#004a77",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-tint": "#336b07",
+                      "secondary-fixed": "#d8e2ff",
+                      "on-primary-container": "#193d00",
+                      "on-secondary-fixed": "#001a41",
+                      "primary-fixed-dim": "#98d86c",
+                      "on-surface": "#1a1c1c",
+                      "outline": "#727a69",
+                      "inverse-surface": "#2f3131",
+                      "on-secondary-container": "#003b82",
+                      "ocean-blue": "#4472C4",
+                      "on-background": "#1a1c1c",
+                      "outline-variant": "#c1c9b6",
+                      "on-secondary-fixed-variant": "#004494",
+                      "primary-container": "#70ad47",
+                      "surface-dim": "#dadada",
+                      "earth-gray": "#333333",
+                      "surface-variant": "#e3e2e2",
+                      "tertiary-fixed": "#cfe5ff",
+                      "leaf-green": "#70AD47",
+                      "secondary-container": "#7ca8fe",
+                      "background": "#faf9f9",
+                      "tertiary-fixed-dim": "#98cbff",
+                      "inverse-on-surface": "#f1f0f0",
+                      "warning-amber": "#FFC000",
+                      "primary": "#336b07",
+                      "exchange-orange": "#ED7D31",
+                      "on-error": "#ffffff",
+                      "surface-white": "#FFFFFF",
+                      "on-tertiary-fixed": "#001d33",
+                      "error": "#ba1a1a",
+                      "tertiary": "#136299",
+                      "on-primary-fixed": "#0a2100",
+                      "primary-fixed": "#b3f585",
+                      "secondary": "#2b5cad",
+                      "surface-container-highest": "#e3e2e2",
+                      "on-error-container": "#93000a",
+                      "surface-bright": "#faf9f9",
+                      "on-primary-fixed-variant": "#235100",
+                      "surface-container": "#eeeeed",
+                      "inverse-primary": "#98d86c",
+                      "on-secondary": "#ffffff",
+                      "on-surface-variant": "#42493b",
+                      "tertiary-container": "#63a2dd",
+                      "surface-container-high": "#e9e8e8",
+                      "sky-info": "#5B9BD5",
+                      "surface-container-low": "#f4f3f3",
+                      "secondary-fixed-dim": "#adc6ff",
+                      "on-tertiary": "#ffffff",
+                      "on-tertiary-container": "#00375b",
+                      "on-primary": "#ffffff",
+                      "error-container": "#ffdad6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "64px",
+                      "gutter": "24px",
+                      "unit": "4px",
+                      "margin-mobile": "16px",
+                      "container-max": "1280px"
+              },
+              "fontFamily": {
+                      "headline-lg": ["Inter"],
+                      "title-lg": ["Inter"],
+                      "label-md": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "body-md": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "display-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .star-rating .material-symbols-outlined { cursor: pointer; color: #dadada; font-variation-settings: 'FILL' 1; transition: color 0.2s ease; }
+        .star-rating .material-symbols-outlined.active, .star-rating .material-symbols-outlined:hover { color: #FFC000; }
+        .star-rating-container:hover .material-symbols-outlined { color: #FFC000; }
+        .star-rating-container:hover .material-symbols-outlined:hover ~ .material-symbols-outlined { color: #dadada; }
+        
+        .bento-card {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e3e2e2;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 w-full sticky top-0 z-50 bg-surface-white/95 backdrop-blur-sm border-b border-surface-container-highest shadow-sm">
+<div class="flex items-center gap-8">
+<span class="font-headline-md text-headline-md font-bold text-leaf-green">CircuTrade</span>
+<nav class="hidden md:flex gap-6">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-leaf-green transition-colors" href="#">Marketplace</a>
+<a class="font-body-md text-body-md text-leaf-green font-bold border-b-2 border-leaf-green pb-1" href="#">Dashboard</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-leaf-green transition-colors" href="#">RFQs</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-leaf-green transition-colors" href="#">Impact</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-full p-2">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-full p-2">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<img alt="User profile photo" class="w-8 h-8 rounded-full object-cover ml-2 border border-outline-variant" data-alt="A small circular profile picture of an industrial worker in a hard hat, warm lighting, professional headshot on a clean background, realistic and high quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDARg2BKnnmDmjTQ7gkyva3sJH17_9kpgRtqXaGJQgMq9cKj4A9yKDsngYVYt8miXaJkFb-llWzWH18j_xocK9twF-mwTX4NRxa9NATGV7DwKgkD_JnlrkQwgDNXdDU7el9OawHs574gMz3saeONsRJaYUn1oxq1FWI0TP3oV1gYK3e4une2cy4T3osw5byJ-GkOLiX0ezgvvfIgeTIOeu7Y2ypoK04HurXuiwJw3D7p_YlA08BP7WmLmvEDRE7qFGsVTCArxPc_g"/>
+</div>
+</header>
+<div class="flex">
+<!-- SideNavBar -->
+<aside class="hidden lg:flex flex-col h-[calc(100vh-64px)] w-64 sticky top-16 bg-surface-container-low border-r border-outline-variant py-6 shadow-md">
+<div class="px-6 mb-8">
+<h2 class="font-title-lg text-title-lg text-leaf-green font-black truncate">Industrial Eco-Corp</h2>
+<p class="font-label-md text-label-md text-on-surface-variant mt-1">Premium Member</p>
+</div>
+<button class="mx-4 mb-6 bg-leaf-green text-on-primary rounded-lg py-3 px-4 font-label-md text-label-md hover:bg-primary-container transition-all flex justify-center items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-sm">add</span> Post Material
+             </button>
+<nav class="flex-1 flex flex-col gap-1 px-4">
+<a class="flex items-center gap-3 px-4 py-3 cursor-pointer text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span> Overview
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 cursor-pointer text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="recycling">recycling</span> Materials
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 cursor-pointer bg-leaf-green text-on-primary rounded-lg font-bold font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="handshake">handshake</span> Offers
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 cursor-pointer text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="bar_chart">bar_chart</span> Analytics
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 cursor-pointer text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span> Compliance
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 cursor-pointer text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span> Settings
+                </a>
+</nav>
+<div class="mt-auto px-4 flex flex-col gap-1 border-t border-outline-variant pt-4 mx-4">
+<a class="flex items-center gap-3 px-4 py-3 cursor-pointer text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="contact_support">contact_support</span> Help Center
+                 </a>
+<a class="flex items-center gap-3 px-4 py-3 cursor-pointer text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span> Logout
+                 </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 mb-20 md:mb-8">
+<div class="mb-8 flex items-center justify-between">
+<div>
+<a class="inline-flex items-center gap-2 text-on-surface-variant hover:text-ocean-blue transition-colors font-label-md text-label-md mb-2" href="#">
+<span class="material-symbols-outlined text-[16px]">arrow_back</span> Quay lại danh sách
+                    </a>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Đánh giá Người mua</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Góp phần xây dựng mạng lưới đối tác đáng tin cậy trên CircuTrade.</p>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Transaction Summary (Left/Top Col) -->
+<div class="md:col-span-4 flex flex-col gap-6">
+<div class="bento-card relative overflow-hidden group">
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+
+</div>
+<h2 class="font-title-lg text-title-lg text-on-surface mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-ocean-blue">receipt_long</span>
+                            Thông tin giao dịch
+                        </h2>
+<div class="space-y-4">
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase block mb-1">Mã đơn hàng</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface">#ORD-2023-8942A</span>
+</div>
+<hr class="border-surface-container-highest"/>
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase block mb-1">Đối tác mua hàng</span>
+<div class="flex items-center gap-3 mt-2">
+<img alt="Buyer Logo" class="w-10 h-10 rounded-lg border border-outline-variant object-cover" data-alt="A modern corporate logo for a recycling company, green and blue tones, minimalist design, flat lay on a white background, highly detailed." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlk1Zwe-VpN1dRUrMMYXxizOmUeUZXlvCvHhOFUCN_0RdfTaKQ1UgPirAFjP1EVNSWMrtXYe-fnOD3dynivSuf03bCJi7vfmHJHd9VP9laVaHy_A9xPj4wJzdwoFRvVgOGatXULUTKT9auJgu6leJzlp2wPUxAPDYQdrjF9ai8hcec2gtdhlKuKp1drmLB1lFCEwKSk3LvO_NhLXYO_nq2nM-Hx35sf7XhSLjW3o_idOOB_WKv3U06yCFCDon5JmIxMwmed5KyIw"/>
+<div>
+<p class="font-body-md text-body-md font-semibold text-on-surface">Vietnam Recycle Hub Ltd.</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Thành viên từ 2021</p>
+</div>
+</div>
+</div>
+<hr class="border-surface-container-highest"/>
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase block mb-1">Chi tiết vật liệu</span>
+<div class="flex flex-wrap gap-2 mt-2">
+<span class="inline-flex items-center px-2 py-1 rounded bg-secondary-fixed text-on-secondary-fixed text-[11px] font-bold">NHỰA HDPE</span>
+<span class="inline-flex items-center px-2 py-1 rounded bg-surface-container text-on-surface-variant text-[11px] font-bold">15 TẤN</span>
+</div>
+</div>
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase block mb-1">Ngày hoàn tất</span>
+<span class="font-body-md text-body-md text-on-surface">24/10/2023</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Rating Form (Right/Main Col) -->
+<div class="md:col-span-8 flex flex-col gap-6">
+<form class="bento-card flex flex-col gap-8">
+<div>
+<h2 class="font-title-lg text-title-lg text-on-surface mb-2">Tiêu chí vận hành &amp; thanh toán</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6">Vui lòng đánh giá khách quan dựa trên thực tế giao dịch để đảm bảo chất lượng hệ sinh thái.</p>
+<div class="space-y-6">
+<!-- Criterion 1 -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-lg bg-surface-container-low border border-surface-container-highest">
+<div>
+<p class="font-body-md text-body-md font-semibold text-on-surface">Thanh toán đúng hạn</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Tiến độ giải ngân theo cam kết hợp đồng.</p>
+</div>
+<div class="star-rating-container flex gap-1 text-2xl star-rating" id="rating-payment">
+<span class="material-symbols-outlined active" onclick="setRating('payment', 1)">star</span>
+<span class="material-symbols-outlined active" onclick="setRating('payment', 2)">star</span>
+<span class="material-symbols-outlined active" onclick="setRating('payment', 3)">star</span>
+<span class="material-symbols-outlined active" onclick="setRating('payment', 4)">star</span>
+<span class="material-symbols-outlined" onclick="setRating('payment', 5)">star</span>
+</div>
+</div>
+<!-- Criterion 2 -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-lg bg-surface-container-low border border-surface-container-highest">
+<div>
+<p class="font-body-md text-body-md font-semibold text-on-surface">Giao tiếp chuyên nghiệp</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Sự rõ ràng và tôn trọng trong quá trình trao đổi.</p>
+</div>
+<div class="star-rating-container flex gap-1 text-2xl star-rating" id="rating-comm">
+<span class="material-symbols-outlined active" onclick="setRating('comm', 1)">star</span>
+<span class="material-symbols-outlined active" onclick="setRating('comm', 2)">star</span>
+<span class="material-symbols-outlined active" onclick="setRating('comm', 3)">star</span>
+<span class="material-symbols-outlined" onclick="setRating('comm', 4)">star</span>
+<span class="material-symbols-outlined" onclick="setRating('comm', 5)">star</span>
+</div>
+</div>
+<!-- Criterion 3 -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-lg bg-surface-container-low border border-surface-container-highest">
+<div>
+<p class="font-body-md text-body-md font-semibold text-on-surface">Độ tin cậy</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Khả năng hợp tác lâu dài và tuân thủ các thỏa thuận.</p>
+</div>
+<div class="star-rating-container flex gap-1 text-2xl star-rating" id="rating-trust">
+<span class="material-symbols-outlined active" onclick="setRating('trust', 1)">star</span>
+<span class="material-symbols-outlined active" onclick="setRating('trust', 2)">star</span>
+<span class="material-symbols-outlined active" onclick="setRating('trust', 3)">star</span>
+<span class="material-symbols-outlined active" onclick="setRating('trust', 4)">star</span>
+<span class="material-symbols-outlined active" onclick="setRating('trust', 5)">star</span>
+</div>
+</div>
+</div>
+</div>
+<hr class="border-surface-container-highest"/>
+<div>
+<label class="font-title-lg text-title-lg text-on-surface mb-2 block" for="review-text">Nhận xét chi tiết</label>
+<textarea class="w-full mt-2 rounded-lg bg-surface-container-low border border-outline-variant focus:border-ocean-blue focus:ring-1 focus:ring-ocean-blue font-body-md text-body-md text-on-surface p-4 transition-shadow" id="review-text" placeholder="Chia sẻ trải nghiệm của bạn với người mua này..." rows="4"></textarea>
+</div>
+<div class="bg-tertiary-fixed/30 border border-tertiary-fixed-dim rounded-lg p-4 flex items-start gap-4">
+<div class="mt-1">
+<label class="relative flex items-center p-0 rounded-full cursor-pointer">
+<input checked="" class="peer h-5 w-5 cursor-pointer appearance-none rounded border border-outline-variant checked:border-leaf-green checked:bg-leaf-green transition-all" type="checkbox"/>
+<span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</label>
+</div>
+<div>
+<p class="font-body-md text-body-md font-bold text-on-surface">Đánh dấu đối tác ưu tiên (Add to trusted buyers)</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Hệ thống sẽ ưu tiên hiển thị các đơn hàng tương lai của bạn cho đối tác này.</p>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row justify-end gap-4 mt-4 pt-4 border-t border-surface-container-highest">
+<button class="px-6 py-3 rounded-lg border border-ocean-blue text-ocean-blue font-label-md text-label-md hover:bg-surface-container-low transition-all shadow-sm" type="button">
+                                Hủy bỏ
+                            </button>
+<button class="px-6 py-3 rounded-lg bg-leaf-green text-on-primary font-label-md text-label-md hover:bg-primary-container transition-all shadow-sm shadow-[0_2px_8px_rgba(112,173,71,0.4)] flex justify-center items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px]">send</span> Hoàn tất đánh giá
+                            </button>
+</div>
+</form>
+</div>
+</div>
+</main>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface-white/98 backdrop-blur-md md:hidden shadow-[0_-4px_10px_rgba(0,0,0,0.05)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-leaf-green transition-transform duration-200 active:scale-90 font-label-md text-label-md gap-1" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="text-[10px]">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-leaf-green transition-transform duration-200 active:scale-90 font-label-md text-label-md gap-1" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="text-[10px]">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container/20 text-leaf-green rounded-xl px-4 py-1 transition-transform duration-200 active:scale-90 font-label-md text-label-md gap-1" href="#">
+<span class="material-symbols-outlined" data-icon="assignment" style="font-variation-settings: 'FILL' 1;">assignment</span>
+<span class="text-[10px]">Tasks</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-leaf-green transition-transform duration-200 active:scale-90 font-label-md text-label-md gap-1" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-[10px]">Profile</span>
+</a>
+</nav>
+<script>
+        function setRating(containerId, rating) {
+            const container = document.getElementById('rating-' + containerId);
+            const stars = container.querySelectorAll('.material-symbols-outlined');
+            
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('active');
+                    star.style.color = '#FFC000';
+                } else {
+                    star.classList.remove('active');
+                    star.style.color = '#dadada';
+                }
+            });
+        }
+    </script>
+</body></html>

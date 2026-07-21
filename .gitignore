@@ -1,0 +1,69 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Build output
+dist/
+build/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+passkey.md
+passkey.txt
+
+# Deploy scripts (contain server credentials)
+deploy*.py
+fix_*.py
+rebuild.sh
+setup_*.py
+upload_*.py
+download_*.py
+copy_*.py
+sync_*.py
+test_*.py
+verify_*.py
+debug_*.py
+check_*.py
+fix_*.py
+nginx_*.py
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Docker volumes
+pg-data/
+minio-data/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*.cache
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Go
+*.test
+*.out

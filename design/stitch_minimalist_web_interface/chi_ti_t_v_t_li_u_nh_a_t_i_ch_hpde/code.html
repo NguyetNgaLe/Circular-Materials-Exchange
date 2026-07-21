@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Material Detail - Circular Materials</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "sky-info": "#5B9BD5",
+                        "on-surface": "#1a1c1c",
+                        "leaf-green": "#70AD47",
+                        "surface-container-lowest": "#ffffff",
+                        "on-background": "#1a1c1c",
+                        "surface": "#faf9f9",
+                        "surface-dim": "#dadada",
+                        "tertiary-container": "#63a2dd",
+                        "on-primary-fixed-variant": "#235100",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#e3e2e2",
+                        "on-secondary-container": "#003b82",
+                        "outline-variant": "#c1c9b6",
+                        "on-tertiary-fixed-variant": "#004a77",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#e9e8e8",
+                        "primary": "#336b07",
+                        "inverse-surface": "#2f3131",
+                        "surface-variant": "#e3e2e2",
+                        "surface-container-low": "#f4f3f3",
+                        "on-tertiary-fixed": "#001d33",
+                        "on-tertiary": "#ffffff",
+                        "ocean-blue": "#4472C4",
+                        "earth-gray": "#333333",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#faf9f9",
+                        "secondary-fixed": "#d8e2ff",
+                        "surface-container": "#eeeeed",
+                        "inverse-on-surface": "#f1f0f0",
+                        "exchange-orange": "#ED7D31",
+                        "primary-fixed-dim": "#98d86c",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "tertiary": "#136299",
+                        "on-primary-fixed": "#0a2100",
+                        "tertiary-fixed": "#cfe5ff",
+                        "tertiary-fixed-dim": "#98cbff",
+                        "primary-container": "#70ad47",
+                        "on-tertiary-container": "#00375b",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed": "#001a41",
+                        "on-primary-container": "#193d00",
+                        "surface-tint": "#336b07",
+                        "secondary-container": "#7ca8fe",
+                        "inverse-primary": "#98d86c",
+                        "on-surface-variant": "#42493b",
+                        "primary-fixed": "#b3f585",
+                        "on-error-container": "#93000a",
+                        "secondary": "#2b5cad",
+                        "background": "#faf9f9",
+                        "on-error": "#ffffff",
+                        "surface-white": "#FFFFFF",
+                        "warning-amber": "#FFC000",
+                        "on-secondary-fixed-variant": "#004494",
+                        "outline": "#727a69"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "margin-desktop": "64px",
+                        "container-max": "1280px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #faf9f9;
+            color: #1a1c1c;
+        }
+        .ambient-shadow {
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        .hover-lift:hover {
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+        .transition-standard {
+            transition: all 0.2s ease-in-out;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md text-on-surface bg-background">
+<!-- Top Navigation (Generated from JSON) -->
+<header class="bg-surface border-b border-outline-variant shadow-sm w-full sticky top-0 z-50">
+<div class="flex justify-between items-center max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop w-full h-16">
+<div class="flex items-center gap-8">
+<a class="font-headline-md text-headline-md font-bold text-primary" href="#">Circular Materials</a>
+<!-- Desktop Nav -->
+<nav class="hidden md:flex gap-6">
+<a class="text-primary font-bold border-b-2 border-primary pb-1" href="#">Marketplace</a>
+<a class="text-on-surface-variant hover:text-ocean-blue transition-colors duration-200" href="#">Solutions</a>
+<a class="text-on-surface-variant hover:text-ocean-blue transition-colors duration-200" href="#">Resources</a>
+<a class="text-on-surface-variant hover:text-ocean-blue transition-colors duration-200" href="#">About</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<!-- Search Bar Placeholder -->
+<div class="hidden md:flex relative">
+<input class="bg-surface-container-low border border-outline-variant rounded-lg pl-10 pr-4 py-2 text-sm focus:border-ocean-blue focus:ring-1 focus:ring-ocean-blue transition-standard outline-none w-64" placeholder="Search materials..." type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-sm">search</span>
+</div>
+<!-- Trailing Actions -->
+<button class="bg-leaf-green text-white px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-primary transition-standard shadow-sm flex items-center gap-2">
+                    List Materials
+                </button>
+<div class="flex gap-2">
+<button class="p-2 text-on-surface-variant hover:text-ocean-blue transition-colors duration-200" data-icon="notifications">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-ocean-blue transition-colors duration-200" data-icon="account_circle">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 md:py-12 grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Gallery & Details (Spans 8 cols on desktop) -->
+<div class="lg:col-span-8 space-y-8">
+<!-- Breadcrumbs -->
+<nav class="text-on-surface-variant font-body-sm text-body-sm flex items-center gap-2">
+<a class="hover:text-ocean-blue transition-colors" href="#">Marketplace</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<a class="hover:text-ocean-blue transition-colors" href="#">Plastics</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<a class="hover:text-ocean-blue transition-colors" href="#">HDPE</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="text-on-surface font-medium">Recycled High-Density Polyethylene (HDPE) Pellets - Industrial Grade</span>
+</nav>
+<!-- Header Section -->
+<div>
+<div class="flex flex-wrap items-center gap-2 mb-3">
+<span class="bg-primary-container/20 text-on-primary-container px-3 py-1 rounded-full font-label-md text-label-md">Verified Recycled</span>
+<span class="bg-surface-container-high text-on-surface-variant px-3 py-1 rounded-full font-label-md text-label-md border border-outline-variant">Plastic - HDPE</span>
+<span class="flex items-center gap-1 text-leaf-green font-label-md text-label-md ml-auto">
+<span class="material-symbols-outlined text-[16px]">check_circle</span> Available Now
+                    </span>
+</div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2">Recycled High-Density Polyethylene (HDPE) Pellets - Industrial Grade</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Post-industrial recycled HDPE, thoroughly washed and pelletized. Suitable for injection molding and extrusion applications requiring high durability.</p>
+</div>
+<!-- Image Gallery (Bento Grid Style) -->
+<div class="grid grid-cols-2 md:grid-cols-4 grid-rows-2 gap-4 h-[400px] md:h-[500px]">
+<!-- Main Image -->
+<div class="col-span-2 md:col-span-3 row-span-2 rounded-2xl overflow-hidden relative group">
+<img alt="Main material view" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A professional, high-resolution close-up photograph of a large mound of pristine white recycled HDPE plastic pellets sitting on a clean, industrial stainless steel surface. The lighting is bright and even, highlighting the uniform size and clean texture of the pellets. The background is a slightly blurred, modern industrial facility with a light mode aesthetic, conveying a sense of sterile, high-tech recycling processes. The overall color palette is dominated by whites, light grays, and subtle metallic tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhUuvXAxxyAQ9Ham1PFqffbsyUsPKx9HalfygEtZX0QgPFDH9PT7pTRvJoLKfarrSg_UjmHeQXsJQ63itIxjp8Wf0tXe0snxBtDjo5FUvYB5N7dDxY5iaAC9_fMCQEcuy1CFifBLwjeoOZaxFwsKDtgoAojPUGDholy1ohpH83oVz5hRpgQnrsN2a6vTO80qY9B2mKPDXqechlqufS9-0lzHpH4aLChrdH6eCnznYkeg8hbtsMIwugHBRszw-bv2yLEESMcMeg9A"/>
+<div class="absolute bottom-4 right-4 bg-surface/90 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-outline-variant flex items-center gap-2 cursor-pointer hover:bg-surface transition-standard">
+<span class="material-symbols-outlined text-[20px]">fullscreen</span>
+<span class="font-label-md text-label-md">View Full</span>
+</div>
+</div>
+<!-- Thumbnail 1 -->
+<div class="col-span-1 row-span-1 rounded-2xl overflow-hidden hidden md:block relative group cursor-pointer">
+<img alt="Scale reference view" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A clear, well-lit photograph showing a handful of white recycled HDPE plastic pellets resting in an open palm wearing a blue nitrile industrial glove. This conveys scale and the industrial setting. The background is a clean, out-of-focus white surface. The aesthetic is professional and functional, fitting a B2B material exchange platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDj_T4Goo_nQrUNdRfLszXdnO-hp-u58_vKa0zNq5bNQwqtuxgN-k4z0aDziGkl6T2Fg1DzSWo-9IYr5ui9M42xcTDFStuMlguDcWtsfS1YNhU-_1BzWqe2AfCBxmv_EFf2d7a3uxAYA7tPMrXkW0FuxIk_Bpy8nyHRgJyiKsa6GesjnLmXi7hxUyLKZmPmoMo266PpzxYINyZE3h3eT_Yoa6dltCfjkEKT3INtrsUryowzSu-VExg_iPvpTiHFQc2dv1azSiY5MA"/>
+</div>
+<!-- Thumbnail 2 -->
+<div class="col-span-1 row-span-1 rounded-2xl overflow-hidden hidden md:block relative group cursor-pointer">
+<img alt="Packaging view" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A wide shot of a modern, clean industrial warehouse. In the foreground, several large, white, heavy-duty supersacks filled with plastic pellets are neatly stacked on wooden pallets. The lighting is bright warehouse lighting. The mood is organized, efficient, and ready for logistics. The color palette features whites, industrial grays, and the warm wood tones of the pallets." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQWxHZ87LzJURUi3GJQ7r8UrEmDWnORYuHIk01xXMa_wcpQNCjFbAmnUbthJzonP2_P5hpVDQYdyWKIlTfjVuLqwdt1_GJ-vUVQIo04ZZDXIZVM1lwO_i7gFdmJfZhIkJd98Y5dwByTEIc1ouWdT3QEXxj_UL8srKMcGou0xFc-UiVIRxX1H8_RQWjjqvNswb0oEwFKbR7d4q77abCOzEVm2Z6_M849gJ9GKTF1OH1GhXgn5TsL_Vyib65Jn761zU05eBF2p8IeQ"/>
+<div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<span class="text-white font-label-md text-label-md flex items-center gap-1"><span class="material-symbols-outlined">photo_library</span> +4 More</span>
+</div>
+</div>
+</div>
+<!-- Main Info Tabs -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 ambient-shadow border border-outline-variant">
+<div class="flex border-b border-outline-variant mb-6 gap-8 overflow-x-auto">
+<button class="pb-3 border-b-2 border-primary text-primary font-bold whitespace-nowrap">Specifications</button>
+<button class="pb-3 border-b-2 border-transparent text-on-surface-variant hover:text-ocean-blue transition-colors whitespace-nowrap">LCA &amp; Sustainability</button>
+<button class="pb-3 border-b-2 border-transparent text-on-surface-variant hover:text-ocean-blue transition-colors whitespace-nowrap">Logistics &amp; Handling</button>
+</div>
+<!-- Specifications Tab Content -->
+<div class="space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Key Specs List -->
+<div class="space-y-4">
+<h3 class="font-title-lg text-title-lg text-on-surface">Material Properties</h3>
+<ul class="space-y-3">
+<li class="flex justify-between items-center py-2 border-b border-surface-container-highest">
+<span class="text-on-surface-variant">Purity</span>
+<span class="font-medium text-on-surface">&gt; 99.5%</span>
+</li>
+<li class="flex justify-between items-center py-2 border-b border-surface-container-highest">
+<span class="text-on-surface-variant">Melt Flow Index (MFI)</span>
+<span class="font-medium text-on-surface">0.4 - 0.8 g/10min</span>
+</li>
+<li class="flex justify-between items-center py-2 border-b border-surface-container-highest">
+<span class="text-on-surface-variant">Density</span>
+<span class="font-medium text-on-surface">0.94 - 0.96 g/cm³</span>
+</li>
+<li class="flex justify-between items-center py-2 border-b border-surface-container-highest">
+<span class="text-on-surface-variant">Color</span>
+<span class="font-medium text-on-surface">Natural / White</span>
+</li>
+<li class="flex justify-between items-center py-2 border-b border-surface-container-highest">
+<span class="text-on-surface-variant">Form</span>
+<span class="font-medium text-on-surface">Pellets</span>
+</li>
+</ul>
+</div>
+<!-- Source & Process -->
+<div class="space-y-4">
+<h3 class="font-title-lg text-title-lg text-on-surface">Source &amp; Processing</h3>
+<div class="bg-surface-container-low rounded-xl p-4 border border-outline-variant/50">
+<div class="flex items-start gap-3 mb-3">
+<span class="material-symbols-outlined text-ocean-blue">factory</span>
+<div>
+<h4 class="font-medium text-on-surface">Post-Industrial Origin</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Sourced from automotive manufacturing offcuts and defective rigid containers. Guaranteed free from hazardous residues.</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-leaf-green">recycling</span>
+<div>
+<h4 class="font-medium text-on-surface">Processing Method</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Multi-stage hot wash, shredding, and melt-filtration extrusion (120 mesh screen) ensuring high homogeneity.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Description -->
+<div class="pt-4">
+<h3 class="font-title-lg text-title-lg text-on-surface mb-3">Detailed Description</h3>
+<p class="text-on-surface-variant space-y-2">
+                            This batch of high-density polyethylene (HDPE) pellets is derived exclusively from clean, post-industrial streams. The rigorous melt-filtration process results in a highly consistent natural/white pellet suitable for direct replacement of virgin resins in non-food contact applications. <br/><br/>
+                            Ideal use cases include heavy-duty industrial packaging, drainage pipes, plastic lumber, and rugged automotive components. The low MFI makes it particularly well-suited for blow molding and extrusion processes requiring high melt strength.
+                        </p>
+</div>
+</div>
+</div>
+<!-- LCA Snapshot Section (Visual) -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 ambient-shadow border border-outline-variant">
+<h3 class="font-title-lg text-title-lg text-on-surface mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-leaf-green">eco</span> Environmental Impact (LCA Snapshot)
+                </h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="bg-surface-container-low rounded-xl p-4 border border-outline-variant/30 text-center">
+<span class="material-symbols-outlined text-[32px] text-ocean-blue mb-2">co2</span>
+<div class="font-headline-md text-headline-md text-on-surface">-68%</div>
+<div class="font-label-md text-label-md text-on-surface-variant mt-1">Carbon Footprint vs Virgin</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-2">1.2 kg CO2e / kg</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-4 border border-outline-variant/30 text-center">
+<span class="material-symbols-outlined text-[32px] text-sky-info mb-2">water_drop</span>
+<div class="font-headline-md text-headline-md text-on-surface">-45%</div>
+<div class="font-label-md text-label-md text-on-surface-variant mt-1">Water Usage vs Virgin</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-2">Closed-loop wash process</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-4 border border-outline-variant/30 text-center">
+<span class="material-symbols-outlined text-[32px] text-exchange-orange mb-2">electric_bolt</span>
+<div class="font-headline-md text-headline-md text-on-surface">100%</div>
+<div class="font-label-md text-label-md text-on-surface-variant mt-1">Renewable Energy Used</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-2">Facility powered by solar</div>
+</div>
+</div>
+<div class="mt-4 flex justify-end">
+<button class="text-ocean-blue font-label-md text-label-md hover:underline flex items-center gap-1">
+                        Download Full LCA Report <span class="material-symbols-outlined text-[16px]">download</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Right Column: Sidebar (Spans 4 cols on desktop) -->
+<div class="lg:col-span-4 space-y-6">
+<!-- Pricing & Action Card -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 ambient-shadow border border-outline-variant sticky top-24">
+<div class="flex justify-between items-start mb-4">
+<div>
+<div class="text-on-surface-variant font-body-sm text-body-sm mb-1">Price Estimation</div>
+<div class="font-headline-md text-headline-md text-on-surface">$1,150 - $1,250 <span class="text-body-sm font-normal text-on-surface-variant">/ Metric Ton</span></div>
+</div>
+<div class="bg-surface-container-low px-2 py-1 rounded text-on-surface-variant font-label-md text-label-md border border-outline-variant">EXW</div>
+</div>
+<div class="space-y-3 mb-6">
+<div class="flex justify-between text-body-sm">
+<span class="text-on-surface-variant">Available Quantity</span>
+<span class="font-medium">40 Metric Tons</span>
+</div>
+<div class="flex justify-between text-body-sm">
+<span class="text-on-surface-variant">Minimum Order (MOQ)</span>
+<span class="font-medium">5 Metric Tons</span>
+</div>
+<div class="flex justify-between text-body-sm">
+<span class="text-on-surface-variant">Location</span>
+<span class="font-medium">Detroit, MI, USA</span>
+</div>
+</div>
+<div class="space-y-3">
+<button class="w-full bg-leaf-green text-white py-3 rounded-lg font-label-md text-label-md hover:bg-primary transition-standard hover-lift flex justify-center items-center gap-2">
+                        Request Formal Quote
+                    </button>
+<button class="w-full bg-surface-container-lowest text-ocean-blue border border-ocean-blue py-3 rounded-lg font-label-md text-label-md hover:bg-ocean-blue/5 transition-standard hover-lift flex justify-center items-center gap-2">
+                        Request Sample <span class="material-symbols-outlined text-[18px]">science</span>
+</button>
+</div>
+<p class="text-center text-on-surface-variant font-label-md text-[10px] mt-4 uppercase tracking-wider">Prices exclude shipping &amp; taxes. Finalized upon contract.</p>
+</div>
+<!-- Seller Info Card -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 ambient-shadow border border-outline-variant">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-4 border-b border-surface-container-highest pb-2">Supplier Profile</h3>
+<div class="flex items-center gap-4 mb-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-on-surface-variant">domain</span>
+</div>
+<div>
+<h4 class="font-medium text-on-surface">EcoPoly Solutions Inc.</h4>
+<div class="flex items-center gap-1 text-warning-amber font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] fill">star</span>
+<span class="material-symbols-outlined text-[16px] fill">star</span>
+<span class="material-symbols-outlined text-[16px] fill">star</span>
+<span class="material-symbols-outlined text-[16px] fill">star</span>
+<span class="material-symbols-outlined text-[16px]">star_half</span>
+<span class="text-on-surface-variant font-normal ml-1">(4.7)</span>
+</div>
+</div>
+</div>
+<div class="space-y-3 mb-5">
+<div class="flex items-center gap-2 text-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">verified_user</span> Verified Platform Member since 2021
+                    </div>
+<div class="flex items-center gap-2 text-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">local_shipping</span> Avg. Dispatch: 3-5 days
+                    </div>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="bg-surface-container-low px-2 py-1 rounded text-xs text-on-surface border border-outline-variant/50" title="ISO 9001 Certified">ISO 9001</span>
+<span class="bg-surface-container-low px-2 py-1 rounded text-xs text-on-surface border border-outline-variant/50" title="Global Recycled Standard">GRS Certified</span>
+</div>
+<button class="w-full mt-4 text-ocean-blue font-label-md text-label-md hover:underline text-center">
+                    View Full Profile &amp; All Listings
+                </button>
+</div>
+<!-- Map Location Placeholder -->
+<div class="bg-surface-container-lowest rounded-2xl overflow-hidden ambient-shadow border border-outline-variant h-48 relative">
+<img alt="Supplier location map" class="w-full h-full object-cover" data-alt="A stylized, clean, minimalist map interface centered on Detroit, Michigan. The map uses a light mode aesthetic with subtle grays for roads and landmasses, and a soft pale blue for water bodies. A distinct, modern map pin icon in Leaf Green marks an industrial zone near the city. The overall look is professional, utilitarian, and perfectly matches a modern corporate B2B platform." data-location="Detroit, MI, USA" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxCUw-NM0pV5kWaShQMaZgO5hv4qUD9kiTcyC77kvYZfHP58HuEcQ0FLO-v81P6I4rIl8CPB-1QqY8xbMr_WktWSE2gP-uNMBdEwudsXCSfbNiPh1W3mH2nK5SNEWIbXq95pWCFJwyN7EcX7ZlypYsThdwKSLLm9_6QQCJhu_Vpa4qYFSkYcOK-mOKGr6IjuQbLY1mOxPE07cCwRyqKf6KDg2HGnkTHP7HYfEBhKJF9webZNofucGFxEa5YvpQdn34ckNW_324iw"/>
+<div class="absolute bottom-2 left-2 bg-white/90 px-2 py-1 rounded text-xs font-medium border border-outline-variant">Detroit, MI (Origin)</div>
+</div>
+</div>
+</main>
+<!-- Footer (Generated from JSON) -->
+<footer class="bg-earth-gray w-full py-12">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="flex flex-col gap-4">
+<span class="font-title-lg text-title-lg font-semibold text-white">Circular Materials</span>
+<p class="text-surface-container-highest font-body-sm text-body-sm mt-2">© 2024 Circular Material Exchange. All rights reserved.</p>
+</div>
+<div class="flex flex-col gap-3">
+<h4 class="text-on-primary font-bold mb-2">Platform</h4>
+<a class="text-surface-container-highest hover:text-leaf-green transition-colors font-body-sm text-body-sm" href="#">Marketplace</a>
+<a class="text-surface-container-highest hover:text-leaf-green transition-colors font-body-sm text-body-sm" href="#">Solutions</a>
+</div>
+<div class="flex flex-col gap-3">
+<h4 class="text-on-primary font-bold mb-2">Legal &amp; Documentation</h4>
+<a class="text-surface-container-highest hover:text-leaf-green transition-colors font-body-sm text-body-sm" href="#">Sustainability Reports</a>
+<a class="text-surface-container-highest hover:text-leaf-green transition-colors font-body-sm text-body-sm" href="#">LCA Documentation</a>
+<a class="text-surface-container-highest hover:text-leaf-green transition-colors font-body-sm text-body-sm" href="#">Terms of Service</a>
+<a class="text-surface-container-highest hover:text-leaf-green transition-colors font-body-sm text-body-sm" href="#">Privacy Policy</a>
+</div>
+<div class="flex flex-col gap-3">
+<h4 class="text-on-primary font-bold mb-2">Company</h4>
+<a class="text-surface-container-highest hover:text-leaf-green transition-colors font-body-sm text-body-sm" href="#">Contact Support</a>
+<a class="text-surface-container-highest hover:text-leaf-green transition-colors font-body-sm text-body-sm" href="#">Careers</a>
+</div>
+</div>
+</footer>
+</body></html>

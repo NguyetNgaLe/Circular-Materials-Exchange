@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Báo cáo vi phạm - Circular Materials Exchange</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../_shared/cme-ui.css">
+</head>
+<body>
+  <div class="mobile-top"><strong>Báo cáo vi phạm</strong><span class="material-symbols-outlined">menu</span></div>
+  <div class="app-shell">
+    <aside class="side-nav">
+      <div class="brand"><span class="brand-mark material-symbols-outlined icon-fill">recycling</span>Circular Materials</div>
+      <div class="company-card"><strong>EcoPack Vietnam</strong><span>Business User</span></div>
+      <nav class="nav-group">
+        <a class="nav-link" href="#"><span class="material-symbols-outlined">storefront</span>Marketplace</a>
+        <a class="nav-link" href="#"><span class="material-symbols-outlined">sync_alt</span>Giao dịch</a>
+        <a class="nav-link active" href="#"><span class="material-symbols-outlined icon-fill">report</span>Báo cáo vi phạm</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">UC047 · Report</p>
+          <h1>Báo cáo vi phạm</h1>
+          <p class="muted">Tạo report cho listing, doanh nghiệp hoặc giao dịch để admin xử lý.</p>
+        </div>
+      </header>
+
+      <section class="split">
+        <div class="panel">
+          <div class="section-title"><h2>Thông tin báo cáo</h2><span class="status amber">pending</span></div>
+          <div class="grid two">
+            <div class="field"><label>Đối tượng</label><select><option>Supply listing</option><option>Transaction</option><option>Company</option><option>User</option></select></div>
+            <div class="field"><label>Mã đối tượng</label><input value="LST-2049"></div>
+            <div class="field"><label>Loại vi phạm</label><select><option>Listing sai thông tin</option><option>Vật liệu nguy hại không khai báo</option><option>Không thực hiện giao dịch</option><option>Tài khoản giả mạo</option></select></div>
+            <div class="field"><label>Mức độ</label><select><option>Trung bình</option><option>Cao</option><option>Thấp</option></select></div>
+            <div class="field" style="grid-column:1/-1"><label>Mô tả</label><textarea>Listing ghi độ tinh khiết HDPE 98% nhưng mẫu nhận được có nhiều tạp chất và không có chứng từ kèm theo.</textarea></div>
+          </div>
+        </div>
+        <aside class="panel">
+          <h2>Bằng chứng</h2>
+          <div class="upload-box" style="margin-top:14px">
+            <span class="material-symbols-outlined" style="font-size:40px">upload_file</span>
+            <strong>Tải ảnh hoặc tài liệu</strong>
+            <span>JPG, PNG, PDF · tối đa 10MB</span>
+          </div>
+          <button class="btn primary" style="width:100%; margin-top:18px"><span class="material-symbols-outlined">send</span>Gửi báo cáo</button>
+        </aside>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
