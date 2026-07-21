@@ -181,11 +181,6 @@ docker ps | grep cme
 
 # API Gateway health
 curl http://localhost:8085/health
-
-# Test API
-curl -X POST http://localhost:8085/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"admin@cme.vn","password":"admin123"}'
 ```
 
 ---
@@ -365,13 +360,6 @@ Flag `-s` rất quan trọng vì React Router dùng client-side routing. Không 
 ---
 
 ## Seed Data
-
-### Users (password: admin123)
-| Email | Name | Role |
-|-------|------|------|
-| admin@cme.vn | Admin | admin |
-| an@ecopoly.vn | Nguyen Van An | business |
-| binh@greenpack.vn | Tran Thi Binh | business |
 
 ### Material Categories
 | ID | Name | Icon |
