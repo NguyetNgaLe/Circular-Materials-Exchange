@@ -136,9 +136,9 @@ export default function MaterialDetailPage() {
               </button>
             )}
             {store.currentUser && store.currentUser.id === listing.sellerId && (
-              <div className="alert alert-info" style={{ textAlign: 'center', padding: 12 }}>
-                Đây là sản phẩm của bạn
-              </div>
+              <button className="btn btn-full" disabled style={{ background: '#e5e7eb', color: '#6b7280', cursor: 'not-allowed', border: 'none' }}>
+                Đây là sản phẩm doanh nghiệp bạn
+              </button>
             )}
             {!store.currentUser && (
               <Link to="/login" className="btn btn-primary btn-full" style={{ textAlign: 'center' }}>Đăng nhập để mua</Link>

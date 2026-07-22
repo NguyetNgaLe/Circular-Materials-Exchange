@@ -20,7 +20,7 @@ func NewMaterialHandler(conn *grpc.ClientConn) *MaterialHandler {
 	dbPort := getEnv("DB_PORT", "5433")
 	dbName := "material_db"
 	dbUser := getEnv("DB_USER", "cme")
-	dbPass := getEnv("DB_PASSWORD", "")
+	dbPass := getEnv("DB_PASSWORD", "cme_secret_2024")
 
 	dsn := "host=" + dbHost + " port=" + dbPort + " user=" + dbUser + " password=" + dbPass + " dbname=" + dbName + " sslmode=disable"
 	db, err := sql.Open("postgres", dsn)

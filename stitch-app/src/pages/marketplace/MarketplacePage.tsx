@@ -111,8 +111,9 @@ export default function MarketplacePage() {
             <div className="material-grid">
               {sorted.map(l => {
                 const cat = categories.find(c => c.id === l.categoryId)
+                const isOwner = store.currentUser && store.currentUser.id === l.sellerId
                 return (
-                  <Link key={l.id} to={`/material/${l.id}`} className="material-card">
+                  <Link key={l.id} to={`/material/${l.id}`} className="material-card" style={isOwner ? { opacity: 0.7 } : {}}>
                     <div className="card-image">
                       {l.imageUrl ? (
                         <img src={l.imageUrl} alt={l.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -121,7 +122,11 @@ export default function MarketplacePage() {
                           <span style={{ fontSize: 32 }}>📦</span>
                         </div>
                       )}
-                      <span className="card-badge">Đã Xác Minh</span>
+                      {isOwner ? (
+                        <span className="card-badge" style={{ background: '#9ca3af', color: '#fff' }}>Sản phẩm của bạn</span>
+                      ) : (
+                        <span className="card-badge">Đã Xác Minh</span>
+                      )}
                     </div>
                     <div className="card-body">
                       <h3>{l.title}</h3>
