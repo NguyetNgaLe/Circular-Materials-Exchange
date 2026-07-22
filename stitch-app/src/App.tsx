@@ -23,6 +23,7 @@ import AdminReportsPage from './pages/admin/AdminReportsPage'
 import AdminExportPage from './pages/admin/AdminExportPage'
 import AdminListingsPage from './pages/admin/AdminListingsPage'
 import AdminTransactionsPage from './pages/admin/AdminTransactionsPage'
+import AdminFinancePage from './pages/admin/AdminFinancePage'
 import NotificationsPage from './pages/notifications/NotificationsPage'
 
 function ProtectedRoute({ children, role }: { children: React.ReactNode; role?: string }) {
@@ -59,6 +60,7 @@ export default function App() {
       <Route path="/admin/categories" element={<ProtectedRoute role="admin"><AdminCategoriesPage /></ProtectedRoute>} />
       <Route path="/admin/listings" element={<ProtectedRoute role="admin"><AdminListingsPage /></ProtectedRoute>} />
       <Route path="/admin/transactions" element={<ProtectedRoute role="admin"><AdminTransactionsPage /></ProtectedRoute>} />
+      <Route path="/admin/finance" element={<ProtectedRoute role="admin"><AdminFinancePage /></ProtectedRoute>} />
       <Route path="/admin/reports" element={<ProtectedRoute role="admin"><AdminReportsPage /></ProtectedRoute>} />
       <Route path="/admin/export" element={<ProtectedRoute role="admin"><AdminExportPage /></ProtectedRoute>} />
     </Routes>

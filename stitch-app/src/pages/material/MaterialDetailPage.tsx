@@ -135,6 +135,11 @@ export default function MaterialDetailPage() {
                 Gửi Đề Nghị Mua
               </button>
             )}
+            {store.currentUser && store.currentUser.id === listing.sellerId && (
+              <div className="alert alert-info" style={{ textAlign: 'center', padding: 12 }}>
+                Đây là sản phẩm của bạn
+              </div>
+            )}
             {!store.currentUser && (
               <Link to="/login" className="btn btn-primary btn-full" style={{ textAlign: 'center' }}>Đăng nhập để mua</Link>
             )}

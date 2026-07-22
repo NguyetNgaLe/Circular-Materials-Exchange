@@ -52,6 +52,12 @@ func (h *OrderHandler) CreateOffer(c *gin.Context) {
 	}
 	userID, _ := c.Get("user_id")
 
+	// Kiểm tra không tự mua hàng của chính mình
+	if userID == req.SellerID {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Khong the tu mua hang cua chinh minh"})
+		return
+	}
+
 	if h.db == nil {
 		c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"id": "of-demo"}})
 		return

@@ -26,6 +26,7 @@ func main() {
 	orderHandler := handler.NewOrderHandler(clients.OrderConn)
 	reviewHandler := handler.NewReviewHandler(clients.ReviewConn)
 	notificationHandler := handler.NewNotificationHandler(clients.NotificationConn)
+	financeHandler := handler.NewFinanceHandler(clients.OrderConn)
 
 	// Setup Gin
 	r := gin.Default()
@@ -91,6 +92,13 @@ func main() {
 		protected.PUT("/notifications/:id/read", notificationHandler.MarkRead)
 		protected.PUT("/notifications/read-all", notificationHandler.MarkAllRead)
 		protected.GET("/notifications/unread-count", notificationHandler.GetUnreadCount)
+
+		// Admin Finance
+		protected.GET("/admin/finance/overview", middleware.AdminOnly(), financeHandler.GetOverview)
+		protected.GET("/admin/finance/fees", middleware.AdminOnly(), financeHandler.ListFees)
+		protected.GET("/admin/finance/wallet", middleware.AdminOnly(), financeHandler.GetWallet)
+		protected.GET("/admin/finance/wallet-transactions", middleware.AdminOnly(), financeHandler.ListWalletTransactions)
+		protected.POST("/admin/finance/collect-fee", middleware.AdminOnly(), financeHandler.CollectFee)
 	}
 
 	log.Printf("API Gateway running on :%s", httpPort)

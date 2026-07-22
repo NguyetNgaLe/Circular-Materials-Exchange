@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useStore } from '../store'
 import {
   LayoutDashboard, Package, ShoppingCart, ArrowLeftRight,
-  Star, Building2, FileText, Bell, Settings, Shield, Store
+  Star, Building2, FileText, Bell, Settings, Shield, Store, DollarSign
 } from 'lucide-react'
 
 interface NavItem { to: string; label: string; icon: React.ReactNode }
@@ -26,6 +26,7 @@ const adminNav: NavItem[] = [
   { to: '/admin/categories', label: 'Danh mục vật liệu', icon: <Package size={18} /> },
   { to: '/admin/listings', label: 'Quản lý listing', icon: <FileText size={18} /> },
   { to: '/admin/transactions', label: 'Giao dịch', icon: <ArrowLeftRight size={18} /> },
+  { to: '/admin/finance', label: 'Tài chính', icon: <DollarSign size={18} /> },
   { to: '/admin/reports', label: 'Báo cáo vi phạm', icon: <Shield size={18} /> },
   { to: '/admin/export', label: 'Xuất CSV', icon: <Settings size={18} /> },
 ]
