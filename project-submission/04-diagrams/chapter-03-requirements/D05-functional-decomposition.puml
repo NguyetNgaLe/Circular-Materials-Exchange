@@ -1,0 +1,42 @@
+@startuml
+title D05 - Phân rã chức năng hệ thống
+skinparam packageStyle rectangle
+
+package "Circular Materials Exchange" {
+  package "1. Tài khoản" {
+    [Đăng ký và đăng nhập]
+    [Quản lý hồ sơ]
+  }
+
+  package "2. Doanh nghiệp" {
+    [Tạo/cập nhật doanh nghiệp]
+    [Duyệt doanh nghiệp]
+  }
+
+  package "3. Marketplace" {
+    [Quản lý danh mục]
+    [Quản lý nguồn cung]
+    [Quản lý nhu cầu mua]
+    [Tìm kiếm và lọc]
+  }
+
+  package "4. Đề nghị và giao dịch" {
+    [Gửi/xử lý Offer]
+    [Tạo Transaction]
+    [Theo dõi trạng thái]
+    [Lưu timeline]
+  }
+
+  package "5. Uy tín và hỗ trợ" {
+    [Đánh giá đối tác]
+    [Thông báo trong ứng dụng]
+  }
+
+  package "6. Quản trị" {
+    [Dashboard]
+    [Kiểm duyệt dữ liệu]
+    [Báo cáo và xuất dữ liệu]
+  }
+}
+@enduml
+

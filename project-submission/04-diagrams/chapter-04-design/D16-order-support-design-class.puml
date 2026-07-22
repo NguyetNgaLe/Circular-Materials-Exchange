@@ -1,0 +1,68 @@
+@startuml
+title D16 - Design Class Diagram: Order, Review và Notification
+skinparam classAttributeIconSize 0
+
+package "Order Service" {
+  class OrderHandler <<Controller>>
+  class OrderService <<Service>> {
+    -repo: OrderRepository
+    -nc: NATSConn
+    +CreateOffer(offer)
+    +AcceptOffer(offerID, actorID, actorName)
+    +RejectOffer(offerID, actorID)
+    +CancelOffer(offerID, actorID)
+    +UpdateTransactionStatus(...)
+  }
+  class OrderRepository <<Repository>> {
+    -db: sql.DB
+    +CreateOffer(offer)
+    +FindOfferByID(id)
+    +UpdateOffer(offer)
+    +CreateTransaction(transaction)
+    +CreateTransactionEvent(event)
+  }
+  interface NATSConn {
+    +Publish(subject, data)
+  }
+  class Offer <<Entity>>
+  class Transaction <<Entity>>
+  class TransactionEvent <<Entity>>
+}
+
+package "Review Service" {
+  class ReviewHandler <<Controller>>
+  class ReviewService <<Service>>
+  class ReviewRepository <<Repository>>
+  class Review <<Entity>>
+}
+
+package "Notification Service" {
+  class NotificationHandler <<Controller>>
+  class NotificationService <<Service>>
+  class NotificationRepository <<Repository>>
+  class Notification <<Entity>>
+}
+
+OrderHandler --> OrderService
+OrderService --> OrderRepository
+OrderService ..> NATSConn
+OrderRepository --> Offer
+OrderRepository --> Transaction
+OrderRepository --> TransactionEvent
+Offer "1" -- "0..1" Transaction
+Transaction "1" *-- "1..*" TransactionEvent
+
+ReviewHandler --> ReviewService
+ReviewService --> ReviewRepository
+ReviewRepository --> Review
+
+NotificationHandler --> NotificationService
+NotificationService --> NotificationRepository
+NotificationRepository --> Notification
+
+note right of NotificationService
+  Code hiện tại chưa có NATS subscriber.
+  Thông báo được quản lý qua gRPC/API riêng.
+end note
+@enduml
+

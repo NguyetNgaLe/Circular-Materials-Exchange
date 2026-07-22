@@ -1,0 +1,103 @@
+@startuml
+title D04 - Domain Class Diagram
+hide methods
+skinparam classAttributeIconSize 0
+
+class User {
+  id
+  name
+  email
+  phone
+  role
+}
+
+class Company {
+  id
+  name
+  taxCode
+  status
+  rating
+}
+
+class Category {
+  id
+  name
+}
+
+class SupplyListing {
+  id
+  title
+  quantity
+  unit
+  pricePerUnit
+  location
+  status
+}
+
+class DemandListing {
+  id
+  title
+  quantity
+  unit
+  targetPrice
+  deadline
+  status
+}
+
+class Offer {
+  id
+  type
+  quantity
+  proposedPrice
+  status
+}
+
+class Transaction {
+  id
+  agreedPrice
+  paymentStatus
+  status
+}
+
+class TransactionEvent {
+  id
+  fromStatus
+  toStatus
+  note
+  createdAt
+}
+
+class Review {
+  id
+  rating
+  comment
+}
+
+class Notification {
+  id
+  title
+  message
+  type
+  read
+}
+
+User "1" -- "0..1" Company : sở hữu
+Company "1" -- "0..*" SupplyListing : đăng bán
+Company "1" -- "0..*" DemandListing : đăng mua
+Category "1" -- "0..*" SupplyListing : phân loại
+Category "1" -- "0..*" DemandListing : phân loại
+SupplyListing "1" -- "0..*" Offer : nhận đề nghị
+User "1" -- "0..*" Offer : Buyer gửi
+User "1" -- "0..*" Offer : Seller nhận
+Offer "1" -- "0..1" Transaction : tạo ra
+Transaction "1" *-- "1..*" TransactionEvent : lịch sử
+Transaction "1" -- "0..2" Review : phát sinh
+User "1" -- "0..*" Review : viết/nhận
+User "1" -- "0..*" Notification : nhận
+
+note right of User
+  Buyer và Seller là vai trò
+  của Business User theo ngữ cảnh.
+end note
+@enduml
+

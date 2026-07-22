@@ -1,0 +1,91 @@
+@startuml
+title D14 - Design Class Diagram: Auth và Company
+skinparam classAttributeIconSize 0
+
+package "Auth Service" {
+  class AuthHandler <<Controller>> {
+    +Register(ctx, request)
+    +Login(ctx, request)
+    +VerifyToken(ctx, request)
+    +GetUser(ctx, request)
+    +UpdateProfile(ctx, request)
+  }
+
+  class AuthService <<Service>> {
+    -repo: UserRepository
+    -jwtSecret: string
+    +Register(name, email, password, phone)
+    +Login(email, password)
+    +VerifyToken(token)
+    +GetUser(id)
+    +UpdateProfile(id, name, phone, avatar)
+  }
+
+  class UserRepository <<Repository>> {
+    -db: sql.DB
+    +Create(user)
+    +FindByEmail(email)
+    +FindByID(id)
+    +Update(user)
+  }
+
+  class User <<Entity>> {
+    +ID: string
+    +Name: string
+    +Email: string
+    +Phone: string
+    +PasswordHash: string
+    +Role: string
+    +CompanyID: string
+  }
+}
+
+package "Company Service" {
+  class CompanyHandler <<Controller>> {
+    +CreateCompany(ctx, request)
+    +GetCompany(ctx, request)
+    +ListCompanies(ctx, request)
+    +UpdateCompany(ctx, request)
+    +ApproveCompany(ctx, request)
+    +RejectCompany(ctx, request)
+  }
+
+  class CompanyService <<Service>> {
+    -repo: CompanyRepository
+    +CreateCompany(...)
+    +GetCompany(id)
+    +ListCompanies(status, page, pageSize)
+    +UpdateCompany(...)
+    +ApproveCompany(id)
+    +RejectCompany(id, reason)
+  }
+
+  class CompanyRepository <<Repository>> {
+    -db: sql.DB
+    +Create(company)
+    +FindByID(id)
+    +FindByOwnerID(ownerID)
+    +List(status, page, pageSize)
+    +Update(company)
+  }
+
+  class Company <<Entity>> {
+    +ID: string
+    +Name: string
+    +TaxCode: string
+    +Status: string
+    +RejectReason: string
+    +OwnerID: string
+    +Rating: float64
+  }
+}
+
+AuthHandler --> AuthService
+AuthService --> UserRepository
+UserRepository --> User
+CompanyHandler --> CompanyService
+CompanyService --> CompanyRepository
+CompanyRepository --> Company
+User ..> Company : CompanyID / OwnerID\nlogical reference
+@enduml
+

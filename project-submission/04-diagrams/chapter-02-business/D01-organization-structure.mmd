@@ -1,0 +1,21 @@
+flowchart TB
+    ECO[Hệ sinh thái trao đổi vật liệu tuần hoàn]
+
+    ECO --> SUP[Doanh nghiệp có vật liệu dư]
+    ECO --> BUY[Doanh nghiệp có nhu cầu vật liệu]
+    ECO --> OP[Đơn vị vận hành nền tảng]
+
+    SUP --> OWNER1[Chủ doanh nghiệp]
+    SUP --> SELLER[Bộ phận bán / Seller]
+
+    BUY --> OWNER2[Chủ doanh nghiệp]
+    BUY --> BUYER[Bộ phận thu mua / Buyer]
+
+    OP --> ADMIN[Quản trị viên / Admin]
+    OP --> PLATFORM[Hệ thống Circular Materials Exchange]
+
+    classDef enterprise fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
+    classDef operator fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    class SUP,BUY,OWNER1,OWNER2,SELLER,BUYER enterprise
+    class OP,ADMIN,PLATFORM operator
+

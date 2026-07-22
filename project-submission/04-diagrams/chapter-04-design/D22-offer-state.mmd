@@ -1,0 +1,14 @@
+stateDiagram-v2
+    [*] --> Pending: Buyer gửi Offer
+    Pending --> Accepted: Seller chấp nhận
+    Pending --> Rejected: Seller từ chối
+    Pending --> Cancelled: Buyer hủy
+    Accepted --> [*]: Tạo Transaction
+    Rejected --> [*]
+    Cancelled --> [*]
+
+    note right of Pending
+      Chỉ Offer ở trạng thái pending
+      mới được accept, reject hoặc cancel.
+    end note
+

@@ -1,0 +1,41 @@
+@startuml
+left to right direction
+title D09 - Use Case Offer, giao dịch và đánh giá
+
+actor "Business User" as Business
+actor Buyer
+actor Seller
+Buyer -|> Business
+Seller -|> Business
+
+rectangle "Offer và giao dịch" {
+  usecase "Gửi Offer" as CreateOffer
+  usecase "Xem Offer đã gửi" as SentOffer
+  usecase "Hủy Offer pending" as CancelOffer
+  usecase "Xem Offer đã nhận" as ReceivedOffer
+  usecase "Chấp nhận Offer" as AcceptOffer
+  usecase "Từ chối Offer" as RejectOffer
+  usecase "Tạo Transaction" as CreateTx
+  usecase "Xem danh sách giao dịch" as ListTx
+  usecase "Xem chi tiết và timeline" as ViewTx
+  usecase "Cập nhật trạng thái" as UpdateTx
+  usecase "Đánh giá đối tác" as Review
+}
+
+Buyer --> CreateOffer
+Buyer --> SentOffer
+Buyer --> CancelOffer
+Seller --> ReceivedOffer
+Seller --> AcceptOffer
+Seller --> RejectOffer
+AcceptOffer .> CreateTx : <<include>>
+Buyer --> ListTx
+Seller --> ListTx
+Buyer --> ViewTx
+Seller --> ViewTx
+Buyer --> UpdateTx
+Seller --> UpdateTx
+Buyer --> Review
+Seller --> Review
+@enduml
+

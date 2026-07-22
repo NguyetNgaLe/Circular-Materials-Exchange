@@ -1,0 +1,37 @@
+@startuml
+title D19 - Sequence tìm kiếm nguồn cung và gửi Offer
+autonumber
+
+actor Buyer
+participant "React SPA" as Web
+participant "API Gateway" as Gateway
+participant "Material Service" as Material
+participant "Order Service" as Order
+participant "Order Repository" as Repo
+database "order_db" as DB
+
+Buyer -> Web : Nhập từ khóa/bộ lọc
+Web -> Gateway : GET /api/listings?keyword&category&location
+Gateway -> Material : ListListings(...) [gRPC]
+Material --> Gateway : Danh sách SupplyListing
+Gateway --> Web : HTTP 200
+Web --> Buyer : Hiển thị kết quả
+
+Buyer -> Web : Chọn listing và nhập Offer
+Web -> Gateway : POST /api/offers + JWT
+Gateway -> Order : CreateOffer(request) [gRPC]
+Order -> Order : Gán ID, status=pending
+Order -> Repo : CreateOffer(offer)
+Repo -> DB : INSERT offers
+DB --> Repo : OK
+Repo --> Order : OK
+Order --> Gateway : Offer(pending)
+Gateway --> Web : HTTP 201
+Web --> Buyer : Hiển thị Offer đã gửi
+
+note over Gateway,Order
+  Code hiện tại chưa gọi Material Service
+  để xác minh listing bên trong CreateOffer.
+end note
+@enduml
+

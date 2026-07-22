@@ -1,0 +1,46 @@
+@startuml
+title D20 - Sequence chấp nhận Offer và tạo Transaction
+autonumber
+
+actor Seller
+participant "React SPA" as Web
+participant "API Gateway" as Gateway
+participant "Order gRPC Handler" as Handler
+participant "Order Service" as Service
+participant "Order Repository" as Repo
+database "order_db" as DB
+queue NATS
+
+Seller -> Web : Chọn chấp nhận Offer
+Web -> Gateway : POST /api/offers/{id}/accept + JWT
+Gateway -> Handler : AcceptOffer(id, actor) [gRPC]
+Handler -> Service : AcceptOffer(offerID, actorID, actorName)
+Service -> Repo : FindOfferByID(offerID)
+Repo -> DB : SELECT offer
+DB --> Repo : Offer(pending)
+
+alt Offer đang pending
+  Service -> Repo : UpdateOffer(status=accepted)
+  Repo -> DB : UPDATE offers
+  Service -> Repo : CreateTransaction(status=confirmed)
+  Repo -> DB : INSERT transactions
+  Service -> Repo : CreateTransactionEvent(to=confirmed)
+  Repo -> DB : INSERT transaction_events
+  Service -> NATS : publish cme.orders.transaction.created
+  Service --> Handler : Transaction(confirmed)
+  Handler --> Gateway : gRPC response
+  Gateway --> Web : HTTP 200 + Transaction
+  Web --> Seller : Hiển thị giao dịch mới
+else Offer không còn pending
+  Service --> Handler : Error
+  Handler --> Gateway : gRPC error
+  Gateway --> Web : HTTP error
+  Web --> Seller : Thông báo không thể chấp nhận
+end
+
+note right of NATS
+  Notification Service hiện chưa
+  subscribe sự kiện này trong code.
+end note
+@enduml
+

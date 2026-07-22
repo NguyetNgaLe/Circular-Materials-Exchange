@@ -1,0 +1,33 @@
+@startuml
+left to right direction
+title D07 - Use Case tài khoản và doanh nghiệp
+
+actor Guest
+actor "Business User" as User
+actor Admin
+
+rectangle "Tài khoản và doanh nghiệp" {
+  usecase "Đăng ký" as Register
+  usecase "Đăng nhập" as Login
+  usecase "Xem hồ sơ cá nhân" as ViewProfile
+  usecase "Cập nhật hồ sơ" as UpdateProfile
+  usecase "Tạo hồ sơ doanh nghiệp" as CreateCompany
+  usecase "Xem trạng thái doanh nghiệp" as ViewCompany
+  usecase "Cập nhật doanh nghiệp" as UpdateCompany
+  usecase "Duyệt doanh nghiệp" as Approve
+  usecase "Từ chối doanh nghiệp" as Reject
+  usecase "Nhập lý do từ chối" as Reason
+}
+
+Guest --> Register
+Guest --> Login
+User --> ViewProfile
+User --> UpdateProfile
+User --> CreateCompany
+User --> ViewCompany
+User --> UpdateCompany
+Admin --> Approve
+Admin --> Reject
+Reject .> Reason : <<include>>
+@enduml
+

@@ -1,0 +1,30 @@
+@startuml
+title D18 - Sequence đăng nguồn cung vật liệu
+autonumber
+
+actor Seller
+participant "React SPA" as Web
+participant "API Gateway" as Gateway
+participant "JWT Middleware" as JWT
+participant "Material gRPC Handler" as Handler
+participant "Material Service" as Service
+participant "Material Repository" as Repo
+database "material_db" as DB
+
+Seller -> Web : Nhập thông tin nguồn cung
+Web -> Gateway : POST /api/listings + JWT
+Gateway -> JWT : Xác thực token
+JWT --> Gateway : seller_id hợp lệ
+Gateway -> Handler : CreateListing(request) [gRPC]
+Handler -> Service : CreateListing(listing)
+Service -> Service : Gán ID, status=active, timestamps
+Service -> Repo : CreateListing(listing)
+Repo -> DB : INSERT supply_listings
+DB --> Repo : OK
+Repo --> Service : OK
+Service --> Handler : SupplyListing
+Handler --> Gateway : gRPC response
+Gateway --> Web : HTTP 201 + listing
+Web --> Seller : Hiển thị đăng thành công
+@enduml
+

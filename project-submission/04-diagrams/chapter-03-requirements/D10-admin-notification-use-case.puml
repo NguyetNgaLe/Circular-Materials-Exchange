@@ -1,0 +1,37 @@
+@startuml
+left to right direction
+title D10 - Use Case quản trị và thông báo
+
+actor "Business User" as User
+actor Admin
+
+rectangle "Thông báo" {
+  usecase "Xem danh sách thông báo" as ListNotif
+  usecase "Xem số chưa đọc" as CountNotif
+  usecase "Đánh dấu đã đọc" as ReadNotif
+  usecase "Đánh dấu tất cả đã đọc" as ReadAll
+}
+
+rectangle "Quản trị" {
+  usecase "Xem dashboard" as Dashboard
+  usecase "Duyệt doanh nghiệp" as Company
+  usecase "Quản lý danh mục" as Category
+  usecase "Quản lý listing" as Listing
+  usecase "Theo dõi giao dịch" as Transaction
+  usecase "Quản lý báo cáo" as Report
+  usecase "Xuất dữ liệu" as Export
+}
+
+User --> ListNotif
+User --> CountNotif
+User --> ReadNotif
+User --> ReadAll
+Admin --> Dashboard
+Admin --> Company
+Admin --> Category
+Admin --> Listing
+Admin --> Transaction
+Admin --> Report
+Admin --> Export
+@enduml
+

@@ -1,0 +1,65 @@
+@startuml
+title D24 - Mô hình triển khai Docker/server
+skinparam componentStyle rectangle
+
+actor "Người dùng/Admin" as user
+node "Máy chạy frontend hoặc Vite dev server" as frontendHost {
+  component "React SPA" as frontend
+}
+
+node "Docker Server" as server {
+  frame "Host Network" {
+    component "api-gateway\nHTTP :8085" as gateway
+  }
+
+  frame "Docker network: cme-network" {
+    component "auth-service\n:50051" as auth
+    component "company-service\n:50052" as company
+    component "material-service\n:50053" as material
+    component "order-service\n:50054" as order
+    component "review-service\n:50055" as review
+    component "notification-service\n:50056" as notif
+
+    database "postgres:15\ncontainer: cme-postgres\nHost port :5433" as postgres {
+      artifact "auth_db" as authdb
+      artifact "company_db" as companydb
+      artifact "material_db" as materialdb
+      artifact "order_db" as orderdb
+      artifact "review_db" as reviewdb
+      artifact "notif_db" as notifdb
+    }
+
+    queue "nats:latest\nJetStream\n:4222, :8222" as nats
+    storage "minio/minio\n:9000, :9001" as minio
+  }
+
+  folder "Persistent volumes" {
+    artifact "pg-data" as pgvolume
+    artifact "minio-data" as miniovolume
+  }
+}
+
+user --> frontend : Browser
+frontend --> gateway : REST/JSON
+gateway --> auth : gRPC
+gateway --> company : gRPC
+gateway --> material : gRPC
+gateway --> order : gRPC
+gateway --> review : gRPC
+gateway --> notif : gRPC
+auth --> authdb
+company --> companydb
+material --> materialdb
+order --> orderdb
+review --> reviewdb
+notif --> notifdb
+order --> nats : publish
+postgres --> pgvolume
+minio --> miniovolume
+
+note bottom of frontend
+  TODO REVIEW: dựng lại layout cuối trên diagrams.net
+  nếu cần icon Docker/server đẹp cho báo cáo.
+end note
+@enduml
+

@@ -1,0 +1,57 @@
+@startuml
+title D12 - Deployment Diagram hiện tại
+skinparam componentStyle rectangle
+
+node "Máy người dùng" as client {
+  artifact "React SPA\n(Vite build/dev server)" as web
+  artifact "Web Browser" as browser
+  browser --> web
+}
+
+node "Docker Host" as host {
+  node "Host network" {
+    component "cme-api-gateway\nGo + Gin\nHTTP :8085" as gateway
+  }
+
+  cloud "cme-network" as network {
+    component "auth-service\ngRPC :50051" as auth
+    component "company-service\ngRPC :50052" as company
+    component "material-service\ngRPC :50053" as material
+    component "order-service\ngRPC :50054" as order
+    component "review-service\ngRPC :50055" as review
+    component "notification-service\ngRPC :50056" as notification
+    database "cme-postgres\nPostgreSQL :5432\n6 logical databases" as postgres
+    queue "cme-nats\n:4222 / :8222" as nats
+    storage "cme-minio\n:9000 / :9001" as minio
+  }
+
+  folder "Docker volumes" {
+    artifact "pg-data" as pgdata
+    artifact "minio-data" as miniodata
+  }
+}
+
+web --> gateway : HTTP/JSON :8085
+gateway --> auth : gRPC
+gateway --> company : gRPC
+gateway --> material : gRPC
+gateway --> order : gRPC
+gateway --> review : gRPC
+gateway --> notification : gRPC
+
+auth --> postgres : auth_db
+company --> postgres : company_db
+material --> postgres : material_db
+order --> postgres : order_db
+review --> postgres : review_db
+notification --> postgres : notif_db
+order --> nats : publish events
+postgres --> pgdata
+minio --> miniodata
+
+note right of web
+  Frontend chưa phải một service
+  trong docker-compose hiện tại.
+end note
+@enduml
+

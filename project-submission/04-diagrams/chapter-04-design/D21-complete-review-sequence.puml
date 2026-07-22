@@ -1,0 +1,47 @@
+@startuml
+title D21 - Sequence hoàn tất giao dịch và đánh giá
+autonumber
+
+actor "Buyer/Seller" as User
+participant "React SPA" as Web
+participant "API Gateway" as Gateway
+participant "Order Service" as Order
+participant "Order Repository" as OrderRepo
+database "order_db" as OrderDB
+queue NATS
+participant "Review Service" as Review
+participant "Review Repository" as ReviewRepo
+database "review_db" as ReviewDB
+
+User -> Web : Xác nhận hoàn tất
+Web -> Gateway : POST /api/transactions/{id}/status
+Gateway -> Order : UpdateTransactionStatus(completed) [gRPC]
+Order -> OrderRepo : FindTransactionByID(id)
+OrderRepo -> OrderDB : SELECT transaction
+OrderDB --> OrderRepo : Transaction
+Order -> OrderRepo : UpdateTransaction(status=completed)
+OrderRepo -> OrderDB : UPDATE transactions
+Order -> OrderRepo : CreateTransactionEvent(from, to, actor)
+OrderRepo -> OrderDB : INSERT transaction_events
+Order -> NATS : publish cme.orders.transaction.completed
+Order --> Gateway : Transaction(completed)
+Gateway --> Web : HTTP 200
+Web --> User : Hiển thị hoàn tất
+
+== Người dùng chủ động gửi đánh giá ==
+User -> Web : Nhập rating và comment
+Web -> Gateway : POST /api/reviews + JWT
+Gateway -> Review : CreateReview(request) [gRPC]
+Review -> ReviewRepo : Create(review)
+ReviewRepo -> ReviewDB : INSERT reviews
+ReviewDB --> ReviewRepo : OK
+Review --> Gateway : Review
+Gateway --> Web : HTTP 201
+Web --> User : Hiển thị đánh giá thành công
+
+note over Order,NATS
+  Sự kiện completed được publish,
+  nhưng chưa có consumer trong Notification Service.
+end note
+@enduml
+

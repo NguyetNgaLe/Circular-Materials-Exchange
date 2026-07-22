@@ -1,0 +1,153 @@
+Project CircularMaterialsExchange {
+  database_type: 'PostgreSQL'
+  Note: 'D13 - ERD tổng hợp 6 database logic. Quan hệ giữa database là tham chiếu nghiệp vụ, không phải FK vật lý.'
+}
+
+Table auth_db.users {
+  id uuid [pk]
+  name varchar(255) [not null]
+  email varchar(255) [not null, unique]
+  phone varchar(20)
+  password_hash varchar(255) [not null]
+  role varchar(20) [default: 'business']
+  avatar varchar(500)
+  company_id uuid [note: 'Logical reference tới company_db.companies']
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table company_db.companies {
+  id uuid [pk]
+  name varchar(255) [not null]
+  tax_code varchar(50) [unique]
+  address text
+  city varchar(100)
+  description text
+  status varchar(20) [default: 'pending']
+  reject_reason text
+  owner_id uuid [not null, note: 'Logical reference tới auth_db.users']
+  rating decimal(3,2)
+  review_count int
+  member_since date
+  certifications text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table material_db.categories {
+  id uuid [pk]
+  name varchar(100) [not null]
+  icon varchar(50)
+  created_at timestamp
+}
+
+Table material_db.supply_listings {
+  id uuid [pk]
+  title varchar(255) [not null]
+  category_id uuid [ref: > material_db.categories.id]
+  seller_id uuid [not null, note: 'Logical reference tới auth_db.users']
+  company_id uuid [note: 'Logical reference tới company_db.companies']
+  description text
+  specs text
+  quantity decimal(10,2)
+  unit varchar(20)
+  price_per_unit decimal(15,2)
+  currency varchar(10)
+  location varchar(255)
+  min_order_quantity decimal(10,2)
+  packaging varchar(100)
+  status varchar(20) [default: 'active']
+  images text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table material_db.demand_listings {
+  id uuid [pk]
+  title varchar(255) [not null]
+  category_id uuid [ref: > material_db.categories.id]
+  buyer_id uuid [not null, note: 'Logical reference tới auth_db.users']
+  company_id uuid [note: 'Logical reference tới company_db.companies']
+  description text
+  quantity decimal(10,2)
+  unit varchar(20)
+  target_price decimal(15,2)
+  location varchar(255)
+  deadline date
+  status varchar(20) [default: 'open']
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table order_db.offers {
+  id uuid [pk]
+  type varchar(20) [not null]
+  listing_id uuid [not null, note: 'Logical reference tới material_db.supply_listings']
+  listing_title varchar(255)
+  buyer_id uuid [not null, note: 'Logical reference tới auth_db.users']
+  buyer_name varchar(255)
+  seller_id uuid [not null, note: 'Logical reference tới auth_db.users']
+  seller_name varchar(255)
+  quantity decimal(10,2)
+  unit varchar(20)
+  proposed_price decimal(15,2)
+  currency varchar(10)
+  message text
+  status varchar(20) [default: 'pending']
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table order_db.transactions {
+  id uuid [pk]
+  offer_id uuid [ref: > order_db.offers.id]
+  listing_title varchar(255)
+  buyer_id uuid [not null, note: 'Logical reference tới auth_db.users']
+  buyer_name varchar(255)
+  seller_id uuid [not null, note: 'Logical reference tới auth_db.users']
+  seller_name varchar(255)
+  quantity decimal(10,2)
+  unit varchar(20)
+  agreed_price decimal(15,2)
+  currency varchar(10)
+  payment_status varchar(20)
+  payment_method varchar(20)
+  settlement_note text
+  status varchar(20) [default: 'confirmed']
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table order_db.transaction_events {
+  id uuid [pk]
+  transaction_id uuid [ref: > order_db.transactions.id]
+  actor_id uuid [not null, note: 'Logical reference tới auth_db.users']
+  actor_name varchar(255)
+  from_status varchar(50)
+  to_status varchar(50)
+  note text
+  created_at timestamp
+}
+
+Table review_db.reviews {
+  id uuid [pk]
+  transaction_id uuid [not null, note: 'Logical reference tới order_db.transactions']
+  reviewer_id uuid [not null, note: 'Logical reference tới auth_db.users']
+  reviewer_name varchar(255)
+  reviewee_id uuid [not null, note: 'Logical reference tới auth_db.users']
+  reviewee_name varchar(255)
+  rating int
+  comment text
+  created_at timestamp
+}
+
+Table notif_db.notifications {
+  id uuid [pk]
+  user_id uuid [not null, note: 'Logical reference tới auth_db.users']
+  title varchar(255)
+  message text
+  type varchar(20)
+  read boolean [default: false]
+  created_at timestamp
+}
+

@@ -1,0 +1,51 @@
+@startuml
+title D17 - Sequence tạo và duyệt doanh nghiệp
+autonumber
+
+actor "Business User" as User
+actor Admin
+participant "React SPA" as Web
+participant "API Gateway" as Gateway
+participant "JWT Middleware" as JWT
+participant "Company gRPC Handler" as Handler
+participant "Company Service" as Service
+participant "Company Repository" as Repo
+database "company_db" as DB
+
+User -> Web : Nhập hồ sơ doanh nghiệp
+Web -> Gateway : POST /api/companies + JWT
+Gateway -> JWT : Xác thực token
+JWT --> Gateway : user_id hợp lệ
+Gateway -> Handler : CreateCompany(request) [gRPC]
+Handler -> Service : CreateCompany(..., ownerID)
+Service -> Repo : FindByOwnerID(ownerID)
+Repo -> DB : SELECT company
+DB --> Repo : Không tồn tại
+Service -> Repo : Create(status=pending)
+Repo -> DB : INSERT companies
+DB --> Repo : OK
+Repo --> Service : OK
+Service --> Handler : Company(pending)
+Handler --> Gateway : gRPC response
+Gateway --> Web : HTTP 201
+Web --> User : Hiển thị chờ duyệt
+
+== Admin phê duyệt ==
+Admin -> Web : Chọn phê duyệt
+Web -> Gateway : POST /api/companies/{id}/approve
+Gateway -> JWT : Xác thực Admin
+JWT --> Gateway : role=admin
+Gateway -> Handler : ApproveCompany(id) [gRPC]
+Handler -> Service : ApproveCompany(id)
+Service -> Repo : FindByID(id)
+Repo -> DB : SELECT company
+DB --> Repo : Company(pending)
+Service -> Repo : Update(status=verified)
+Repo -> DB : UPDATE companies
+DB --> Repo : OK
+Service --> Handler : Company(verified)
+Handler --> Gateway : gRPC response
+Gateway --> Web : HTTP 200
+Web --> Admin : Duyệt thành công
+@enduml
+

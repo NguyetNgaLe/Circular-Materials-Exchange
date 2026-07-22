@@ -1,0 +1,42 @@
+@startuml
+left to right direction
+title D06 - Use Case tổng quan
+skinparam packageStyle rectangle
+
+actor Guest
+actor "Business User" as Business
+actor Buyer
+actor Seller
+actor Admin
+
+Buyer -|> Business
+Seller -|> Business
+
+rectangle "Circular Materials Exchange" {
+  usecase "Xem và tìm kiếm\nmarketplace\nhu cau mua" as UC1
+  usecase "Đăng ký / đăng nhập" as UC2
+  usecase "Quản lý hồ sơ\ndoanh nghiệp" as UC3
+  usecase "Đăng nguồn cung" as UC4
+  usecase "Đăng nhu cầu mua" as UC5
+  usecase "Gửi và xử lý Offer" as UC6
+  usecase "Theo dõi giao dịch" as UC7
+  usecase "Đánh giá đối tác" as UC8
+  usecase "Xem thông báo" as UC9
+  usecase "Quản trị và\nkiểm duyệt" as UC10
+}
+
+Guest --> UC1
+Guest --> UC2
+Business --> UC3
+Seller --> UC4
+Buyer --> UC5
+Buyer --> UC6
+Seller --> UC6
+Buyer --> UC7
+Seller --> UC7
+Buyer --> UC8
+Seller --> UC8
+Business --> UC9
+Admin --> UC10
+@enduml
+

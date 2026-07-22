@@ -1,0 +1,83 @@
+@startuml
+title D15 - Design Class Diagram: Material Service
+skinparam classAttributeIconSize 0
+
+class MaterialHandler <<Controller>> {
+  -svc: MaterialService
+  +CreateCategory(ctx, request)
+  +ListCategories(ctx, request)
+  +CreateListing(ctx, request)
+  +GetListing(ctx, request)
+  +ListListings(ctx, request)
+  +UpdateListing(ctx, request)
+  +DeleteListing(ctx, request)
+  +CreateDemand(ctx, request)
+  +GetDemand(ctx, request)
+  +ListDemands(ctx, request)
+}
+
+class MaterialService <<Service>> {
+  -repo: MaterialRepository
+  +CreateCategory(name, icon)
+  +ListCategories()
+  +CreateListing(listing)
+  +GetListing(id)
+  +ListListings(category, keyword, location, page, size)
+  +UpdateListing(listing)
+  +DeleteListing(id)
+  +CreateDemand(demand)
+  +GetDemand(id)
+  +ListDemands(category, keyword, page, size)
+}
+
+class MaterialRepository <<Repository>> {
+  -db: sql.DB
+  +CreateCategory(category)
+  +ListCategories()
+  +CreateListing(listing)
+  +FindListingByID(id)
+  +ListListings(...)
+  +UpdateListing(listing)
+  +DeleteListing(id)
+  +CreateDemand(demand)
+  +FindDemandByID(id)
+  +ListDemands(...)
+}
+
+class Category <<Entity>> {
+  +ID: string
+  +Name: string
+  +Icon: string
+}
+
+class SupplyListing <<Entity>> {
+  +ID: string
+  +Title: string
+  +CategoryID: string
+  +SellerID: string
+  +CompanyID: string
+  +Quantity: float64
+  +PricePerUnit: float64
+  +Status: string
+}
+
+class DemandListing <<Entity>> {
+  +ID: string
+  +Title: string
+  +CategoryID: string
+  +BuyerID: string
+  +CompanyID: string
+  +Quantity: float64
+  +TargetPrice: float64
+  +Status: string
+}
+
+MaterialHandler --> MaterialService
+MaterialService --> MaterialRepository
+MaterialRepository --> Category
+MaterialRepository --> SupplyListing
+MaterialRepository --> DemandListing
+Category "1" -- "0..*" SupplyListing
+Category "1" -- "0..*" DemandListing
+@enduml
+

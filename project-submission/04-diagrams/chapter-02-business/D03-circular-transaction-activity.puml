@@ -1,0 +1,48 @@
+@startuml
+title D03 - Quy trình trao đổi vật liệu và giao dịch
+
+|Seller|
+start
+:Đăng nguồn cung vật liệu dư;
+
+|Hệ thống|
+:Công bố nguồn cung trên marketplace;
+
+|Buyer|
+:Tìm kiếm và lọc nguồn cung;
+if (Tìm thấy vật liệu phù hợp?) then (Có)
+  :Xem chi tiết vật liệu;
+  :Gửi Offer gồm số lượng và giá đề xuất;
+else (Không)
+  :Có thể đăng nhu cầu mua;
+  |Hệ thống|
+  :Công khai nhu cầu mua;
+  stop
+endif
+
+|Seller|
+:Xem Offer nhận được;
+if (Chấp nhận Offer?) then (Có)
+  |Hệ thống|
+  :Đổi Offer sang accepted;
+  :Tạo Transaction trạng thái confirmed;
+  :Tạo sự kiện lịch sử giao dịch;
+else (Không)
+  |Hệ thống|
+  :Đổi Offer sang rejected;
+  stop
+endif
+
+|Buyer và Seller|
+:Thỏa thuận thanh toán và giao nhận ngoài hệ thống;
+:Cập nhật tiến độ giao dịch;
+:Hai bên xác nhận hoàn tất;
+
+|Hệ thống|
+:Lưu timeline và trạng thái completed;
+
+|Buyer và Seller|
+:Đánh giá đối tác;
+stop
+@enduml
+

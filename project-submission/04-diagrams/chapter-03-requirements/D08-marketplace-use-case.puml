@@ -1,0 +1,38 @@
+@startuml
+left to right direction
+title D08 - Use Case Marketplace cung và cầu
+
+actor Guest
+actor "Business User" as Business
+actor Buyer
+actor Seller
+actor Admin
+Buyer -|> Business
+Seller -|> Business
+
+rectangle "Marketplace" {
+  usecase "Xem danh sách nguồn cung" as ListSupply
+  usecase "Tìm kiếm và lọc" as Search
+  usecase "Xem chi tiết nguồn cung" as SupplyDetail
+  usecase "Xem danh sách nhu cầu" as ListDemand
+  usecase "Đăng nguồn cung" as CreateSupply
+  usecase "Cập nhật nguồn cung" as UpdateSupply
+  usecase "Xóa nguồn cung" as DeleteSupply
+  usecase "Đăng nhu cầu mua" as CreateDemand
+  usecase "Quản lý danh mục" as Categories
+  usecase "Kiểm duyệt listing" as Moderate
+}
+
+Guest --> ListSupply
+Guest --> Search
+Guest --> SupplyDetail
+Guest --> ListDemand
+Seller --> CreateSupply
+Seller --> UpdateSupply
+Seller --> DeleteSupply
+Buyer --> CreateDemand
+Admin --> Categories
+Admin --> Moderate
+ListSupply .> Search : <<include>>
+@enduml
+
