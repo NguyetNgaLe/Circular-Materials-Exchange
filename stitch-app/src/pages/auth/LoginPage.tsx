@@ -6,8 +6,8 @@ import { api } from '../../services/api'
 export default function LoginPage() {
   const store = useStore()
   const nav = useNavigate()
-  const [email, setEmail] = useState('an@ecopoly.vn')
-  const [password, setPassword] = useState(''')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [tab, setTab] = useState<'login' | 'register'>('login')
