@@ -1104,7 +1104,7 @@ services:
       - ORDER_SERVICE_ADDR=order-service:50054
       - REVIEW_SERVICE_ADDR=review-service:50055
       - NOTIFICATION_SERVICE_ADDR=notification-service:50056
-      - JWT_SECRET=cme_jwt_secret_2024
+      - JWT_SECRET=${JWT_SECRET}
     depends_on:
       - auth-service
       - company-service
@@ -1126,7 +1126,7 @@ services:
       - DB_NAME=auth_db
       - DB_USER=cme
       - DB_PASSWORD=${DB_PASSWORD}
-      - JWT_SECRET=cme_jwt_secret_2024
+      - JWT_SECRET=${JWT_SECRET}
     depends_on:
       - auth-db
     networks:

@@ -22,7 +22,7 @@ func main() {
 	dbName := getEnv("DB_NAME", "auth_db")
 	dbUser := getEnv("DB_USER", "cme")
 	dbPass := getEnv("DB_PASSWORD", "")
-	jwtSecret := getEnv("JWT_SECRET", "cme_jwt_secret_2024")
+	jwtSecret := getEnv("JWT_SECRET", "")
 	grpcPort := getEnv("GRPC_PORT", "50051")
 
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",

@@ -121,7 +121,7 @@ services:
       DB_NAME: auth_db
       DB_USER: cme
       DB_PASSWORD: ${DB_PASSWORD}
-      JWT_SECRET: cme_jwt_secret_2024
+      JWT_SECRET: ${JWT_SECRET}
     depends_on:
       postgres: { condition: service_healthy }
 

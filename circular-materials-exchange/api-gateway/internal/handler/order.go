@@ -21,7 +21,7 @@ func NewOrderHandler(conn *grpc.ClientConn) *OrderHandler {
 	dbPort := getEnv("DB_PORT", "5433")
 	dbName := "order_db"
 	dbUser := getEnv("DB_USER", "cme")
-	dbPass := getEnv("DB_PASSWORD", "cme_secret_2024")
+	dbPass := getEnv("DB_PASSWORD", "")
 
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", dbHost, dbPort, dbUser, dbPass, dbName)
 	db, err := sql.Open("postgres", dsn)
