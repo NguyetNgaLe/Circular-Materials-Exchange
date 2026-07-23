@@ -250,3 +250,5 @@ func (h *FinanceHandler) CollectFee(c *gin.Context) {
 		},
 	})
 }
+
+

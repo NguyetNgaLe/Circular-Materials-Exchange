@@ -161,3 +161,5 @@ func (h *CompanyHandler) RejectCompany(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"id": id, "status": "rejected", "reject_reason": req.Reason}})
 }
+
+
