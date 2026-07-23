@@ -11,7 +11,10 @@ export default function MaterialDetailPage() {
   const nav = useNavigate()
   const [listing, setListing] = useState<any>(null)
   const [company, setCompany] = useState<any>(null)
+  const [buyerCompany, setBuyerCompany] = useState<any>(null)
+  const [reviews, setReviews] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState('description')
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,6 +26,17 @@ export default function MaterialDetailPage() {
         if (listingData?.companyId) {
           const companyData = await store.getCompany(listingData.companyId)
           setCompany(companyData)
+        }
+        if (listingData?.sellerId) {
+          const headers = { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+          try {
+            const reviewData = await (await fetch(`/api/reviews?reviewee_id=${listingData.sellerId}`, { headers })).json()
+            if (reviewData.success) setReviews(reviewData.data.reviews || [])
+          } catch {}
+        }
+        if (store.currentUser?.companyId) {
+          const buyerCompanyData = await store.getCompany(store.currentUser.companyId)
+          setBuyerCompany(buyerCompanyData)
         }
       } catch (err) {
         console.error('Failed to fetch listing:', err)
@@ -78,42 +92,80 @@ export default function MaterialDetailPage() {
           </div>
 
           <div className="detail-tabs">
-            <button className="tab active">Thông số kỹ thuật</button>
-            <button className="tab">Tác động môi trường</button>
-            <button className="tab">Thông tin giao nhận</button>
+            <button
+              className={`tab ${activeTab === 'description' ? 'active' : ''}`}
+              onClick={() => setActiveTab('description')}
+            >
+              Mô tả chi tiết
+            </button>
+            <button
+              className={`tab ${activeTab === 'reviews' ? 'active' : ''}`}
+              onClick={() => setActiveTab('reviews')}
+            >
+              Đánh giá ({reviews.length})
+            </button>
           </div>
 
-          <div className="specs-grid">
-            {Object.entries(listing.specs || {}).map(([key, val]) => (
-              <div key={key} className="spec-row">
-                <span className="spec-label">{key}</span>
-                <span className="spec-value">{val}</span>
+          {activeTab === 'description' && (
+            <>
+              <div className="detail-section">
+                <h3>Mô tả chi tiết</h3>
+                <p>{listing.description}</p>
               </div>
-            ))}
-          </div>
 
-          <div className="detail-section">
-            <h3>Mô tả chi tiết</h3>
-            <p>{listing.description}</p>
-          </div>
+              <div className="specs-grid">
+                {Object.entries(listing.specs || {}).map(([key, val]) => (
+                  <div key={key} className="spec-row">
+                    <span className="spec-label">{key}</span>
+                    <span className="spec-value">{val}</span>
+                  </div>
+                ))}
+              </div>
 
-          <div className="detail-section">
-            <h3>🌿 Tác động Môi trường (Ước tính)</h3>
-            <div className="eco-stats">
-              <div className="eco-stat">
-                <span className="eco-value">-68%</span>
-                <span className="eco-label">Carbon so với nguyên sinh</span>
+              <div className="detail-section">
+                <h3>Tác động Môi trường (Ước tính)</h3>
+                <div className="eco-stats">
+                  <div className="eco-stat">
+                    <span className="eco-value">-68%</span>
+                    <span className="eco-label">Carbon so với nguyên sinh</span>
+                  </div>
+                  <div className="eco-stat">
+                    <span className="eco-value">-45%</span>
+                    <span className="eco-label">Sử dụng nước</span>
+                  </div>
+                  <div className="eco-stat">
+                    <span className="eco-value">100%</span>
+                    <span className="eco-label">Năng lượng tái tạo</span>
+                  </div>
+                </div>
               </div>
-              <div className="eco-stat">
-                <span className="eco-value">-45%</span>
-                <span className="eco-label">Sử dụng nước</span>
-              </div>
-              <div className="eco-stat">
-                <span className="eco-value">100%</span>
-                <span className="eco-label">Năng lượng tái tạo</span>
-              </div>
+            </>
+          )}
+
+          {activeTab === 'reviews' && (
+            <div className="detail-section">
+              {reviews.length === 0 ? (
+                <p className="muted">Chưa có đánh giá nào cho nhà cung cấp này</p>
+              ) : (
+                <div className="reviews-list">
+                  {reviews.map(review => (
+                    <div
+                      key={review.id}
+                      className="review-card"
+                      style={{ marginBottom: 16, padding: 16, background: 'var(--surface-low)', borderRadius: 8 }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                        <strong>{review.reviewerName}</strong>
+                        <StarRating rating={review.rating} />
+                      </div>
+                      {review.comment && <p style={{ margin: 0 }}>{review.comment}</p>}
+                      <span className="muted" style={{ fontSize: 12, display: 'block', marginTop: 8 }}>{review.createdAt}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </div>
 
         <div className="detail-sidebar">
@@ -130,9 +182,18 @@ export default function MaterialDetailPage() {
               <div className="info-row"><span>Địa điểm</span><strong><MapPin size={14} /> {listing.location}</strong></div>
             </div>
 
-            {store.currentUser && store.currentUser.id !== listing.sellerId && (
+            {store.currentUser && store.currentUser.id !== listing.sellerId && buyerCompany?.status === 'verified' && (
               <button className="btn btn-primary btn-full" onClick={() => nav(`/offers/new/${listing.id}`)}>
                 Gửi Đề Nghị Mua
+              </button>
+            )}
+            {store.currentUser && store.currentUser.id !== listing.sellerId && (!buyerCompany || buyerCompany.status !== 'verified') && (
+              <button
+                className="btn btn-full"
+                disabled
+                style={{ background: '#fef3c7', color: '#92400e', cursor: 'not-allowed', border: '1px solid #fbbf24' }}
+              >
+                Doanh nghiệp chưa được duyệt
               </button>
             )}
             {store.currentUser && store.currentUser.id === listing.sellerId && (
@@ -155,6 +216,7 @@ export default function MaterialDetailPage() {
                 <div>
                   <strong>{company.name}</strong>
                   <StarRating rating={company.rating} />
+                  <span className="muted" style={{ fontSize: 12 }}>{reviews.length} đánh giá</span>
                 </div>
               </div>
               <div className="seller-info">

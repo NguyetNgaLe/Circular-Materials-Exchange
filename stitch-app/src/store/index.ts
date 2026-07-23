@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import type { User, Company, SupplyListing, PurchaseOffer, Transaction, Notification } from '../types'
 import { api } from '../services/api'
 
@@ -7,6 +7,13 @@ let _listeners: Array<() => void> = []
 
 function notify() { _listeners.forEach(l => l()) }
 
+const savedUser = localStorage.getItem('user')
+const savedToken = localStorage.getItem('token')
+if (savedUser) {
+  try { _currentUser = JSON.parse(savedUser) } catch {}
+}
+if (savedToken) api.setToken(savedToken)
+
 export function useStore() {
   const [, setTick] = useState(0)
   const rerender = useCallback(() => setTick((t: number) => t + 1), [])
@@ -14,16 +21,6 @@ export function useStore() {
   if (!_listeners.includes(rerender)) {
     _listeners.push(rerender)
   }
-
-  useEffect(() => {
-    const saved = localStorage.getItem('user')
-    if (saved && !_currentUser) {
-      try {
-        _currentUser = JSON.parse(saved)
-        notify()
-      } catch {}
-    }
-  }, [])
 
   return {
     get currentUser() { return _currentUser },
@@ -46,6 +43,7 @@ export function useStore() {
       _currentUser = null
       api.clearToken()
       localStorage.removeItem('user')
+      localStorage.removeItem('token')
       notify()
     },
 

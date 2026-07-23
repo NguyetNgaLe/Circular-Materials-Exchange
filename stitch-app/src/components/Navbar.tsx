@@ -61,7 +61,7 @@ export default function Navbar() {
                   <User size={20} />
                 </Link>
                 <span className="user-name">{store.currentUser.name}</span>
-                <button className="btn-ghost-sm" onClick={() => store.logout()}>Đăng xuất</button>
+                <button className="btn-ghost-sm" onClick={() => { store.logout(); window.location.href = '/login' }}>Đăng xuất</button>
               </div>
             </>
           )}

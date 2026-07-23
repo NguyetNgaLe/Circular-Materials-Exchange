@@ -24,6 +24,8 @@ import AdminExportPage from './pages/admin/AdminExportPage'
 import AdminListingsPage from './pages/admin/AdminListingsPage'
 import AdminTransactionsPage from './pages/admin/AdminTransactionsPage'
 import AdminFinancePage from './pages/admin/AdminFinancePage'
+import AdminEscrowPage from './pages/admin/AdminEscrowPage'
+import SellerWalletPage from './pages/company/SellerWalletPage'
 import NotificationsPage from './pages/notifications/NotificationsPage'
 
 function ProtectedRoute({ children, role }: { children: React.ReactNode; role?: string }) {
@@ -54,6 +56,7 @@ export default function App() {
       <Route path="/reviews" element={<ProtectedRoute><ReviewsPage /></ProtectedRoute>} />
       <Route path="/reviews/new/:txId" element={<ProtectedRoute><NewReviewPage /></ProtectedRoute>} />
       <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
+      <Route path="/wallet" element={<ProtectedRoute><SellerWalletPage /></ProtectedRoute>} />
 
       <Route path="/admin" element={<ProtectedRoute role="admin"><AdminDashboardPage /></ProtectedRoute>} />
       <Route path="/admin/companies" element={<ProtectedRoute role="admin"><AdminCompaniesPage /></ProtectedRoute>} />
@@ -61,6 +64,7 @@ export default function App() {
       <Route path="/admin/listings" element={<ProtectedRoute role="admin"><AdminListingsPage /></ProtectedRoute>} />
       <Route path="/admin/transactions" element={<ProtectedRoute role="admin"><AdminTransactionsPage /></ProtectedRoute>} />
       <Route path="/admin/finance" element={<ProtectedRoute role="admin"><AdminFinancePage /></ProtectedRoute>} />
+      <Route path="/admin/escrow" element={<ProtectedRoute role="admin"><AdminEscrowPage /></ProtectedRoute>} />
       <Route path="/admin/reports" element={<ProtectedRoute role="admin"><AdminReportsPage /></ProtectedRoute>} />
       <Route path="/admin/export" element={<ProtectedRoute role="admin"><AdminExportPage /></ProtectedRoute>} />
     </Routes>

@@ -36,7 +36,7 @@ export default function AdminListingsPage() {
       <div className="page-header">
         <div>
           <p className="eyebrow">Quản trị</p>
-          <h1>Quản Lý Listing</h1>
+          <h1>Quản Lý Nguồn Cung Vật Liệu</h1>
           <p className="muted">Tất cả nguồn cung vật liệu trên hệ thống</p>
         </div>
       </div>

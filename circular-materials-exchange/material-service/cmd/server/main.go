@@ -22,7 +22,7 @@ func main() {
 	dbPort := getEnv("DB_PORT", "5432")
 	dbName := getEnv("DB_NAME", "material_db")
 	dbUser := getEnv("DB_USER", "cme")
-	dbPass := getEnv("DB_PASSWORD", "")
+	dbPass := getEnv("DB_PASSWORD", "cme_secret_2024")
 	grpcPort := getEnv("GRPC_PORT", "50053")
 
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",

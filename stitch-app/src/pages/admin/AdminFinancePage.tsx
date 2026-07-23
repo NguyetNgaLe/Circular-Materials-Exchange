@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useStore } from '../../store'
 import Layout from '../../components/Layout'
-import { DollarSign, TrendingUp, ArrowLeftRight, Wallet, Loader2 } from 'lucide-react'
+import { DollarSign, TrendingUp, ArrowLeftRight, Loader2 } from 'lucide-react'
 
 export default function AdminFinancePage() {
   const store = useStore()
@@ -36,7 +36,7 @@ export default function AdminFinancePage() {
       <Layout showSidebar>
         <div className="empty-state">
           <Loader2 className="animate-spin" size={32} />
-          <p>Dang tai du lieu tai chinh...</p>
+          <p>Đang tải du lieu Tài chính...</p>
         </div>
       </Layout>
     )
@@ -46,7 +46,7 @@ export default function AdminFinancePage() {
     <Layout showSidebar>
       <div className="page-header">
         <div>
-          <p className="eyebrow">Quan tri tai chinh</p>
+          <p className="eyebrow">Quản trị Tài chính</p>
           <h1>Dong Tien Thu Chi</h1>
         </div>
       </div>
@@ -56,28 +56,21 @@ export default function AdminFinancePage() {
           <div className="stat-icon green"><DollarSign size={22} /></div>
           <div>
             <strong>{(overview?.totalIncome || 0).toLocaleString()}đ</strong>
-            <span>Tong doanh thu</span>
+            <span>Tổng doanh thu</span>
           </div>
         </div>
         <div className="stat-card">
           <div className="stat-icon blue"><TrendingUp size={22} /></div>
           <div>
             <strong>{(overview?.monthIncome || 0).toLocaleString()}đ</strong>
-            <span>Doanh thu thang nay</span>
+            <span>Doanh thu tháng nay</span>
           </div>
         </div>
         <div className="stat-card">
           <div className="stat-icon orange"><ArrowLeftRight size={22} /></div>
           <div>
             <strong>{overview?.totalTransactions || 0}</strong>
-            <span>So giao dich</span>
-          </div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-icon green"><Wallet size={22} /></div>
-          <div>
-            <strong>{(overview?.walletBalance || 0).toLocaleString()}đ</strong>
-            <span>So du vi</span>
+            <span>So Giao dịch</span>
           </div>
         </div>
       </div>
@@ -88,7 +81,7 @@ export default function AdminFinancePage() {
             <h2>Doanh thu theo thang</h2>
           </div>
           {(overview?.monthlyData || []).length === 0 ? (
-            <p className="muted" style={{ padding: 20 }}>Chua co du lieu doanh thu</p>
+            <p className="muted" style={{ padding: 20 }}>Chưa có dữ liệu doanh thu</p>
           ) : (
             <div className="table-responsive">
               <table className="table">
@@ -108,17 +101,16 @@ export default function AdminFinancePage() {
 
         <div className="panel">
           <div className="panel-header">
-            <h2>Thong tin vi san</h2>
+            <h2>Thông tin doanh thu</h2>
           </div>
           <div className="info-list">
-            <div className="info-row"><span>So du hien tai</span><strong>{(overview?.walletBalance || 0).toLocaleString()}đ</strong></div>
-            <div className="info-row"><span>Tong thu</span><strong style={{ color: 'green' }}>{(overview?.totalIncome || 0).toLocaleString()}đ</strong></div>
-            <div className="info-row"><span>Tong chi</span><strong style={{ color: 'red' }}>{(overview?.totalExpense || 0).toLocaleString()}đ</strong></div>
-            <div className="info-row"><span>Loi nhuan</span><strong>{((overview?.totalIncome || 0) - (overview?.totalExpense || 0)).toLocaleString()}đ</strong></div>
+            <div className="info-row"><span>Tổng doanh thu</span><strong style={{ color: 'green' }}>{(overview?.totalIncome || 0).toLocaleString()}đ</strong></div>
+            <div className="info-row"><span>Doanh thu tháng nay</span><strong>{(overview?.monthIncome || 0).toLocaleString()}đ</strong></div>
+            <div className="info-row"><span>So Giao dịch Hoàn tất</span><strong>{overview?.totalTransactions || 0}</strong></div>
           </div>
           <div style={{ marginTop: 16, padding: 12, background: '#f0fdf4', borderRadius: 8 }}>
             <p style={{ fontSize: 13, color: '#166534' }}>
-              <strong>Mo hinh phi:</strong> Thu 2% tu seller moi giao dich hoan tat
+              <strong>Mô hình Thanh toán:</strong> Tien tu dong chuyen ve tai khoan Ngân hang da lien ket cua tung Doanh nghiệp khi Giao dịch Hoàn tất. San thu phi 2%.
             </p>
           </div>
         </div>
@@ -126,21 +118,21 @@ export default function AdminFinancePage() {
 
       <div className="panel">
         <div className="panel-header">
-          <h2>Lich su phi giao dich</h2>
+          <h2>Lịch sử phi Giao dịch</h2>
         </div>
         {fees.length === 0 ? (
-          <p className="muted" style={{ padding: 20 }}>Chua co phi giao dich nao</p>
+          <p className="muted" style={{ padding: 20 }}>Chưa có phi Giao dịch nao</p>
         ) : (
           <div className="table-responsive">
             <table className="table">
               <thead>
                 <tr>
                   <th>Ngay</th>
-                  <th>Giao dich</th>
-                  <th>Tien giao dich</th>
+                  <th>Giao dịch</th>
+                  <th>Tien Giao dịch</th>
                   <th>Ty le phi</th>
-                  <th>So tien phi</th>
-                  <th>Trang thai</th>
+                  <th>Số tiền phi</th>
+                  <th>Trạng thái</th>
                 </tr>
               </thead>
               <tbody>

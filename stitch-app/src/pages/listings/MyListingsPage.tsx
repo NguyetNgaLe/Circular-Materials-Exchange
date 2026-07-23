@@ -10,16 +10,21 @@ export default function MyListingsPage() {
   const user = store.currentUser
   const [listings, setListings] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [company, setCompany] = useState<any>(null)
 
   useEffect(() => {
     if (!user) return
     const fetchListings = async () => {
       setLoading(true)
       try {
-        const data = await store.getListings()
+        const [data] = await Promise.all([store.getListings()])
         setListings(data.filter((l: any) => l.sellerId === user.id))
+        if (user.companyId) {
+          const companyData = await store.getCompany(user.companyId)
+          setCompany(companyData)
+        }
       } catch (err) {
-        console.error('Failed to fetch listings:', err)
+        console.error('Failed to fetch data:', err)
       } finally {
         setLoading(false)
       }
@@ -46,7 +51,17 @@ export default function MyListingsPage() {
           <p className="eyebrow">Quản lý</p>
           <h1>Nguồn Cung Của Tôi</h1>
         </div>
-        <Link to="/listings/new" className="btn btn-primary"><Plus size={16} /> Đăng vật liệu mới</Link>
+        {company?.status === 'verified' ? (
+          <Link to="/listings/new" className="btn btn-primary"><Plus size={16} /> Đăng vật liệu mới</Link>
+        ) : (
+          <button
+            className="btn btn-primary"
+            disabled
+            style={{ background: '#e5e7eb', color: '#6b7280', cursor: 'not-allowed', border: 'none' }}
+          >
+            Doanh nghiệp chưa được duyệt
+          </button>
+        )}
       </div>
 
       {loading ? (
@@ -58,8 +73,12 @@ export default function MyListingsPage() {
         <div className="empty-state">
           <span className="empty-icon">📦</span>
           <h3>Chưa có nguồn cung nào</h3>
-          <p>Bắt đầu bằng cách đăng vật liệu đầu tiên của bạn.</p>
-          <Link to="/listings/new" className="btn btn-primary">Đăng vật liệu</Link>
+          {company?.status === 'verified' && (
+            <>
+              <p>Bắt đầu bằng cách đăng vật liệu đầu tiên của bạn.</p>
+              <Link to="/listings/new" className="btn btn-primary">Đăng vật liệu</Link>
+            </>
+          )}
         </div>
       ) : (
         <div className="table-responsive">

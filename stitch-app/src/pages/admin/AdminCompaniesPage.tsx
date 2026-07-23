@@ -81,12 +81,9 @@ export default function AdminCompaniesPage() {
             {list.map(c => (
               <tr key={c.id}>
                 <td>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    {c.imageUrl && <img src={c.imageUrl} alt="" style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 6 }} />}
-                    <div>
-                      <strong>{c.name}</strong><br />
-                      <span className="muted" style={{ fontSize: 12 }}>{c.description?.slice(0, 50)}...</span>
-                    </div>
+                  <div>
+                    <strong>{c.name}</strong><br />
+                    <span className="muted" style={{ fontSize: 12 }}>{c.description?.slice(0, 50)}...</span>
                   </div>
                 </td>
                 <td>{c.taxCode}</td>

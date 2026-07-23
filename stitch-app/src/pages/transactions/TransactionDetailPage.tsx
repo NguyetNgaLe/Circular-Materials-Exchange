@@ -42,26 +42,20 @@ export default function TransactionDetailPage() {
   const isBuyer = user.id === tx.buyerId
   const myRole = isBuyer ? 'Bên mua' : 'Bên bán'
   const partner = isBuyer ? tx.sellerName : tx.buyerName
-  const canConfirmBuyer = isBuyer && tx.status === 'in_progress'
-  const canConfirmSeller = !isBuyer && tx.status === 'in_progress'
-  const canConfirmComplete = !isBuyer && tx.status === 'buyer_confirmed'
+  const canSellerShip = !isBuyer && tx.status === 'confirmed'
+  const canBuyerComplete = isBuyer && tx.status === 'in_progress'
 
   const handleConfirm = async () => {
     setUpdating(true)
     let newStatus = ''
     let note = ''
 
-    if (isBuyer && tx.status === 'in_progress') {
-      newStatus = 'buyer_confirmed'
-      note = 'Đã nhận hàng và xác nhận'
-    } else if (!isBuyer) {
-      if (tx.status === 'buyer_confirmed') {
-        newStatus = 'completed'
-        note = 'Xác nhận hoàn tất giao dịch'
-      } else if (tx.status === 'in_progress') {
-        newStatus = 'seller_confirmed'
-        note = 'Xác nhận đã giao hàng'
-      }
+    if (!isBuyer && tx.status === 'confirmed') {
+      newStatus = 'in_progress'
+      note = 'Đã giao hàng'
+    } else if (isBuyer && tx.status === 'in_progress') {
+      newStatus = 'completed'
+      note = 'Đã nhận hàng và xác nhận hoàn tất'
     }
 
     if (newStatus) {
@@ -111,19 +105,14 @@ export default function TransactionDetailPage() {
             </div>
           </div>
 
-          {canConfirmBuyer && (
-            <button className="btn btn-primary btn-full" onClick={handleConfirm} disabled={updating}>
-              {updating ? 'Đang xử lý...' : 'Xác Nhận Đã Nhận Hàng'}
-            </button>
-          )}
-          {canConfirmSeller && (
+          {canSellerShip && (
             <button className="btn btn-primary btn-full" onClick={handleConfirm} disabled={updating}>
               {updating ? 'Đang xử lý...' : 'Xác Nhận Đã Giao Hàng'}
             </button>
           )}
-          {canConfirmComplete && (
+          {canBuyerComplete && (
             <button className="btn btn-primary btn-full" onClick={handleConfirm} disabled={updating}>
-              {updating ? 'Đang xử lý...' : 'Xác Nhận Hoàn Tất Giao Dịch'}
+              {updating ? 'Đang xử lý...' : 'Xác Nhận Đã Nhận Hàng & Hoàn Tất'}
             </button>
           )}
         </div>
@@ -148,9 +137,9 @@ export default function TransactionDetailPage() {
             ))}
           </div>
 
-          {tx.status === 'completed' && (
+          {tx.status === 'completed' && isBuyer && (
             <div style={{ marginTop: 16 }}>
-              <Link to={`/reviews/new/${tx.id}`} className="btn btn-primary btn-full">Đánh Giá Đối Tác</Link>
+              <Link to={`/reviews/new/${tx.id}`} className="btn btn-primary btn-full">Đánh Giá Người Bán</Link>
             </div>
           )}
         </div>

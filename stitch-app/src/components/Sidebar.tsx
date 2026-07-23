@@ -3,7 +3,8 @@ import { Link, useLocation } from 'react-router-dom'
 import { useStore } from '../store'
 import {
   LayoutDashboard, Package, ShoppingCart, ArrowLeftRight,
-  Star, Building2, FileText, Bell, Settings, Shield, Store, DollarSign
+  Star, Building2, FileText, Bell, Settings, Shield, Store, DollarSign,
+  ArrowDownLeft
 } from 'lucide-react'
 
 interface NavItem { to: string; label: string; icon: React.ReactNode }
@@ -15,6 +16,7 @@ const businessNav: NavItem[] = [
   { to: '/offers/sent', label: 'Đề nghị đã gửi', icon: <FileText size={18} /> },
   { to: '/offers/received', label: 'Đề nghị đã nhận', icon: <ShoppingCart size={18} /> },
   { to: '/transactions', label: 'Giao dịch', icon: <ArrowLeftRight size={18} /> },
+  { to: '/wallet', label: 'Lịch sử GD', icon: <ArrowDownLeft size={18} /> },
   { to: '/reviews', label: 'Đánh giá', icon: <Star size={18} /> },
   { to: '/company', label: 'Doanh nghiệp', icon: <Building2 size={18} /> },
   { to: '/notifications', label: 'Thông báo', icon: <Bell size={18} /> },
@@ -24,9 +26,10 @@ const adminNav: NavItem[] = [
   { to: '/admin', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
   { to: '/admin/companies', label: 'Duyệt doanh nghiệp', icon: <Building2 size={18} /> },
   { to: '/admin/categories', label: 'Danh mục vật liệu', icon: <Package size={18} /> },
-  { to: '/admin/listings', label: 'Quản lý listing', icon: <FileText size={18} /> },
+  { to: '/admin/listings', label: 'Quản lý nguồn cung', icon: <FileText size={18} /> },
   { to: '/admin/transactions', label: 'Giao dịch', icon: <ArrowLeftRight size={18} /> },
   { to: '/admin/finance', label: 'Tài chính', icon: <DollarSign size={18} /> },
+  { to: '/admin/escrow', label: 'Escrow', icon: <ArrowDownLeft size={18} /> },
   { to: '/admin/reports', label: 'Báo cáo vi phạm', icon: <Shield size={18} /> },
   { to: '/admin/export', label: 'Xuất CSV', icon: <Settings size={18} /> },
 ]

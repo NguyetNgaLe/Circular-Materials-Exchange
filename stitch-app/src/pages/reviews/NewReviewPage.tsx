@@ -73,10 +73,6 @@ export default function NewReviewPage() {
       <div className="form-card" style={{ maxWidth: 600 }}>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Đối tác</label>
-            <input value={revieweeName} disabled />
-          </div>
-          <div className="form-group">
             <label>Đánh giá</label>
             <div className="rating-input">
               {[1, 2, 3, 4, 5].map(i => (
