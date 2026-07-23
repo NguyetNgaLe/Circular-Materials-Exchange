@@ -26,6 +26,7 @@ message Company {
   int32 review_count = 11;
   string member_since = 12;
   repeated string certifications = 13;
+  string image_url = 14;
 }
 
 message CreateCompanyRequest {

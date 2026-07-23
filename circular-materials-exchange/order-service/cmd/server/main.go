@@ -8,6 +8,7 @@ import (
 	"os"
 
 	_ "github.com/lib/pq"
+	"github.com/nats-io/nats.go"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"order-service/internal/handler"
@@ -22,6 +23,7 @@ func main() {
 	dbName := getEnv("DB_NAME", "order_db")
 	dbUser := getEnv("DB_USER", "cme")
 	dbPass := getEnv("DB_PASSWORD", "")
+	natsURL := getEnv("NATS_URL", "nats://localhost:4222")
 	grpcPort := getEnv("GRPC_PORT", "50054")
 
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
@@ -38,7 +40,15 @@ func main() {
 	}
 
 	repo := repository.NewOrderRepository(db)
-	svc := service.NewOrderService(repo, nil)
+	var eventPublisher service.NATSConn
+	natsConnection, err := nats.Connect(natsURL)
+	if err != nil {
+		log.Printf("NATS unavailable; order processing continues without async events: %v", err)
+	} else {
+		defer natsConnection.Close()
+		eventPublisher = natsConnection
+	}
+	svc := service.NewOrderService(repo, eventPublisher)
 	h := handler.NewOrderHandler(svc)
 
 	lis, err := net.Listen("tcp", ":"+grpcPort)

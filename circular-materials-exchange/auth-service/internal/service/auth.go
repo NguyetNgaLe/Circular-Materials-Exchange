@@ -98,6 +98,10 @@ func (s *AuthService) GetUser(id string) (*repository.User, error) {
 	return s.repo.FindByID(id)
 }
 
+func (s *AuthService) GetUserByEmail(email string) (*repository.User, error) {
+	return s.repo.FindByEmail(email)
+}
+
 func (s *AuthService) UpdateProfile(id, name, phone, avatar string) (*repository.User, error) {
 	user, err := s.repo.FindByID(id)
 	if err != nil {

@@ -1,37 +1,40 @@
 @startuml
-title D12 - Deployment Diagram hiện tại
+title D12 - Deployment Diagram microservice as-built
 skinparam componentStyle rectangle
 
-node "Máy người dùng" as client {
-  artifact "React SPA\n(Vite build/dev server)" as web
+node "Thiết bị người dùng" as client {
   artifact "Web Browser" as browser
-  browser --> web
 }
 
-node "Docker Host" as host {
-  node "Host network" {
-    component "cme-api-gateway\nGo + Gin\nHTTP :8085" as gateway
-  }
+node "Frontend Server" as frontendHost {
+  component "Nginx\nHTTP :13005" as nginx
+  artifact "React SPA build\n/tmp/stitch-app" as web
+  nginx --> web : static + SPA fallback
+}
 
-  cloud "cme-network" as network {
-    component "auth-service\ngRPC :50051" as auth
-    component "company-service\ngRPC :50052" as company
-    component "material-service\ngRPC :50053" as material
-    component "order-service\ngRPC :50054" as order
-    component "review-service\ngRPC :50055" as review
-    component "notification-service\ngRPC :50056" as notification
-    database "cme-postgres\nPostgreSQL :5432\n6 logical databases" as postgres
+node "Backend Docker Server" as backendHost {
+  cloud "Docker network: cme-network" as network {
+    component "cme-api-gateway\nGo + Gin\nHTTP :8085" as gateway
+    component "auth-service\n:50051" as auth
+    component "company-service\n:50052" as company
+    component "material-service\n:50053" as material
+    component "order-service\n:50054" as order
+    component "review-service\n:50055" as review
+    component "notification-service\n:50056" as notification
+    database "cme-postgres\nPostgreSQL 15\nHost :5433\n6 logical databases" as postgres
     queue "cme-nats\n:4222 / :8222" as nats
     storage "cme-minio\n:9000 / :9001" as minio
   }
 
-  folder "Docker volumes" {
+  folder "Persistent volumes" {
     artifact "pg-data" as pgdata
     artifact "minio-data" as miniodata
   }
 }
 
-web --> gateway : HTTP/JSON :8085
+browser --> nginx : HTTP
+nginx --> gateway : reverse proxy /api/
+
 gateway --> auth : gRPC
 gateway --> company : gRPC
 gateway --> material : gRPC
@@ -45,13 +48,14 @@ material --> postgres : material_db
 order --> postgres : order_db
 review --> postgres : review_db
 notification --> postgres : notif_db
-order --> nats : publish events
+material --> minio : HTTP PUT ảnh
+order --> nats : publish cme.orders.*
+nats --> notification : event subscription
 postgres --> pgdata
 minio --> miniodata
 
-note right of web
-  Frontend chưa phải một service
-  trong docker-compose hiện tại.
+note right of gateway
+  Gateway publish 8085:8085 và tham gia cme-network.
+  Không có driver PostgreSQL hoặc SQL trong Gateway.
 end note
 @enduml
-

@@ -1,37 +1,51 @@
 @startuml
-title D19 - Sequence tìm kiếm nguồn cung và gửi Offer
+title D19 - Sequence tìm kiếm và gửi Offer (as-built)
 autonumber
 
 actor Buyer
 participant "React SPA" as Web
 participant "API Gateway" as Gateway
 participant "Material Service" as Material
+participant "Company Service" as Company
 participant "Order Service" as Order
-participant "Order Repository" as Repo
-database "order_db" as DB
+participant "Notification Service" as Notification
+queue NATS
+database "material_db" as MaterialDB
+database "company_db" as CompanyDB
+database "order_db" as OrderDB
+database "notif_db" as NotifDB
 
 Buyer -> Web : Nhập từ khóa/bộ lọc
-Web -> Gateway : GET /api/listings?keyword&category&location
-Gateway -> Material : ListListings(...) [gRPC]
-Material --> Gateway : Danh sách SupplyListing
+Web -> Gateway : GET /api/listings?... (public)
+Gateway -> Material : ListListings(ctx)
+Material -> MaterialDB : SELECT active listings
+MaterialDB --> Material : SupplyListing[]
+Material --> Gateway : danh sách
 Gateway --> Web : HTTP 200
-Web --> Buyer : Hiển thị kết quả
 
 Buyer -> Web : Chọn listing và nhập Offer
-Web -> Gateway : POST /api/offers + JWT
-Gateway -> Order : CreateOffer(request) [gRPC]
-Order -> Order : Gán ID, status=pending
-Order -> Repo : CreateOffer(offer)
-Repo -> DB : INSERT offers
-DB --> Repo : OK
-Repo --> Order : OK
+Web -> Gateway : POST /api/offers + bearer token
+Gateway -> Company : GetCompanyByOwner(gRPC)
+Company -> CompanyDB : SELECT Company theo buyer_id
+CompanyDB --> Company : verified
+Company --> Gateway : verified
+Gateway -> Order : CreateOffer(gRPC)
+Order -> OrderDB : INSERT Offer(status=pending)
+Order -> OrderDB : INSERT Escrow(holding,\ntransaction_id=NULL)
+Order -> NATS : publish cme.orders.offer.created
 Order --> Gateway : Offer(pending)
-Gateway --> Web : HTTP 201
-Web --> Buyer : Hiển thị Offer đã gửi
+par Event bất đồng bộ
+NATS -> Notification : consume event
+Notification -> NotifDB : INSERT Notification
+else Đường đồng bộ giữ phản hồi UI
+Gateway -> Notification : CreateNotification(gRPC,\nsame reference_id)
+Notification -> NotifDB : INSERT ... ON CONFLICT DO NOTHING
+end
+Gateway --> Web : HTTP 200
+Web --> Buyer : Hiển thị bill/Offer đã gửi
 
-note over Gateway,Order
-  Code hiện tại chưa gọi Material Service
-  để xác minh listing bên trong CreateOffer.
+note over Order,OrderDB
+  Escrow là ledger prototype, không có payment gateway.
+  Ownership/kiểm tra Listing còn cần hoàn thiện.
 end note
 @enduml
-

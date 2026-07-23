@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # ========== PostgreSQL (shared, multiple databases) ==========
   postgres:
@@ -116,8 +114,11 @@ services:
       DB_USER: cme
       DB_PASSWORD: ${DB_PASSWORD}
       GRPC_PORT: "50053"
+      MINIO_URL: http://minio:9000
     depends_on:
       postgres:
+        condition: service_healthy
+      minio:
         condition: service_healthy
     restart: on-failure
     networks:
@@ -200,15 +201,15 @@ services:
       context: ./api-gateway
       dockerfile: Dockerfile
     container_name: cme-api-gateway
-    network_mode: host
+    ports:
+      - "8085:8085"
     environment:
-      AUTH_SERVICE_ADDR: localhost:50051
-      COMPANY_SERVICE_ADDR: localhost:50052
-      MATERIAL_SERVICE_ADDR: localhost:50053
-      ORDER_SERVICE_ADDR: localhost:50054
-      REVIEW_SERVICE_ADDR: localhost:50055
-      NOTIFICATION_SERVICE_ADDR: localhost:50056
-      JWT_SECRET: ${JWT_SECRET}
+      AUTH_SERVICE_ADDR: auth-service:50051
+      COMPANY_SERVICE_ADDR: company-service:50052
+      MATERIAL_SERVICE_ADDR: material-service:50053
+      ORDER_SERVICE_ADDR: order-service:50054
+      REVIEW_SERVICE_ADDR: review-service:50055
+      NOTIFICATION_SERVICE_ADDR: notification-service:50056
       HTTP_PORT: "8085"
     depends_on:
       - auth-service
@@ -218,6 +219,8 @@ services:
       - review-service
       - notification-service
     restart: on-failure
+    networks:
+      - cme-network
 
 volumes:
   pg-data:

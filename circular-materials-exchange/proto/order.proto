@@ -12,6 +12,21 @@ service OrderService {
   rpc GetTransaction(GetTransactionRequest) returns (Transaction);
   rpc ListTransactions(ListTransactionsRequest) returns (ListTransactionsResponse);
   rpc UpdateTransactionStatus(UpdateStatusRequest) returns (Transaction);
+  rpc GetFinanceOverview(Empty) returns (FinanceOverview);
+  rpc ListPlatformFees(PageRequest) returns (ListPlatformFeesResponse);
+  rpc GetPlatformWallet(Empty) returns (PlatformWallet);
+  rpc ListPlatformWalletTransactions(PageRequest) returns (ListPlatformWalletTransactionsResponse);
+  rpc CollectFee(CollectFeeRequest) returns (CollectFeeResponse);
+  rpc CreateEscrow(CreateEscrowRequest) returns (EscrowTransaction);
+  rpc ListEscrows(PageRequest) returns (ListEscrowsResponse);
+  rpc ReleaseEscrow(ReleaseEscrowRequest) returns (EscrowTransaction);
+  rpc GetSellerWallet(SellerRequest) returns (SellerWallet);
+  rpc ListSellerWalletTransactions(SellerRequest) returns (ListSellerWalletTransactionsResponse);
+  rpc CreateWithdrawal(CreateWithdrawalRequest) returns (WithdrawalRequest);
+  rpc ListSellerWithdrawals(SellerRequest) returns (ListWithdrawalsResponse);
+  rpc ListWithdrawals(PageRequest) returns (ListWithdrawalsResponse);
+  rpc ApproveWithdrawal(ProcessWithdrawalRequest) returns (WithdrawalRequest);
+  rpc RejectWithdrawal(ProcessWithdrawalRequest) returns (WithdrawalRequest);
 }
 
 message Offer {
@@ -132,4 +147,180 @@ message UpdateStatusRequest {
   string actor_id = 3;
   string actor_name = 4;
   string note = 5;
+}
+
+message Empty {}
+
+message PageRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+}
+
+message FinanceOverview {
+  double total_income = 1;
+  double month_income = 2;
+  int64 total_transactions = 3;
+  double wallet_balance = 4;
+  repeated MonthlyRevenue monthly_revenue = 5;
+}
+
+message MonthlyRevenue {
+  string month = 1;
+  double revenue = 2;
+}
+
+message PlatformFee {
+  string id = 1;
+  string transaction_id = 2;
+  string seller_id = 3;
+  string buyer_id = 4;
+  double transaction_amount = 5;
+  double fee_rate = 6;
+  double fee_amount = 7;
+  string fee_type = 8;
+  string status = 9;
+  string collected_at = 10;
+  string created_at = 11;
+  string listing_title = 12;
+}
+
+message ListPlatformFeesResponse {
+  repeated PlatformFee fees = 1;
+  int32 total = 2;
+}
+
+message PlatformWallet {
+  double balance = 1;
+  double total_income = 2;
+  double total_expense = 3;
+}
+
+message PlatformWalletTransaction {
+  string id = 1;
+  string type = 2;
+  double amount = 3;
+  double balance_after = 4;
+  string reference_type = 5;
+  string reference_id = 6;
+  string description = 7;
+  string created_at = 8;
+}
+
+message ListPlatformWalletTransactionsResponse {
+  repeated PlatformWalletTransaction transactions = 1;
+  int32 total = 2;
+}
+
+message CollectFeeRequest {
+  string transaction_id = 1;
+  string seller_id = 2;
+  string buyer_id = 3;
+  double transaction_amount = 4;
+  double fee_rate = 5;
+}
+
+message CollectFeeResponse {
+  string fee_id = 1;
+  double fee_amount = 2;
+  double wallet_balance = 3;
+}
+
+message CreateEscrowRequest {
+  string transaction_id = 1;
+  string buyer_id = 2;
+  string buyer_name = 3;
+  string seller_id = 4;
+  string seller_name = 5;
+  double amount = 6;
+  int32 hold_days = 7;
+}
+
+message EscrowTransaction {
+  string id = 1;
+  string transaction_id = 2;
+  string buyer_id = 3;
+  string buyer_name = 4;
+  string seller_id = 5;
+  string seller_name = 6;
+  double amount = 7;
+  double fee_rate = 8;
+  double fee_amount = 9;
+  double seller_amount = 10;
+  string status = 11;
+  string hold_until = 12;
+  string released_at = 13;
+  string created_at = 14;
+}
+
+message ListEscrowsResponse {
+  repeated EscrowTransaction escrows = 1;
+  int32 total = 2;
+}
+
+message ReleaseEscrowRequest {
+  string id = 1;
+}
+
+message SellerRequest {
+  string seller_id = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+}
+
+message SellerWallet {
+  string seller_id = 1;
+  string seller_name = 2;
+  double balance = 3;
+  double total_earned = 4;
+  double total_fees_paid = 5;
+  double total_withdrawn = 6;
+}
+
+message SellerWalletTransaction {
+  string id = 1;
+  string type = 2;
+  double amount = 3;
+  double balance_after = 4;
+  string reference_type = 5;
+  string reference_id = 6;
+  string description = 7;
+  string created_at = 8;
+}
+
+message ListSellerWalletTransactionsResponse {
+  repeated SellerWalletTransaction transactions = 1;
+  int32 total = 2;
+}
+
+message CreateWithdrawalRequest {
+  string seller_id = 1;
+  string seller_name = 2;
+  double amount = 3;
+  string bank_name = 4;
+  string bank_account = 5;
+  string bank_owner = 6;
+}
+
+message WithdrawalRequest {
+  string id = 1;
+  string seller_id = 2;
+  string seller_name = 3;
+  double amount = 4;
+  string bank_name = 5;
+  string bank_account = 6;
+  string bank_owner = 7;
+  string status = 8;
+  string admin_note = 9;
+  string processed_at = 10;
+  string created_at = 11;
+}
+
+message ListWithdrawalsResponse {
+  repeated WithdrawalRequest withdrawals = 1;
+  int32 total = 2;
+}
+
+message ProcessWithdrawalRequest {
+  string id = 1;
+  string reason = 2;
 }

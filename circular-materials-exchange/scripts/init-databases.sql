@@ -73,6 +73,7 @@ CREATE TABLE IF NOT EXISTS companies (
     review_count INT DEFAULT 0,
     member_since DATE DEFAULT CURRENT_DATE,
     certifications TEXT DEFAULT '',
+    image_url TEXT DEFAULT '',
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );
@@ -91,6 +92,7 @@ CREATE TABLE IF NOT EXISTS categories (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(100) NOT NULL,
     icon VARCHAR(50),
+    image_url TEXT DEFAULT '',
     created_at TIMESTAMP DEFAULT NOW()
 );
 
@@ -111,6 +113,7 @@ CREATE TABLE IF NOT EXISTS supply_listings (
     packaging VARCHAR(100),
     status VARCHAR(20) DEFAULT 'active',
     images TEXT DEFAULT '',
+    image_url TEXT DEFAULT '',
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );
@@ -363,9 +366,15 @@ CREATE TABLE IF NOT EXISTS notifications (
     title VARCHAR(255),
     message TEXT,
     type VARCHAR(20),
+    reference_id UUID,
     read BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT NOW()
 );
 
+ALTER TABLE notifications ADD COLUMN IF NOT EXISTS reference_id UUID;
+
 CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id);
 CREATE INDEX IF NOT EXISTS idx_notifications_read ON notifications(user_id, read);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_notifications_reference
+    ON notifications(user_id, type, reference_id)
+    WHERE reference_id IS NOT NULL;

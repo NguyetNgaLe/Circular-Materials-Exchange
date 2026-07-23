@@ -1,12 +1,14 @@
 # Actor và quyền hạn
 
-| Actor | Chức năng chính |
-|---|---|
-| Guest | Xem marketplace và nhu cầu; tìm kiếm; xem chi tiết; đăng ký; đăng nhập |
-| Business User | Quản lý hồ sơ cá nhân; tạo và xem trạng thái doanh nghiệp; xem dashboard |
-| Buyer | Đăng nhu cầu; tìm nguồn cung; gửi/hủy Offer; theo dõi và xác nhận giao dịch; đánh giá Seller |
-| Seller | Đăng nguồn cung; nhận và xử lý Offer; theo dõi và xác nhận giao dịch; đánh giá Buyer |
-| Admin | Duyệt doanh nghiệp; quản lý danh mục, listing, giao dịch, báo cáo và dữ liệu hệ thống |
+| Actor | Chức năng chính | Điều kiện/giới hạn hiện tại |
+|---|---|---|
+| Guest | Xem nguồn cung, nhu cầu, chi tiết; đăng ký, đăng nhập | Không được tạo dữ liệu nghiệp vụ |
+| Business User | Xem dashboard, tạo/xem hồ sơ doanh nghiệp, xem thông báo | Login hiện dùng demo bearer token |
+| Buyer | Tìm nguồn cung, gửi Offer, xem giao dịch, xác nhận nhận hàng, đánh giá Seller | Phải có doanh nghiệp `verified` khi gửi Offer |
+| Seller | Upload ảnh, đăng nguồn cung, xử lý Offer, xác nhận giao hàng, xem Seller wallet | Phải có doanh nghiệp `verified` khi đăng nguồn cung |
+| Admin | Duyệt/từ chối doanh nghiệp, xem finance/escrow, giải ngân, duyệt/từ chối withdrawal | Một số màn quản trị khác còn ở mức UI/mock |
 
-`Buyer` và `Seller` là hai vai trò chuyên biệt của `Business User`. Một tài khoản doanh nghiệp có thể vừa mua vừa bán.
+`Buyer` và `Seller` là hai vai trò nghiệp vụ của `Business User`. Một tài khoản có thể vừa mua vừa bán trong các giao dịch khác nhau.
+
+Các hệ thống bên ngoài như ngân hàng, đơn vị logistics, cơ quan xác minh pháp lý chưa được tích hợp và không được vẽ như actor đang hoạt động trong MVP.
 

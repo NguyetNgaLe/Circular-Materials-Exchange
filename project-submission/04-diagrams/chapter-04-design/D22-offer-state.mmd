@@ -2,13 +2,13 @@ stateDiagram-v2
     [*] --> Pending: Buyer gửi Offer
     Pending --> Accepted: Seller chấp nhận
     Pending --> Rejected: Seller từ chối
-    Pending --> Cancelled: Buyer hủy
     Accepted --> [*]: Tạo Transaction
     Rejected --> [*]
-    Cancelled --> [*]
 
     note right of Pending
-      Chỉ Offer ở trạng thái pending
-      mới được accept, reject hoặc cancel.
+      Quy tắc nghiệp vụ yêu cầu chỉ Offer pending
+      mới được accept hoặc reject.
+      Order Service đã enforce trạng thái pending.
+      Ownership theo actor vẫn cần hoàn thiện.
+      Cancel có trong service/proto nhưng chưa có REST route.
     end note
-

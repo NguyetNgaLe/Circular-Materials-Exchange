@@ -16,19 +16,21 @@ func main() {
 
 	// Connect to gRPC services
 	clients := proxy.NewGRPCClients()
-	clients.Connect()
+	if err := clients.Connect(); err != nil {
+		log.Fatalf("Failed to initialize gRPC clients: %v", err)
+	}
 	defer clients.Close()
 
 	// Create handlers
-	authHandler := handler.NewAuthHandler(clients.AuthConn)
-	companyHandler := handler.NewCompanyHandler(clients.CompanyConn)
-	materialHandler := handler.NewMaterialHandler(clients.MaterialConn)
-	orderHandler := handler.NewOrderHandler(clients.OrderConn)
-	reviewHandler := handler.NewReviewHandler(clients.ReviewConn)
-	notificationHandler := handler.NewNotificationHandler(clients.NotificationConn)
-	financeHandler := handler.NewFinanceHandler(clients.OrderConn)
-	escrowHandler := handler.NewEscrowHandler(clients.OrderConn)
-	uploadHandler := handler.NewUploadHandler()
+	authHandler := handler.NewAuthHandler(clients.Auth, clients.Company)
+	companyHandler := handler.NewCompanyHandler(clients.Company)
+	materialHandler := handler.NewMaterialHandler(clients.Material, clients.Company)
+	orderHandler := handler.NewOrderHandler(clients.Order, clients.Company)
+	reviewHandler := handler.NewReviewHandler(clients.Review, clients.Auth)
+	notificationHandler := handler.NewNotificationHandler(clients.Notification)
+	financeHandler := handler.NewFinanceHandler(clients.Order)
+	escrowHandler := handler.NewEscrowHandler(clients.Order)
+	uploadHandler := handler.NewUploadHandler(clients.Material)
 
 	// Ket noi OrderHandler voi NotificationHandler de tao thong bao
 	orderHandler.SetNotificationHandler(notificationHandler)
@@ -41,15 +43,23 @@ func main() {
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"status": "ok"})
 	})
+	r.GET("/ready", func(c *gin.Context) {
+		if !clients.Ready() {
+			c.JSON(http.StatusServiceUnavailable, gin.H{"status": "not_ready"})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"status": "ready"})
+	})
 
 	api := r.Group("/api")
+	authMiddleware := middleware.JWTAuth(clients.Auth)
 
 	// Auth routes (public)
 	auth := api.Group("/auth")
 	{
 		auth.POST("/register", authHandler.Register)
 		auth.POST("/login", authHandler.Login)
-		auth.GET("/me", middleware.JWTAuth(), authHandler.GetMe)
+		auth.GET("/me", authMiddleware, authHandler.GetMe)
 	}
 
 	// Public browse routes (no auth required)
@@ -59,11 +69,11 @@ func main() {
 	api.GET("/demands", materialHandler.ListDemands)
 
 	// Upload (auth required)
-	api.POST("/upload", middleware.JWTAuth(), uploadHandler.UploadImage)
+	api.POST("/upload", authMiddleware, uploadHandler.UploadImage)
 
 	// Protected routes
 	protected := api.Group("")
-	protected.Use(middleware.JWTAuth())
+	protected.Use(authMiddleware)
 	{
 		// Company
 		protected.POST("/companies", companyHandler.CreateCompany)
@@ -110,7 +120,7 @@ func main() {
 
 	// Admin routes
 	admin := api.Group("/admin")
-	admin.Use(middleware.JWTAuth(), middleware.AdminOnly())
+	admin.Use(authMiddleware, middleware.AdminOnly())
 	{
 		// Finance
 		admin.GET("/finance/overview", financeHandler.GetOverview)

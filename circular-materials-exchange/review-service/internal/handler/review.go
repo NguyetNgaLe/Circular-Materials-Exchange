@@ -42,11 +42,14 @@ func (h *ReviewHandler) GetReview(ctx context.Context, req *pb.GetReviewRequest)
 }
 
 func (h *ReviewHandler) ListReviews(ctx context.Context, req *pb.ListReviewsRequest) (*pb.ListReviewsResponse, error) {
-	reviews, total, err := h.svc.ListReviews(
-		req.GetRevieweeId(),
-		int(req.GetPage()),
-		int(req.GetPageSize()),
-	)
+	var reviews []repository.Review
+	var total int64
+	var err error
+	if req.GetUserId() != "" && req.GetRevieweeId() == "" {
+		reviews, total, err = h.svc.ListReviewsForUser(req.GetUserId(), int(req.GetPage()), int(req.GetPageSize()))
+	} else {
+		reviews, total, err = h.svc.ListReviews(req.GetRevieweeId(), int(req.GetPage()), int(req.GetPageSize()))
+	}
 	if err != nil {
 		return nil, err
 	}

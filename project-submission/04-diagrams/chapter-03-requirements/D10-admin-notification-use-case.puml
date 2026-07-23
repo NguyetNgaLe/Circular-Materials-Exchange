@@ -1,37 +1,43 @@
 @startuml
 left to right direction
-title D10 - Use Case quản trị và thông báo
+title D10 - Use Case Notification, finance và quản trị
 
 actor "Business User" as User
+actor Seller
 actor Admin
+Seller -|> User
 
-rectangle "Thông báo" {
-  usecase "Xem danh sách thông báo" as ListNotif
-  usecase "Xem số chưa đọc" as CountNotif
-  usecase "Đánh dấu đã đọc" as ReadNotif
-  usecase "Đánh dấu tất cả đã đọc" as ReadAll
+rectangle "Notification" {
+  usecase "UC028 - Xem Notification /\nsố chưa đọc" as ListNotif
+  usecase "UC029 - Đánh dấu đã đọc /\nđọc tất cả" as ReadNotif
 }
 
-rectangle "Quản trị" {
-  usecase "Xem dashboard" as Dashboard
-  usecase "Duyệt doanh nghiệp" as Company
-  usecase "Quản lý danh mục" as Category
-  usecase "Quản lý listing" as Listing
-  usecase "Theo dõi giao dịch" as Transaction
-  usecase "Quản lý báo cáo" as Report
-  usecase "Xuất dữ liệu" as Export
+rectangle "Seller finance" {
+  usecase "UC030 - Xem wallet /\nlịch sử" as SellerWallet
+  usecase "UC031 - Tạo withdrawal\n<<API only>>" as CreateWithdrawal
+}
+
+rectangle "Admin" {
+  usecase "Duyệt / từ chối doanh nghiệp" as Company
+  usecase "UC032 - Xem finance /\nplatform fee" as Finance
+  usecase "UC033 - Xem / release escrow" as Escrow
+  usecase "UC034 - Duyệt / từ chối\nwithdrawal <<API partial>>" as Withdrawal
+  usecase "Dashboard / category /\nlisting / report / export <<partial>>" as OtherAdmin
 }
 
 User --> ListNotif
-User --> CountNotif
 User --> ReadNotif
-User --> ReadAll
-Admin --> Dashboard
+Seller --> SellerWallet
+Seller --> CreateWithdrawal
 Admin --> Company
-Admin --> Category
-Admin --> Listing
-Admin --> Transaction
-Admin --> Report
-Admin --> Export
+Admin --> Finance
+Admin --> Escrow
+Admin --> Withdrawal
+Admin --> OtherAdmin
+
+note bottom
+  Finance, escrow và withdrawal là ledger prototype.
+  Một số trang Admin mới chỉ là UI/mock.
+end note
 @enduml
 

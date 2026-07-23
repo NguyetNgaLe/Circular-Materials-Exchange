@@ -40,7 +40,7 @@ func main() {
 
 	repo := repository.NewMaterialRepository(db)
 	svc := service.NewMaterialService(repo)
-	h := handler.NewMaterialHandler(svc)
+	h := handler.NewMaterialHandler(svc, getEnv("MINIO_URL", "http://minio:9000"))
 
 	lis, err := net.Listen("tcp", ":"+grpcPort)
 	if err != nil {

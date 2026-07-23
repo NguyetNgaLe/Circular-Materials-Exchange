@@ -1,83 +1,62 @@
 @startuml
-title D15 - Design Class Diagram: Material Service
+allowmixing
+title D15 - Design Class: Material và Upload microservice as-built
 skinparam classAttributeIconSize 0
 
-class MaterialHandler <<Controller>> {
-  -svc: MaterialService
-  +CreateCategory(ctx, request)
-  +ListCategories(ctx, request)
-  +CreateListing(ctx, request)
-  +GetListing(ctx, request)
-  +ListListings(ctx, request)
-  +UpdateListing(ctx, request)
-  +DeleteListing(ctx, request)
-  +CreateDemand(ctx, request)
-  +GetDemand(ctx, request)
-  +ListDemands(ctx, request)
+package "API Gateway - REST/gRPC adapter" {
+  class MaterialHTTPHandler <<Controller>> {
+    -materialClient: MaterialServiceClient
+    -companyClient: CompanyServiceClient
+    +ListCategories(ctx)
+    +ListListings(ctx)
+    +GetListing(ctx)
+    +CreateListing(ctx)
+    +UpdateListing(ctx)
+    +DeleteListing(ctx)
+    +ListDemands(ctx)
+    +CreateDemand(ctx)
+  }
+
+  class UploadHandler <<Controller>> {
+    -materialClient: MaterialServiceClient
+    +UploadImage(ctx)
+  }
 }
 
-class MaterialService <<Service>> {
-  -repo: MaterialRepository
-  +CreateCategory(name, icon)
-  +ListCategories()
-  +CreateListing(listing)
-  +GetListing(id)
-  +ListListings(category, keyword, location, page, size)
-  +UpdateListing(listing)
-  +DeleteListing(id)
-  +CreateDemand(demand)
-  +GetDemand(id)
-  +ListDemands(category, keyword, page, size)
+package "Material Service" {
+  class MaterialGRPCHandler <<Controller>> {
+    -service: MaterialService
+    -minioURL: string
+    +UploadImage(ctx)
+  }
+  class MaterialService <<Service>>
+  class MaterialRepository <<Repository>>
+  class Category <<Entity>>
+  class SupplyListing <<Entity>>
+  class DemandListing <<Entity>>
+
+  MaterialGRPCHandler --> MaterialService
+  MaterialService --> MaterialRepository
+  MaterialRepository --> Category
+  MaterialRepository --> SupplyListing
+  MaterialRepository --> DemandListing
+  Category "1" -- "0..*" SupplyListing
+  Category "1" -- "0..*" DemandListing
 }
 
-class MaterialRepository <<Repository>> {
-  -db: sql.DB
-  +CreateCategory(category)
-  +ListCategories()
-  +CreateListing(listing)
-  +FindListingByID(id)
-  +ListListings(...)
-  +UpdateListing(listing)
-  +DeleteListing(id)
-  +CreateDemand(demand)
-  +FindDemandByID(id)
-  +ListDemands(...)
-}
+database "material_db" as MaterialDB
+class CompanyGRPCHandler <<External gRPC>>
+storage "MinIO\ncme-images" as MinIO
 
-class Category <<Entity>> {
-  +ID: string
-  +Name: string
-  +Icon: string
-}
+MaterialHTTPHandler --> MaterialGRPCHandler : Material RPC
+MaterialHTTPHandler --> CompanyGRPCHandler : verify Company
+UploadHandler --> MaterialGRPCHandler : UploadImage(bytes)
+MaterialRepository --> MaterialDB : SQL
+MaterialGRPCHandler --> MinIO : HTTP PUT
+MaterialHTTPHandler ..> UploadHandler : nhận image_url từ UI
 
-class SupplyListing <<Entity>> {
-  +ID: string
-  +Title: string
-  +CategoryID: string
-  +SellerID: string
-  +CompanyID: string
-  +Quantity: float64
-  +PricePerUnit: float64
-  +Status: string
-}
-
-class DemandListing <<Entity>> {
-  +ID: string
-  +Title: string
-  +CategoryID: string
-  +BuyerID: string
-  +CompanyID: string
-  +Quantity: float64
-  +TargetPrice: float64
-  +Status: string
-}
-
-MaterialHandler --> MaterialService
-MaterialService --> MaterialRepository
-MaterialRepository --> Category
-MaterialRepository --> SupplyListing
-MaterialRepository --> DemandListing
-Category "1" -- "0..*" SupplyListing
-Category "1" -- "0..*" DemandListing
+note bottom
+  image_url/images đã có trong bootstrap và migration.
+  Update/Delete Listing và Create Demand là stub.
+end note
 @enduml
-

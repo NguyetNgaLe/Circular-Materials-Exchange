@@ -1,6 +1,6 @@
 @startuml
 left to right direction
-title D09 - Use Case Offer, giao dịch và đánh giá
+title D09 - Use Case Offer, giao dịch, wallet và đánh giá
 
 actor "Business User" as Business
 actor Buyer
@@ -9,22 +9,26 @@ Buyer -|> Business
 Seller -|> Business
 
 rectangle "Offer và giao dịch" {
-  usecase "Gửi Offer" as CreateOffer
-  usecase "Xem Offer đã gửi" as SentOffer
-  usecase "Hủy Offer pending" as CancelOffer
-  usecase "Xem Offer đã nhận" as ReceivedOffer
-  usecase "Chấp nhận Offer" as AcceptOffer
-  usecase "Từ chối Offer" as RejectOffer
+  usecase "UC017 - Gửi Offer" as CreateOffer
+  usecase "Tạo escrow ledger" as HoldEscrow
+  usecase "UC018 - Xem Offer đã gửi" as SentOffer
+  usecase "UC019 - Xem Offer đã nhận" as ReceivedOffer
+  usecase "UC020 - Chấp nhận Offer" as AcceptOffer
+  usecase "UC021 - Từ chối Offer" as RejectOffer
   usecase "Tạo Transaction" as CreateTx
-  usecase "Xem danh sách giao dịch" as ListTx
-  usecase "Xem chi tiết và timeline" as ViewTx
-  usecase "Cập nhật trạng thái" as UpdateTx
-  usecase "Đánh giá đối tác" as Review
+  usecase "UC022 - Xem danh sách\ngiao dịch" as ListTx
+  usecase "UC023 - Xem chi tiết /\ntimeline" as ViewTx
+  usecase "UC024 - Xác nhận\nđã giao hàng" as Ship
+  usecase "UC025 - Xác nhận nhận hàng /\nhoàn tất" as Complete
+  usecase "Release escrow /\nghi phí / cộng ví" as Release
+  usecase "UC026 - Tạo Review" as Review
+  usecase "UC027 - Xem Review" as ViewReview
+  usecase "UC030 - Xem Seller wallet" as Wallet
 }
 
 Buyer --> CreateOffer
+CreateOffer .> HoldEscrow : <<include>>
 Buyer --> SentOffer
-Buyer --> CancelOffer
 Seller --> ReceivedOffer
 Seller --> AcceptOffer
 Seller --> RejectOffer
@@ -33,9 +37,16 @@ Buyer --> ListTx
 Seller --> ListTx
 Buyer --> ViewTx
 Seller --> ViewTx
-Buyer --> UpdateTx
-Seller --> UpdateTx
+Seller --> Ship
+Buyer --> Complete
+Complete .> Release : <<include>>
 Buyer --> Review
 Seller --> Review
+Business --> ViewReview
+Seller --> Wallet
+
+note bottom of Release
+  Ledger prototype; không chuyển tiền thật.
+end note
 @enduml
 

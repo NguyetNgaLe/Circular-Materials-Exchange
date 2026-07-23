@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS companies (
     review_count INT DEFAULT 0,
     member_since DATE DEFAULT CURRENT_DATE,
     certifications TEXT DEFAULT '',
+    image_url TEXT DEFAULT '',
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );

@@ -1,23 +1,18 @@
 stateDiagram-v2
-    [*] --> Confirmed: Offer được chấp nhận
-    Confirmed --> InProgress: Hai bên bắt đầu thực hiện
-    InProgress --> BuyerConfirmed: Buyer xác nhận
-    InProgress --> SellerConfirmed: Seller xác nhận
-    BuyerConfirmed --> Completed: Seller xác nhận
-    SellerConfirmed --> Completed: Buyer xác nhận
-
-    Confirmed --> Cancelled: Hủy giao dịch
-    InProgress --> Cancelled: Hủy theo thỏa thuận
-    InProgress --> Disputed: Phát sinh tranh chấp
-    Disputed --> InProgress: Giải quyết và tiếp tục
-    Disputed --> Cancelled: Kết thúc/hủy
-    Disputed --> Completed: Giải quyết hoàn tất
-
-    Completed --> [*]
-    Cancelled --> [*]
+    [*] --> Confirmed: Seller chấp nhận Offer
+    Confirmed --> InProgress: Seller xác nhận đã giao hàng
+    InProgress --> Completed: Buyer xác nhận đã nhận hàng
+    Completed --> [*]: Release escrow ledger và cho phép Review
 
     note right of Confirmed
-      Đây là state machine nghiệp vụ mục tiêu.
-      Code hiện chưa kiểm tra transition hợp lệ.
+      Đây là luồng UI đang sử dụng.
+      Endpoint backend hiện nhận chuỗi trạng thái bất kỳ
+      và chưa enforce transition hay ownership.
+    end note
+
+    note left of Completed
+      buyer_confirmed, seller_confirmed,
+      cancelled và disputed là trạng thái mục tiêu,
+      chưa nằm trong luồng UI chính hiện tại.
     end note
 

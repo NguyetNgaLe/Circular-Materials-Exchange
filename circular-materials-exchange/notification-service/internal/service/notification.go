@@ -15,15 +15,16 @@ func NewNotificationService(repo *repository.NotificationRepository) *Notificati
 	return &NotificationService{repo: repo}
 }
 
-func (s *NotificationService) CreateNotification(userID, title, message, notifType string) (*repository.Notification, error) {
+func (s *NotificationService) CreateNotification(userID, title, message, notifType, referenceID string) (*repository.Notification, error) {
 	notification := &repository.Notification{
-		ID:        uuid.New().String(),
-		UserID:    userID,
-		Title:     title,
-		Message:   message,
-		Type:      notifType,
-		Read:      false,
-		CreatedAt: time.Now(),
+		ID:          uuid.New().String(),
+		UserID:      userID,
+		Title:       title,
+		Message:     message,
+		Type:        notifType,
+		ReferenceID: referenceID,
+		Read:        false,
+		CreatedAt:   time.Now(),
 	}
 
 	if err := s.repo.Create(notification); err != nil {

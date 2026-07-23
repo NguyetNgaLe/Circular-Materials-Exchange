@@ -41,7 +41,7 @@ Trách nhiệm Lead: chốt thuật ngữ, kiểm tra D01-D24, quản lý phiên
 Phụ trách trọn vẹn các loại 2, 3 và 12:
 
 - Activity Diagram/BPMN: gồm quy trình duyệt doanh nghiệp và quy trình giao dịch.
-- Domain Class Diagram.
+- Domain Class Diagram, gồm finance/escrow/wallet.
 - State Machine: gồm vòng đời Offer và Transaction.
 
 Không đưa Handler, Service hoặc Repository vào Domain Class.
@@ -51,8 +51,8 @@ Không đưa Handler, Service hoặc Repository vào Domain Class.
 Phụ trách trọn vẹn các loại 6, 7 và 8:
 
 - Toàn bộ Use Case theo nhóm: tài khoản/doanh nghiệp, marketplace, giao dịch/đánh giá, quản trị/thông báo.
-- Logical Architecture của kiến trúc microservice.
-- Deployment Diagram.
+- Logical Architecture, thể hiện REST Gateway -> gRPC service -> database sở hữu.
+- Deployment Diagram hai server.
 
 Buyer và Seller phải được thể hiện là vai trò chuyên biệt của Business User.
 
@@ -60,8 +60,8 @@ Buyer và Seller phải được thể hiện là vai trò chuyên biệt của 
 
 Phụ trách trọn vẹn các loại 9 và 10:
 
-- ERD tổng hợp 6 database logic.
-- Toàn bộ Design Class: Auth/Company, Material và Order/Review/Notification.
+- ERD tổng hợp 6 database logic, 18 bảng và các cột tương thích dữ liệu demo.
+- Toàn bộ Design Class: Auth/Company, Material/Upload và Order/Finance/Escrow/Review/Notification.
 
 Phải phân biệt khóa ngoại vật lý trong cùng database với tham chiếu ID logic giữa các microservice.
 
@@ -69,10 +69,10 @@ Phải phân biệt khóa ngoại vật lý trong cùng database với tham chi�
 
 Phụ trách trọn vẹn các loại 11 và 13:
 
-- Toàn bộ Sequence Diagram: duyệt doanh nghiệp, đăng nguồn cung, gửi Offer, chấp nhận Offer, hoàn tất và đánh giá.
-- Mô hình triển khai Docker/server.
+- Toàn bộ Sequence Diagram as-built: duyệt doanh nghiệp, upload/đăng nguồn cung, gửi Offer, chấp nhận Offer, hoàn tất/release ledger/đánh giá qua gRPC.
+- Mô hình triển khai frontend server và backend Docker server.
 
-Docker hiện có một PostgreSQL container chứa 6 database; frontend chưa nằm trong Docker Compose.
+Docker hiện có một PostgreSQL container chứa 6 database; frontend chạy bằng Nginx trên server riêng và chưa nằm trong Docker Compose.
 
 ## Định nghĩa hoàn thành
 
@@ -84,4 +84,3 @@ Một loại sơ đồ chỉ được đánh dấu `DONE` khi tất cả hình t
 - Tiêu đề và chú thích dùng được trong báo cáo.
 - Không mâu thuẫn với `00-reference/system-baseline.md`.
 - Được chính người phụ trách hoàn thiện và Lead review.
-

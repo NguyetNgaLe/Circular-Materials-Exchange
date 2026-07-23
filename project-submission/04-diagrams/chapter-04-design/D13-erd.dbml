@@ -1,6 +1,6 @@
 Project CircularMaterialsExchange {
   database_type: 'PostgreSQL'
-  Note: 'D13 - ERD tổng hợp 6 database logic. Quan hệ giữa database là tham chiếu nghiệp vụ, không phải FK vật lý.'
+  Note: 'D13 - 6 database logic, 18 bảng. Ref chỉ là FK vật lý trong cùng database; ID xuyên database được ghi bằng note.'
 }
 
 Table auth_db.users {
@@ -30,6 +30,7 @@ Table company_db.companies {
   review_count int
   member_since date
   certifications text
+  image_url text [note: 'Có trong bootstrap và migration']
   created_at timestamp
   updated_at timestamp
 }
@@ -38,6 +39,7 @@ Table material_db.categories {
   id uuid [pk]
   name varchar(100) [not null]
   icon varchar(50)
+  image_url text [note: 'Có trong bootstrap và migration']
   created_at timestamp
 }
 
@@ -48,7 +50,7 @@ Table material_db.supply_listings {
   seller_id uuid [not null, note: 'Logical reference tới auth_db.users']
   company_id uuid [note: 'Logical reference tới company_db.companies']
   description text
-  specs text
+  specs jsonb [note: 'Repository tương thích DB demo đang lưu text']
   quantity decimal(10,2)
   unit varchar(20)
   price_per_unit decimal(15,2)
@@ -58,6 +60,7 @@ Table material_db.supply_listings {
   packaging varchar(100)
   status varchar(20) [default: 'active']
   images text
+  image_url text [note: 'Có trong bootstrap và migration']
   created_at timestamp
   updated_at timestamp
 }
@@ -110,8 +113,8 @@ Table order_db.transactions {
   unit varchar(20)
   agreed_price decimal(15,2)
   currency varchar(10)
-  payment_status varchar(20)
-  payment_method varchar(20)
+  payment_status varchar(20) [default: 'bypassed_demo']
+  payment_method varchar(20) [default: 'manual_offline']
   settlement_note text
   status varchar(20) [default: 'confirmed']
   created_at timestamp
@@ -126,6 +129,104 @@ Table order_db.transaction_events {
   from_status varchar(50)
   to_status varchar(50)
   note text
+  created_at timestamp
+}
+
+Table order_db.platform_fees {
+  id uuid [pk]
+  transaction_id uuid [ref: > order_db.transactions.id]
+  seller_id uuid [not null, note: 'Logical reference tới auth_db.users']
+  buyer_id uuid [not null, note: 'Logical reference tới auth_db.users']
+  transaction_amount decimal(15,2) [not null]
+  fee_rate decimal(5,4) [default: 0.0200]
+  fee_amount decimal(15,2) [not null]
+  fee_type varchar(20)
+  status varchar(20)
+  collected_at timestamp
+  created_at timestamp
+}
+
+Table order_db.platform_wallet {
+  id uuid [pk]
+  balance decimal(15,2)
+  total_income decimal(15,2)
+  total_expense decimal(15,2)
+  updated_at timestamp
+}
+
+Table order_db.wallet_transactions {
+  id uuid [pk]
+  wallet_id uuid [ref: > order_db.platform_wallet.id]
+  type varchar(20) [not null]
+  amount decimal(15,2) [not null]
+  reference_type varchar(50)
+  reference_id uuid
+  description text
+  balance_after decimal(15,2)
+  created_at timestamp
+}
+
+Table order_db.company_wallet {
+  id uuid [pk]
+  company_id uuid [unique, note: 'Logical reference tới company_db.companies']
+  balance decimal(15,2)
+  total_earned decimal(15,2)
+  total_spent decimal(15,2)
+  total_fees_paid decimal(15,2)
+  updated_at timestamp
+}
+
+Table order_db.escrow_transactions {
+  id uuid [pk]
+  transaction_id uuid [ref: > order_db.transactions.id]
+  buyer_id uuid [not null, note: 'Logical reference tới auth_db.users']
+  buyer_name varchar(255)
+  seller_id uuid [not null, note: 'Logical reference tới auth_db.users']
+  seller_name varchar(255)
+  amount decimal(15,2) [not null]
+  fee_rate decimal(5,4)
+  fee_amount decimal(15,2)
+  seller_amount decimal(15,2)
+  status varchar(20) [default: 'holding']
+  hold_until timestamp [not null]
+  released_at timestamp
+  created_at timestamp
+}
+
+Table order_db.seller_wallet {
+  id uuid [pk]
+  seller_id uuid [not null, unique, note: 'Logical reference tới auth_db.users']
+  seller_name varchar(255)
+  balance decimal(15,2)
+  total_earned decimal(15,2)
+  total_fees_paid decimal(15,2)
+  total_withdrawn decimal(15,2)
+  updated_at timestamp
+}
+
+Table order_db.seller_wallet_transactions {
+  id uuid [pk]
+  seller_id uuid [not null, note: 'Logical reference tới auth_db.users/seller_wallet.seller_id']
+  type varchar(20) [not null]
+  amount decimal(15,2) [not null]
+  balance_after decimal(15,2)
+  reference_type varchar(50)
+  reference_id uuid
+  description text
+  created_at timestamp
+}
+
+Table order_db.withdrawal_requests {
+  id uuid [pk]
+  seller_id uuid [not null, note: 'Logical reference tới auth_db.users']
+  seller_name varchar(255)
+  amount decimal(15,2) [not null]
+  bank_name varchar(100)
+  bank_account varchar(50)
+  bank_owner varchar(255)
+  status varchar(20) [default: 'pending']
+  admin_note text
+  processed_at timestamp
   created_at timestamp
 }
 
@@ -147,7 +248,7 @@ Table notif_db.notifications {
   title varchar(255)
   message text
   type varchar(20)
+  reference_id uuid [note: 'Idempotency key cho gRPC/NATS notification']
   read boolean [default: false]
   created_at timestamp
 }
-

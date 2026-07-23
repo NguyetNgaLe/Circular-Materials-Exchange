@@ -1,9 +1,9 @@
 package handler
 
 import (
-	companyPb "company-service/pb"
 	"company-service/internal/repository"
 	"company-service/internal/service"
+	companyPb "company-service/pb"
 	"context"
 	"strings"
 )
@@ -110,5 +110,6 @@ func companyToProto(c *repository.Company) *companyPb.Company {
 		ReviewCount:    c.ReviewCount,
 		MemberSince:    c.MemberSince.Format("2006-01-02"),
 		Certifications: certs,
+		ImageUrl:       c.ImageURL,
 	}
 }

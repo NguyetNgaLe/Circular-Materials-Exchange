@@ -1,19 +1,27 @@
 package handler
 
 import (
+	"bytes"
 	"context"
+	"fmt"
 	"material-service/internal/repository"
 	"material-service/internal/service"
 	"material-service/pb"
+	"net/http"
+	"strings"
+	"time"
+
+	"github.com/google/uuid"
 )
 
 type MaterialHandler struct {
 	pb.UnimplementedMaterialServiceServer
-	svc *service.MaterialService
+	svc      *service.MaterialService
+	minioURL string
 }
 
-func NewMaterialHandler(svc *service.MaterialService) *MaterialHandler {
-	return &MaterialHandler{svc: svc}
+func NewMaterialHandler(svc *service.MaterialService, minioURL string) *MaterialHandler {
+	return &MaterialHandler{svc: svc, minioURL: strings.TrimRight(minioURL, "/")}
 }
 
 func (h *MaterialHandler) CreateCategory(ctx context.Context, req *pb.CreateCategoryRequest) (*pb.Category, error) {
@@ -41,7 +49,7 @@ func (h *MaterialHandler) CreateListing(ctx context.Context, req *pb.CreateListi
 		req.GetTitle(), req.GetCategoryId(), req.GetSellerId(), req.GetCompanyId(),
 		req.GetDescription(), req.GetSpecs(), req.GetQuantity(), req.GetUnit(),
 		req.GetPricePerUnit(), req.GetCurrency(), req.GetLocation(),
-		req.GetMinOrderQuantity(), req.GetPackaging(), nil,
+		req.GetMinOrderQuantity(), req.GetPackaging(), req.GetImages(),
 	)
 	if err != nil {
 		return nil, err
@@ -133,13 +141,18 @@ func (h *MaterialHandler) ListDemands(ctx context.Context, req *pb.ListDemandsRe
 
 func categoryToProto(c *repository.Category) *pb.Category {
 	return &pb.Category{
-		Id:   c.ID,
-		Name: c.Name,
-		Icon: c.Icon,
+		Id:       c.ID,
+		Name:     c.Name,
+		Icon:     c.Icon,
+		ImageUrl: c.ImageURL,
 	}
 }
 
 func supplyListingToProto(l *repository.SupplyListing) *pb.SupplyListing {
+	images := repository.StringToImages(l.Images)
+	if len(images) == 0 && l.ImageURL != "" {
+		images = []string{l.ImageURL}
+	}
 	return &pb.SupplyListing{
 		Id:               l.ID,
 		Title:            l.Title,
@@ -156,9 +169,51 @@ func supplyListingToProto(l *repository.SupplyListing) *pb.SupplyListing {
 		MinOrderQuantity: l.MinOrderQuantity,
 		Packaging:        l.Packaging,
 		Status:           l.Status,
-		Images:           repository.StringToImages(l.Images),
+		Images:           images,
 		CreatedAt:        l.CreatedAt.Format("2006-01-02T15:04:05Z"),
 	}
+}
+
+func (h *MaterialHandler) UploadImage(ctx context.Context, req *pb.UploadImageRequest) (*pb.UploadImageResponse, error) {
+	if len(req.GetContent()) == 0 {
+		return nil, fmt.Errorf("empty file")
+	}
+	if len(req.GetContent()) > 5*1024*1024 {
+		return nil, fmt.Errorf("file exceeds 5MB")
+	}
+	ext := strings.ToLower(fileExtension(req.GetFilename()))
+	switch ext {
+	case ".jpg", ".jpeg", ".png", ".gif", ".webp":
+	default:
+		return nil, fmt.Errorf("unsupported image type")
+	}
+	filename := fmt.Sprintf("listings/%s_%d%s", uuid.New().String()[:8], time.Now().Unix(), ext)
+	request, err := http.NewRequestWithContext(ctx, http.MethodPut, h.minioURL+"/cme-images/"+filename, bytes.NewReader(req.GetContent()))
+	if err != nil {
+		return nil, err
+	}
+	contentType := req.GetContentType()
+	if contentType == "" {
+		contentType = "image/jpeg"
+	}
+	request.Header.Set("Content-Type", contentType)
+	response, err := (&http.Client{Timeout: 30 * time.Second}).Do(request)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+	if response.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("MinIO returned %d", response.StatusCode)
+	}
+	return &pb.UploadImageResponse{ImageUrl: "/images/" + filename}, nil
+}
+
+func fileExtension(filename string) string {
+	index := strings.LastIndex(filename, ".")
+	if index < 0 {
+		return ""
+	}
+	return filename[index:]
 }
 
 func demandListingToProto(d *repository.DemandListing) *pb.DemandListing {

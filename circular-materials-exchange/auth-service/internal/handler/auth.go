@@ -54,6 +54,14 @@ func (h *AuthHandler) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.
 	return &pb.UserResponse{User: userToProto(user)}, nil
 }
 
+func (h *AuthHandler) GetUserByEmail(ctx context.Context, req *pb.GetUserByEmailRequest) (*pb.UserResponse, error) {
+	user, err := h.svc.GetUserByEmail(req.GetEmail())
+	if err != nil {
+		return nil, err
+	}
+	return &pb.UserResponse{User: userToProto(user)}, nil
+}
+
 func (h *AuthHandler) UpdateProfile(ctx context.Context, req *pb.UpdateProfileRequest) (*pb.UserResponse, error) {
 	user, err := h.svc.UpdateProfile(req.GetId(), req.GetName(), req.GetPhone(), req.GetAvatar())
 	if err != nil {

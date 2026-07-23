@@ -109,7 +109,11 @@ func (h *OrderHandler) ListTransactions(ctx context.Context, req *pb.ListTransac
 
 	pbTxns := make([]*pb.Transaction, len(transactions))
 	for i, t := range transactions {
-		pbTxns[i] = transactionToProto(&t, nil)
+		_, events, eventErr := h.svc.GetTransaction(t.ID)
+		if eventErr != nil {
+			events = nil
+		}
+		pbTxns[i] = transactionToProto(&t, events)
 	}
 
 	return &pb.ListTransactionsResponse{

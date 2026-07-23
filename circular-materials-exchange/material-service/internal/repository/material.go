@@ -12,6 +12,7 @@ type Category struct {
 	ID        string
 	Name      string
 	Icon      string
+	ImageURL  string
 	CreatedAt time.Time
 }
 
@@ -32,6 +33,7 @@ type SupplyListing struct {
 	Packaging        string
 	Status           string
 	Images           string
+	ImageURL         string
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
 }
@@ -63,14 +65,14 @@ func NewMaterialRepository(db *sql.DB) *MaterialRepository {
 
 func (r *MaterialRepository) CreateCategory(cat *Category) error {
 	_, err := r.db.Exec(
-		`INSERT INTO categories (id, name, icon, created_at) VALUES ($1, $2, $3, $4)`,
-		cat.ID, cat.Name, cat.Icon, cat.CreatedAt,
+		`INSERT INTO categories (id, name, icon, image_url, created_at) VALUES ($1, $2, $3, $4, $5)`,
+		cat.ID, cat.Name, cat.Icon, cat.ImageURL, cat.CreatedAt,
 	)
 	return err
 }
 
 func (r *MaterialRepository) ListCategories() ([]Category, error) {
-	rows, err := r.db.Query(`SELECT id, name, icon, created_at FROM categories ORDER BY name ASC`)
+	rows, err := r.db.Query(`SELECT id, name, COALESCE(icon,''), COALESCE(image_url,''), created_at FROM categories ORDER BY name ASC`)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +81,7 @@ func (r *MaterialRepository) ListCategories() ([]Category, error) {
 	var categories []Category
 	for rows.Next() {
 		var c Category
-		if err := rows.Scan(&c.ID, &c.Name, &c.Icon, &c.CreatedAt); err != nil {
+		if err := rows.Scan(&c.ID, &c.Name, &c.Icon, &c.ImageURL, &c.CreatedAt); err != nil {
 			return nil, err
 		}
 		categories = append(categories, c)
@@ -89,9 +91,9 @@ func (r *MaterialRepository) ListCategories() ([]Category, error) {
 
 func (r *MaterialRepository) CreateListing(listing *SupplyListing) error {
 	_, err := r.db.Exec(
-		`INSERT INTO supply_listings (id, title, category_id, seller_id, company_id, description, specs, quantity, unit, price_per_unit, currency, location, min_order_quantity, packaging, status, images, created_at, updated_at)
-		 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)`,
-		listing.ID, listing.Title, listing.CategoryID, listing.SellerID, listing.CompanyID, listing.Description, listing.Specs, listing.Quantity, listing.Unit, listing.PricePerUnit, listing.Currency, listing.Location, listing.MinOrderQuantity, listing.Packaging, listing.Status, listing.Images, listing.CreatedAt, listing.UpdatedAt,
+		`INSERT INTO supply_listings (id, title, category_id, seller_id, company_id, description, specs, quantity, unit, price_per_unit, currency, location, min_order_quantity, packaging, status, images, image_url, created_at, updated_at)
+		 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)`,
+		listing.ID, listing.Title, listing.CategoryID, listing.SellerID, listing.CompanyID, listing.Description, listing.Specs, listing.Quantity, listing.Unit, listing.PricePerUnit, listing.Currency, listing.Location, listing.MinOrderQuantity, listing.Packaging, listing.Status, listing.Images, listing.ImageURL, listing.CreatedAt, listing.UpdatedAt,
 	)
 	return err
 }
@@ -99,9 +101,14 @@ func (r *MaterialRepository) CreateListing(listing *SupplyListing) error {
 func (r *MaterialRepository) FindListingByID(id string) (*SupplyListing, error) {
 	l := &SupplyListing{}
 	err := r.db.QueryRow(
-		`SELECT id, title, category_id, seller_id, company_id, description, specs, quantity, unit, price_per_unit, currency, location, min_order_quantity, packaging, status, images, created_at, updated_at
+		`SELECT id, title, COALESCE(category_id::text,''), seller_id,
+			COALESCE(company_id::text,''), COALESCE(description,''),
+			COALESCE(specs::text,'{}'), COALESCE(quantity,0), COALESCE(unit,''),
+			COALESCE(price_per_unit,0), COALESCE(currency,'VND'), COALESCE(location,''),
+			COALESCE(min_order_quantity,0), COALESCE(packaging,''), COALESCE(status,'active'),
+			COALESCE(images,''), COALESCE(image_url,''), created_at, updated_at
 		 FROM supply_listings WHERE id = $1`, id,
-	).Scan(&l.ID, &l.Title, &l.CategoryID, &l.SellerID, &l.CompanyID, &l.Description, &l.Specs, &l.Quantity, &l.Unit, &l.PricePerUnit, &l.Currency, &l.Location, &l.MinOrderQuantity, &l.Packaging, &l.Status, &l.Images, &l.CreatedAt, &l.UpdatedAt)
+	).Scan(&l.ID, &l.Title, &l.CategoryID, &l.SellerID, &l.CompanyID, &l.Description, &l.Specs, &l.Quantity, &l.Unit, &l.PricePerUnit, &l.Currency, &l.Location, &l.MinOrderQuantity, &l.Packaging, &l.Status, &l.Images, &l.ImageURL, &l.CreatedAt, &l.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +143,13 @@ func (r *MaterialRepository) ListListings(categoryID, keyword, location string, 
 		return nil, 0, err
 	}
 
-	query := `SELECT id, title, category_id, seller_id, company_id, description, specs, quantity, unit, price_per_unit, currency, location, min_order_quantity, packaging, status, images, created_at, updated_at FROM supply_listings WHERE 1=1`
+	query := `SELECT id, title, COALESCE(category_id::text,''), seller_id,
+		COALESCE(company_id::text,''), COALESCE(description,''),
+		COALESCE(specs::text,'{}'), COALESCE(quantity,0), COALESCE(unit,''),
+		COALESCE(price_per_unit,0), COALESCE(currency,'VND'), COALESCE(location,''),
+		COALESCE(min_order_quantity,0), COALESCE(packaging,''), COALESCE(status,'active'),
+		COALESCE(images,''), COALESCE(image_url,''), created_at, updated_at
+		FROM supply_listings WHERE 1=1`
 	args2 := []interface{}{}
 	argIdx2 := 1
 
@@ -170,7 +183,7 @@ func (r *MaterialRepository) ListListings(categoryID, keyword, location string, 
 	var listings []SupplyListing
 	for rows.Next() {
 		var l SupplyListing
-		if err := rows.Scan(&l.ID, &l.Title, &l.CategoryID, &l.SellerID, &l.CompanyID, &l.Description, &l.Specs, &l.Quantity, &l.Unit, &l.PricePerUnit, &l.Currency, &l.Location, &l.MinOrderQuantity, &l.Packaging, &l.Status, &l.Images, &l.CreatedAt, &l.UpdatedAt); err != nil {
+		if err := rows.Scan(&l.ID, &l.Title, &l.CategoryID, &l.SellerID, &l.CompanyID, &l.Description, &l.Specs, &l.Quantity, &l.Unit, &l.PricePerUnit, &l.Currency, &l.Location, &l.MinOrderQuantity, &l.Packaging, &l.Status, &l.Images, &l.ImageURL, &l.CreatedAt, &l.UpdatedAt); err != nil {
 			return nil, 0, err
 		}
 		listings = append(listings, l)
@@ -204,7 +217,10 @@ func (r *MaterialRepository) CreateDemand(demand *DemandListing) error {
 func (r *MaterialRepository) FindDemandByID(id string) (*DemandListing, error) {
 	d := &DemandListing{}
 	err := r.db.QueryRow(
-		`SELECT id, title, category_id, buyer_id, company_id, description, quantity, unit, target_price, location, deadline, status, created_at, updated_at
+		`SELECT id, title, COALESCE(category_id::text,''), buyer_id,
+			COALESCE(company_id::text,''), COALESCE(description,''), COALESCE(quantity,0),
+			COALESCE(unit,''), COALESCE(target_price,0), COALESCE(location,''),
+			COALESCE(deadline::text,''), COALESCE(status,'open'), created_at, updated_at
 		 FROM demand_listings WHERE id = $1`, id,
 	).Scan(&d.ID, &d.Title, &d.CategoryID, &d.BuyerID, &d.CompanyID, &d.Description, &d.Quantity, &d.Unit, &d.TargetPrice, &d.Location, &d.Deadline, &d.Status, &d.CreatedAt, &d.UpdatedAt)
 	if err != nil {
@@ -236,7 +252,11 @@ func (r *MaterialRepository) ListDemands(categoryID, keyword string, page, pageS
 		return nil, 0, err
 	}
 
-	query := `SELECT id, title, category_id, buyer_id, company_id, description, quantity, unit, target_price, location, deadline, status, created_at, updated_at FROM demand_listings WHERE 1=1`
+	query := `SELECT id, title, COALESCE(category_id::text,''), buyer_id,
+		COALESCE(company_id::text,''), COALESCE(description,''), COALESCE(quantity,0),
+		COALESCE(unit,''), COALESCE(target_price,0), COALESCE(location,''),
+		COALESCE(deadline::text,''), COALESCE(status,'open'), created_at, updated_at
+		FROM demand_listings WHERE 1=1`
 	args2 := []interface{}{}
 	argIdx2 := 1
 

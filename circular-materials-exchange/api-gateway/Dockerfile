@@ -9,5 +9,5 @@ FROM alpine:latest
 RUN apk --no-cache add ca-certificates
 WORKDIR /app
 COPY --from=builder /api-gateway .
-EXPOSE 8080
+EXPOSE 8085
 CMD ["./api-gateway"]

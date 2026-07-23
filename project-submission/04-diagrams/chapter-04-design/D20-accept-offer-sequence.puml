@@ -1,46 +1,40 @@
 @startuml
-title D20 - Sequence chấp nhận Offer và tạo Transaction
+title D20 - Sequence chấp nhận Offer và tạo Transaction (as-built)
 autonumber
 
 actor Seller
 participant "React SPA" as Web
 participant "API Gateway" as Gateway
-participant "Order gRPC Handler" as Handler
-participant "Order Service" as Service
-participant "Order Repository" as Repo
-database "order_db" as DB
+participant "Order Service" as Order
+participant "Notification Service" as Notification
 queue NATS
+database "order_db" as OrderDB
+database "notif_db" as NotifDB
 
 Seller -> Web : Chọn chấp nhận Offer
-Web -> Gateway : POST /api/offers/{id}/accept + JWT
-Gateway -> Handler : AcceptOffer(id, actor) [gRPC]
-Handler -> Service : AcceptOffer(offerID, actorID, actorName)
-Service -> Repo : FindOfferByID(offerID)
-Repo -> DB : SELECT offer
-DB --> Repo : Offer(pending)
-
-alt Offer đang pending
-  Service -> Repo : UpdateOffer(status=accepted)
-  Repo -> DB : UPDATE offers
-  Service -> Repo : CreateTransaction(status=confirmed)
-  Repo -> DB : INSERT transactions
-  Service -> Repo : CreateTransactionEvent(to=confirmed)
-  Repo -> DB : INSERT transaction_events
-  Service -> NATS : publish cme.orders.transaction.created
-  Service --> Handler : Transaction(confirmed)
-  Handler --> Gateway : gRPC response
-  Gateway --> Web : HTTP 200 + Transaction
-  Web --> Seller : Hiển thị giao dịch mới
-else Offer không còn pending
-  Service --> Handler : Error
-  Handler --> Gateway : gRPC error
-  Gateway --> Web : HTTP error
-  Web --> Seller : Thông báo không thể chấp nhận
+Web -> Gateway : POST /api/offers/{id}/accept + token
+Gateway -> Order : AcceptOffer(gRPC)
+Order -> OrderDB : SELECT Offer và kiểm tra pending
+Order -> OrderDB : UPDATE Offer status=accepted
+Order -> OrderDB : INSERT Transaction(status=confirmed,\npayment=bypassed_demo)
+OrderDB --> Order : OK
+Order -> OrderDB : INSERT TransactionEvent\n(offer.accepted -> transaction.confirmed)
+Order -> OrderDB : UPDATE Escrow holding\nSET transaction_id=Transaction.id
+Order -> NATS : publish cme.orders.transaction.created
+Order --> Gateway : Transaction
+par Event bất đồng bộ
+NATS -> Notification : consume event
+Notification -> NotifDB : INSERT idempotent
+else Đường đồng bộ giữ phản hồi UI
+Gateway -> Notification : CreateNotification(gRPC,\nsame reference_id)
+Notification -> NotifDB : INSERT ... ON CONFLICT DO NOTHING
 end
+Gateway --> Web : HTTP 200
+Web --> Seller : Hiển thị giao dịch mới
 
-note right of NATS
-  Notification Service hiện chưa
-  subscribe sự kiện này trong code.
+note over Order,OrderDB
+  Service enforce Offer phải pending và tái sử dụng escrow.
+  Kiểm tra Seller sở hữu Offer và SQL transaction
+  xuyên chuỗi cập nhật vẫn cần hoàn thiện.
 end note
 @enduml
-

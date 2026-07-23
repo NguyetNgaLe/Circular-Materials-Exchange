@@ -6,33 +6,37 @@ actor Guest
 actor "Business User" as Business
 actor Buyer
 actor Seller
-actor Admin
 Buyer -|> Business
 Seller -|> Business
 
 rectangle "Marketplace" {
-  usecase "Xem danh sách nguồn cung" as ListSupply
-  usecase "Tìm kiếm và lọc" as Search
-  usecase "Xem chi tiết nguồn cung" as SupplyDetail
-  usecase "Xem danh sách nhu cầu" as ListDemand
-  usecase "Đăng nguồn cung" as CreateSupply
-  usecase "Cập nhật nguồn cung" as UpdateSupply
-  usecase "Xóa nguồn cung" as DeleteSupply
-  usecase "Đăng nhu cầu mua" as CreateDemand
-  usecase "Quản lý danh mục" as Categories
-  usecase "Kiểm duyệt listing" as Moderate
+  usecase "UC008 - Xem danh mục" as Categories
+  usecase "UC009 - Xem / tìm kiếm /\nlọc nguồn cung" as ListSupply
+  usecase "UC010 - Xem chi tiết\nnguồn cung" as SupplyDetail
+  usecase "UC011 - Upload ảnh" as Upload
+  usecase "UC012 - Đăng nguồn cung" as CreateSupply
+  usecase "UC013 - Cập nhật nguồn cung\n<<stub>>" as UpdateSupply
+  usecase "UC014 - Xóa nguồn cung\n<<stub>>" as DeleteSupply
+  usecase "UC015 - Xem nhu cầu" as ListDemand
+  usecase "UC016 - Đăng nhu cầu\n<<stub>>" as CreateDemand
+  usecase "Kiểm tra Company verified" as VerifyCompany
 }
 
+Guest --> Categories
 Guest --> ListSupply
-Guest --> Search
 Guest --> SupplyDetail
 Guest --> ListDemand
+Seller --> Upload
 Seller --> CreateSupply
 Seller --> UpdateSupply
 Seller --> DeleteSupply
 Buyer --> CreateDemand
-Admin --> Categories
-Admin --> Moderate
-ListSupply .> Search : <<include>>
+CreateSupply .> Upload : <<include>>
+CreateSupply .> VerifyCompany : <<include>>
+
+note bottom
+  Update/Delete Listing chỉ trả success;
+  Create Demand chưa INSERT database.
+end note
 @enduml
 

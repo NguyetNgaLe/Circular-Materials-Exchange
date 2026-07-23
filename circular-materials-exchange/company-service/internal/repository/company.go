@@ -20,6 +20,7 @@ type Company struct {
 	ReviewCount    int32
 	MemberSince    time.Time
 	Certifications string
+	ImageURL       string
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 }
@@ -34,9 +35,9 @@ func NewCompanyRepository(db *sql.DB) *CompanyRepository {
 
 func (r *CompanyRepository) Create(c *Company) error {
 	_, err := r.db.Exec(
-		`INSERT INTO companies (id, name, tax_code, address, city, description, status, reject_reason, owner_id, rating, review_count, member_since, certifications, created_at, updated_at)
-		 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
-		c.ID, c.Name, c.TaxCode, c.Address, c.City, c.Description, c.Status, c.RejectReason, c.OwnerID, c.Rating, c.ReviewCount, c.MemberSince, c.Certifications, c.CreatedAt, c.UpdatedAt,
+		`INSERT INTO companies (id, name, tax_code, address, city, description, status, reject_reason, owner_id, rating, review_count, member_since, certifications, image_url, created_at, updated_at)
+		 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)`,
+		c.ID, c.Name, c.TaxCode, c.Address, c.City, c.Description, c.Status, c.RejectReason, c.OwnerID, c.Rating, c.ReviewCount, c.MemberSince, c.Certifications, c.ImageURL, c.CreatedAt, c.UpdatedAt,
 	)
 	return err
 }
@@ -44,9 +45,13 @@ func (r *CompanyRepository) Create(c *Company) error {
 func (r *CompanyRepository) FindByID(id string) (*Company, error) {
 	c := &Company{}
 	err := r.db.QueryRow(
-		`SELECT id, name, tax_code, address, city, description, status, reject_reason, owner_id, rating, review_count, member_since, certifications, created_at, updated_at
+		`SELECT id, name, COALESCE(tax_code,''), COALESCE(address,''), COALESCE(city,''),
+			COALESCE(description,''), COALESCE(status,'pending'), COALESCE(reject_reason,''),
+			COALESCE(owner_id::text,''), COALESCE(rating,0), COALESCE(review_count,0),
+			COALESCE(member_since,CURRENT_DATE), COALESCE(certifications,''),
+			COALESCE(image_url,''), created_at, updated_at
 		 FROM companies WHERE id = $1`, id,
-	).Scan(&c.ID, &c.Name, &c.TaxCode, &c.Address, &c.City, &c.Description, &c.Status, &c.RejectReason, &c.OwnerID, &c.Rating, &c.ReviewCount, &c.MemberSince, &c.Certifications, &c.CreatedAt, &c.UpdatedAt)
+	).Scan(&c.ID, &c.Name, &c.TaxCode, &c.Address, &c.City, &c.Description, &c.Status, &c.RejectReason, &c.OwnerID, &c.Rating, &c.ReviewCount, &c.MemberSince, &c.Certifications, &c.ImageURL, &c.CreatedAt, &c.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -56,9 +61,13 @@ func (r *CompanyRepository) FindByID(id string) (*Company, error) {
 func (r *CompanyRepository) FindByOwnerID(ownerID string) (*Company, error) {
 	c := &Company{}
 	err := r.db.QueryRow(
-		`SELECT id, name, tax_code, address, city, description, status, reject_reason, owner_id, rating, review_count, member_since, certifications, created_at, updated_at
+		`SELECT id, name, COALESCE(tax_code,''), COALESCE(address,''), COALESCE(city,''),
+			COALESCE(description,''), COALESCE(status,'pending'), COALESCE(reject_reason,''),
+			COALESCE(owner_id::text,''), COALESCE(rating,0), COALESCE(review_count,0),
+			COALESCE(member_since,CURRENT_DATE), COALESCE(certifications,''),
+			COALESCE(image_url,''), created_at, updated_at
 		 FROM companies WHERE owner_id = $1`, ownerID,
-	).Scan(&c.ID, &c.Name, &c.TaxCode, &c.Address, &c.City, &c.Description, &c.Status, &c.RejectReason, &c.OwnerID, &c.Rating, &c.ReviewCount, &c.MemberSince, &c.Certifications, &c.CreatedAt, &c.UpdatedAt)
+	).Scan(&c.ID, &c.Name, &c.TaxCode, &c.Address, &c.City, &c.Description, &c.Status, &c.RejectReason, &c.OwnerID, &c.Rating, &c.ReviewCount, &c.MemberSince, &c.Certifications, &c.ImageURL, &c.CreatedAt, &c.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +87,11 @@ func (r *CompanyRepository) List(status string, page, pageSize int) ([]Company, 
 		return nil, 0, err
 	}
 
-	query := `SELECT id, name, tax_code, address, city, description, status, reject_reason, owner_id, rating, review_count, member_since, certifications, created_at, updated_at FROM companies`
+	query := `SELECT id, name, COALESCE(tax_code,''), COALESCE(address,''), COALESCE(city,''),
+		COALESCE(description,''), COALESCE(status,'pending'), COALESCE(reject_reason,''),
+		COALESCE(owner_id::text,''), COALESCE(rating,0), COALESCE(review_count,0),
+		COALESCE(member_since,CURRENT_DATE), COALESCE(certifications,''),
+		COALESCE(image_url,''), created_at, updated_at FROM companies`
 	if status != "" {
 		query += ` WHERE status = $1`
 	}
@@ -95,7 +108,7 @@ func (r *CompanyRepository) List(status string, page, pageSize int) ([]Company, 
 	var companies []Company
 	for rows.Next() {
 		var c Company
-		if err := rows.Scan(&c.ID, &c.Name, &c.TaxCode, &c.Address, &c.City, &c.Description, &c.Status, &c.RejectReason, &c.OwnerID, &c.Rating, &c.ReviewCount, &c.MemberSince, &c.Certifications, &c.CreatedAt, &c.UpdatedAt); err != nil {
+		if err := rows.Scan(&c.ID, &c.Name, &c.TaxCode, &c.Address, &c.City, &c.Description, &c.Status, &c.RejectReason, &c.OwnerID, &c.Rating, &c.ReviewCount, &c.MemberSince, &c.Certifications, &c.ImageURL, &c.CreatedAt, &c.UpdatedAt); err != nil {
 			return nil, 0, err
 		}
 		companies = append(companies, c)
@@ -106,8 +119,8 @@ func (r *CompanyRepository) List(status string, page, pageSize int) ([]Company, 
 func (r *CompanyRepository) Update(c *Company) error {
 	c.UpdatedAt = time.Now()
 	_, err := r.db.Exec(
-		`UPDATE companies SET name=$1, tax_code=$2, address=$3, city=$4, description=$5, status=$6, reject_reason=$7, rating=$8, review_count=$9, member_since=$10, certifications=$11, updated_at=$12 WHERE id=$13`,
-		c.Name, c.TaxCode, c.Address, c.City, c.Description, c.Status, c.RejectReason, c.Rating, c.ReviewCount, c.MemberSince, c.Certifications, c.UpdatedAt, c.ID,
+		`UPDATE companies SET name=$1, tax_code=$2, address=$3, city=$4, description=$5, status=$6, reject_reason=$7, rating=$8, review_count=$9, member_since=$10, certifications=$11, image_url=$12, updated_at=$13 WHERE id=$14`,
+		c.Name, c.TaxCode, c.Address, c.City, c.Description, c.Status, c.RejectReason, c.Rating, c.ReviewCount, c.MemberSince, c.Certifications, c.ImageURL, c.UpdatedAt, c.ID,
 	)
 	return err
 }

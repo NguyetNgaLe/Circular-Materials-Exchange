@@ -7,27 +7,28 @@ actor "Business User" as User
 actor Admin
 
 rectangle "Tài khoản và doanh nghiệp" {
-  usecase "Đăng ký" as Register
-  usecase "Đăng nhập" as Login
-  usecase "Xem hồ sơ cá nhân" as ViewProfile
-  usecase "Cập nhật hồ sơ" as UpdateProfile
-  usecase "Tạo hồ sơ doanh nghiệp" as CreateCompany
-  usecase "Xem trạng thái doanh nghiệp" as ViewCompany
-  usecase "Cập nhật doanh nghiệp" as UpdateCompany
-  usecase "Duyệt doanh nghiệp" as Approve
-  usecase "Từ chối doanh nghiệp" as Reject
+  usecase "UC001 - Đăng ký" as Register
+  usecase "UC002 - Đăng nhập\n(demo bearer token)" as Login
+  usecase "UC003 - Xem thông tin\nngười dùng hiện tại" as ViewProfile
+  usecase "UC004 - Tạo hồ sơ\ndoanh nghiệp" as CreateCompany
+  usecase "UC005 - Xem hồ sơ /\ntrạng thái doanh nghiệp" as ViewCompany
+  usecase "UC006 - Duyệt\ndoanh nghiệp" as Approve
+  usecase "UC007 - Từ chối\ndoanh nghiệp" as Reject
   usecase "Nhập lý do từ chối" as Reason
 }
 
 Guest --> Register
 Guest --> Login
 User --> ViewProfile
-User --> UpdateProfile
 User --> CreateCompany
 User --> ViewCompany
-User --> UpdateCompany
 Admin --> Approve
 Admin --> Reject
 Reject .> Reason : <<include>>
+
+note bottom
+  Cập nhật User/Company có trong proto/service
+  nhưng chưa được expose qua REST.
+end note
 @enduml
 

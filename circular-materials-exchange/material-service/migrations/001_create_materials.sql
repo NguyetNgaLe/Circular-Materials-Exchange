@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS categories (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(100) NOT NULL,
     icon VARCHAR(50),
+    image_url TEXT DEFAULT '',
     created_at TIMESTAMP DEFAULT NOW()
 );
 
@@ -24,6 +25,7 @@ CREATE TABLE IF NOT EXISTS supply_listings (
     packaging VARCHAR(100),
     status VARCHAR(20) DEFAULT 'active',
     images TEXT DEFAULT '',
+    image_url TEXT DEFAULT '',
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );

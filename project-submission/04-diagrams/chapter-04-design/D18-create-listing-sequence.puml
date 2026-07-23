@@ -1,30 +1,50 @@
 @startuml
-title D18 - Sequence đăng nguồn cung vật liệu
+title D18 - Sequence upload ảnh và đăng nguồn cung (as-built)
 autonumber
 
 actor Seller
 participant "React SPA" as Web
 participant "API Gateway" as Gateway
-participant "JWT Middleware" as JWT
-participant "Material gRPC Handler" as Handler
-participant "Material Service" as Service
-participant "Material Repository" as Repo
-database "material_db" as DB
+participant "Bearer-token Middleware" as Auth
+participant "Company Service" as Company
+participant "Material Service" as Material
+participant "MinIO / cme-images" as MinIO <<Object Storage>>
+database "company_db" as CompanyDB
+database "material_db" as MaterialDB
 
-Seller -> Web : Nhập thông tin nguồn cung
-Web -> Gateway : POST /api/listings + JWT
-Gateway -> JWT : Xác thực token
-JWT --> Gateway : seller_id hợp lệ
-Gateway -> Handler : CreateListing(request) [gRPC]
-Handler -> Service : CreateListing(listing)
-Service -> Service : Gán ID, status=active, timestamps
-Service -> Repo : CreateListing(listing)
-Repo -> DB : INSERT supply_listings
-DB --> Repo : OK
-Repo --> Service : OK
-Service --> Handler : SupplyListing
-Handler --> Gateway : gRPC response
-Gateway --> Web : HTTP 201 + listing
+Seller -> Web : Chọn ảnh vật liệu
+Web -> Gateway : POST /api/upload (multipart + token)
+Gateway -> Auth : Xác thực
+Auth --> Gateway : seller_id
+Gateway -> Gateway : Kiểm tra <= 5 MB và đuôi file
+Gateway -> Material : UploadImage(bytes, metadata)\n(gRPC)
+Material -> MinIO : HTTP PUT /cme-images/listings/...
+MinIO --> Material : 200
+Material --> Gateway : image_url
+Gateway --> Web : image_url
+
+Seller -> Web : Nhập thông tin và gửi
+Web -> Gateway : POST /api/listings + image_url
+Gateway -> Auth : Xác thực
+Auth --> Gateway : seller_id
+Gateway -> Company : GetCompanyByOwner(gRPC)
+Company -> CompanyDB : SELECT theo owner_id
+CompanyDB --> Company : Company(verified)
+Company --> Gateway : Company(verified)
+Gateway -> Material : CreateListing(gRPC)
+Material -> MaterialDB : INSERT supply_listings(status=active)
+MaterialDB --> Material : listing_id
+Material --> Gateway : success + id
+Gateway --> Web : HTTP 200
 Web --> Seller : Hiển thị đăng thành công
-@enduml
 
+alt Company chưa verified
+  Gateway --> Web : HTTP 403
+  Gateway --> Web : Yêu cầu hoàn tất hồ sơ
+end
+
+note over Gateway,MaterialDB
+  Gateway không truy cập SQL hoặc MinIO trực tiếp.
+  image_url/images đã có trong bootstrap và migration.
+end note
+@enduml

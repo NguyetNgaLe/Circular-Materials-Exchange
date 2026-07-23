@@ -73,7 +73,8 @@
 ├── review-service/        # Reviews & Ratings (gRPC :50055)
 ├── notification-service/  # Notifications (gRPC :50056)
 ├── scripts/
-│   └── init-databases.sql # Tạo 6 databases
+│   ├── init-databases.sql    # Fresh bootstrap 6 databases/18 tables
+│   └── migrate-existing.sql  # Nâng cấp idempotent volume hiện có
 ├── docker-compose.yml
 └── proto/                 # gRPC proto definitions
 ```
@@ -81,8 +82,6 @@
 ### Docker Compose
 
 ```yaml
-version: '3.8'
-
 services:
   postgres:
     image: postgres:15
@@ -131,17 +130,17 @@ volumes:
   pg-data:
 ```
 
-### API Gateway (chạy trực tiếp trên host, không qua Docker)
+### API Gateway
 
-API Gateway chạy trực tiếp trên host vì cần kết nối đến các services qua Docker network.
+API Gateway chạy trong Docker Compose, tham gia `cme-network`, gọi service bằng
+tên DNS Docker và publish `8085:8085`.
 
 ```bash
-# Build
-cd /home/ubuntu/circular-materials-exchange/api-gateway
-go build -buildvcs=false -o /tmp/api-gateway ./cmd/server
-
-# Run
-HTTP_PORT=8085 nohup /tmp/api-gateway > /tmp/api-gw.log 2>&1 &
+cd /home/ubuntu/circular-materials-exchange
+docker compose build api-gateway
+docker compose up -d api-gateway
+curl http://localhost:8085/health
+curl http://localhost:8085/ready
 ```
 
 ### Database Schema
@@ -153,7 +152,7 @@ PostgreSQL container chạy 6 databases riêng biệt:
 | auth_db | users | Đăng ký, đăng nhập, JWT |
 | company_db | companies | Quản lý doanh nghiệp |
 | material_db | categories, supply_listings, demand_listings | Vật liệu, nhu cầu mua |
-| order_db | offers, transactions, transaction_events | Đề nghị mua, giao dịch |
+| order_db | 11 bảng Order/Transaction/Finance/Escrow/Wallet | Giao dịch và ledger prototype |
 | review_db | reviews | Đánh giá |
 | notif_db | notifications | Thông báo |
 
@@ -386,12 +385,10 @@ Flag `-s` rất quan trọng vì React Router dùng client-side routing. Không 
 
 ### API Gateway không chạy
 ```bash
-# Kiểm tra process
-ps aux | grep api-gateway
-
-# Kill và restart
-pkill -f /tmp/api-gateway
-HTTP_PORT=8085 nohup /tmp/api-gateway > /tmp/api-gw.log 2>&1 &
+cd /home/ubuntu/circular-materials-exchange
+docker compose ps api-gateway
+docker compose logs --tail=100 api-gateway
+docker compose up -d --no-deps api-gateway
 ```
 
 ### Docker containers không chạy

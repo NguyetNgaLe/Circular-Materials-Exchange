@@ -1,68 +1,133 @@
 @startuml
-title D16 - Design Class Diagram: Order, Review và Notification
+allowmixing
+title D16 - Design Class: Order, finance, escrow, Review và Notification
 skinparam classAttributeIconSize 0
 
+package "API Gateway - REST/gRPC adapter" {
+  class OrderHTTPHandler <<Controller>> {
+    -orderClient: OrderServiceClient
+    -companyClient: CompanyServiceClient
+    -notifHandler: NotificationHTTPHandler
+    +CreateOffer(ctx)
+    +ListOffers(ctx)
+    +AcceptOffer(ctx)
+    +RejectOffer(ctx)
+    +ListTransactions(ctx)
+    +GetTransaction(ctx)
+    +UpdateTransactionStatus(ctx)
+  }
+
+  class FinanceHandler <<Controller>> {
+    -orderClient: OrderServiceClient
+    +GetOverview(ctx)
+    +ListFees(ctx)
+    +GetWallet(ctx)
+    +CollectFee(ctx)
+  }
+
+  class EscrowHandler <<Controller>> {
+    -orderClient: OrderServiceClient
+    +ListEscrows(ctx)
+    +ReleaseEscrow(ctx)
+    +GetSellerWallet(ctx)
+    +CreateWithdrawal(ctx)
+    +ApproveWithdrawal(ctx)
+    +RejectWithdrawal(ctx)
+  }
+
+  class ReviewHTTPHandler <<Controller>> {
+    -reviewClient: ReviewServiceClient
+    -authClient: AuthServiceClient
+    +CreateReview(ctx)
+    +ListReviews(ctx)
+  }
+
+  class NotificationHTTPHandler <<Controller>> {
+    -client: NotificationServiceClient
+    +CreateNotification(...)
+    +ListNotifications(ctx)
+    +MarkRead(ctx)
+    +MarkAllRead(ctx)
+  }
+}
+
 package "Order Service" {
-  class OrderHandler <<Controller>>
-  class OrderService <<Service>> {
-    -repo: OrderRepository
-    -nc: NATSConn
-    +CreateOffer(offer)
-    +AcceptOffer(offerID, actorID, actorName)
-    +RejectOffer(offerID, actorID)
-    +CancelOffer(offerID, actorID)
-    +UpdateTransactionStatus(...)
-  }
-  class OrderRepository <<Repository>> {
-    -db: sql.DB
-    +CreateOffer(offer)
-    +FindOfferByID(id)
-    +UpdateOffer(offer)
-    +CreateTransaction(transaction)
-    +CreateTransactionEvent(event)
-  }
-  interface NATSConn {
-    +Publish(subject, data)
-  }
-  class Offer <<Entity>>
-  class Transaction <<Entity>>
-  class TransactionEvent <<Entity>>
+  class OrderGRPCHandler <<Controller>>
+  class OrderService <<Service>>
+  class OrderRepository <<Repository>>
+  interface NATSConn
+  OrderGRPCHandler --> OrderService
+  OrderService --> OrderRepository
+  OrderService ..> NATSConn : publish
 }
 
 package "Review Service" {
-  class ReviewHandler <<Controller>>
+  class ReviewGRPCHandler <<Controller>>
   class ReviewService <<Service>>
   class ReviewRepository <<Repository>>
-  class Review <<Entity>>
+  ReviewGRPCHandler --> ReviewService
+  ReviewService --> ReviewRepository
 }
 
 package "Notification Service" {
-  class NotificationHandler <<Controller>>
+  class NotificationGRPCHandler <<Controller>>
   class NotificationService <<Service>>
   class NotificationRepository <<Repository>>
-  class Notification <<Entity>>
+  class OrderEventConsumer <<NATS Consumer>>
+  NotificationGRPCHandler --> NotificationService
+  OrderEventConsumer --> NotificationService
+  NotificationService --> NotificationRepository
 }
 
-OrderHandler --> OrderService
-OrderService --> OrderRepository
-OrderService ..> NATSConn
-OrderRepository --> Offer
-OrderRepository --> Transaction
-OrderRepository --> TransactionEvent
+class CompanyGRPCHandler <<External gRPC>>
+class AuthGRPCHandler <<External gRPC>>
+queue NATS
+class Offer <<Entity>>
+class Transaction <<Entity>>
+class TransactionEvent <<Entity>>
+class EscrowTransaction <<Entity>>
+class PlatformFee <<Entity>>
+class SellerWallet <<Entity>>
+class WithdrawalRequest <<Entity>>
+class Review <<Entity>>
+class Notification <<Entity>>
+
+database "order_db" as OrderDB
+database "review_db" as ReviewDB
+database "notif_db" as NotifDB
+
+OrderHTTPHandler --> OrderGRPCHandler : Order RPC
+OrderHTTPHandler --> CompanyGRPCHandler : verify Buyer
+OrderHTTPHandler --> NotificationHTTPHandler : tạo đồng bộ
+FinanceHandler --> OrderGRPCHandler : Finance RPC
+EscrowHandler --> OrderGRPCHandler : Escrow/Wallet RPC
+ReviewHTTPHandler --> ReviewGRPCHandler : Review RPC
+ReviewHTTPHandler --> AuthGRPCHandler : lấy tên reviewee
+NotificationHTTPHandler --> NotificationGRPCHandler : Notification RPC
+
+OrderRepository --> OrderDB : SQL
+ReviewRepository --> ReviewDB : SQL
+NotificationRepository --> NotifDB : SQL
+OrderService --> NATS : publish cme.orders.*
+NATS --> OrderEventConsumer : subscribe queue group
+OrderDB -- Offer
+OrderDB -- Transaction
+OrderDB -- TransactionEvent
+OrderDB -- EscrowTransaction
+OrderDB -- PlatformFee
+OrderDB -- SellerWallet
+OrderDB -- WithdrawalRequest
+ReviewDB -- Review
+NotifDB -- Notification
+
 Offer "1" -- "0..1" Transaction
 Transaction "1" *-- "1..*" TransactionEvent
+Transaction "1" -- "0..*" EscrowTransaction
+Transaction "1" -- "0..1" PlatformFee
 
-ReviewHandler --> ReviewService
-ReviewService --> ReviewRepository
-ReviewRepository --> Review
-
-NotificationHandler --> NotificationService
-NotificationService --> NotificationRepository
-NotificationRepository --> Notification
-
-note right of NotificationService
-  Code hiện tại chưa có NATS subscriber.
-  Thông báo được quản lý qua gRPC/API riêng.
+note bottom
+  Finance/escrow/wallet là ledger prototype.
+  Notification nhận cả gRPC đồng bộ và NATS event;
+  unique reference_id ngăn ghi trùng.
 end note
 @enduml
-

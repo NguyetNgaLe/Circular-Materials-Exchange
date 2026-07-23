@@ -1,5 +1,11 @@
 # Circular Materials Exchange - Microservices Architecture Plan
 
+> **Trạng thái 24/07/2026:** Plan đã được triển khai và deploy. API Gateway chạy
+> trong `cme-network` tại port 8085, gọi 6 service hoàn toàn qua gRPC và không
+> truy cập PostgreSQL trực tiếp. Order Service publish `cme.orders.*`;
+> Notification Service consume event với `reference_id` idempotent. Một
+> PostgreSQL container chứa 6 database logic/18 bảng để phù hợp tài nguyên demo.
+
 ## Thông tin project
 
 - **Tên dự án:** Circular Materials Exchange (Sàn giao dịch vật liệu tuần hoàn B2B)
@@ -19,7 +25,7 @@
                            │ HTTPS
                            ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                    API GATEWAY (:8080)                           │
+│                    API GATEWAY (:8085)                           │
 │           Go + Gin │ JWT Auth │ Rate Limit │ CORS               │
 └──────┬───────┬───────┬───────┬───────┬───────┬──────────────────┘
        │       │       │       │       │       │

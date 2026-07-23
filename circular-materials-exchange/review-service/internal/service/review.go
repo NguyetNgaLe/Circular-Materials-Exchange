@@ -49,6 +49,16 @@ func (s *ReviewService) ListReviews(revieweeID string, page, pageSize int) ([]re
 	return s.repo.ListByReviewee(revieweeID, page, pageSize)
 }
 
+func (s *ReviewService) ListReviewsForUser(userID string, page, pageSize int) ([]repository.Review, int64, error) {
+	if page <= 0 {
+		page = 1
+	}
+	if pageSize <= 0 {
+		pageSize = 50
+	}
+	return s.repo.ListByUser(userID, page, pageSize)
+}
+
 func (s *ReviewService) GetUserRating(userID string) (float64, int64, error) {
 	return s.repo.GetAverageRating(userID)
 }

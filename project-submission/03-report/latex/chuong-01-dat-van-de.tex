@@ -1,0 +1,462 @@
+% !TeX program = xelatex
+% File này có thể biên dịch độc lập trên Overleaf bằng XeLaTeX.
+% Nếu báo cáo đã có file main.tex, chỉ sao chép phần từ
+% \chapter{ĐẶT VẤN ĐỀ} đến trước \end{document}.
+
+\documentclass[12pt,a4paper,oneside]{report}
+
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[utf8]{inputenc}
+  \usepackage[T5]{fontenc}
+  \usepackage[vietnamese]{babel}
+\else
+  \usepackage{fontspec}
+  \setmainfont{TeX Gyre Termes}
+  \usepackage[vietnamese]{babel}
+\fi
+
+\usepackage[
+  a4paper,
+  top=2.5cm,
+  bottom=2.5cm,
+  left=3.0cm,
+  right=2.0cm
+]{geometry}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+
+\onehalfspacing
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0.25em}
+\setcounter{secnumdepth}{3}
+\renewcommand{\arraystretch}{1.25}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\begin{document}
+
+\chapter{ĐẶT VẤN ĐỀ}
+\label{chap:dat-van-de}
+
+\section{Bối cảnh của bài toán}
+\label{sec:boi-canh}
+
+Trong quá trình sản xuất, không phải toàn bộ nguyên vật liệu đầu vào đều được
+chuyển hóa thành sản phẩm cuối cùng. Nhiều doanh nghiệp thường xuyên phát sinh
+vật liệu dư thừa, phụ phẩm hoặc phế liệu vẫn còn giá trị sử dụng. Chẳng hạn, một
+nhà máy nhựa có thể phát sinh khoảng 20 tấn nhựa PP mỗi tháng; một xưởng gỗ có
+hàng nghìn pallet không còn nhu cầu sử dụng; một nhà máy thực phẩm có bã cà phê;
+trong khi một doanh nghiệp dệt may có lượng lớn vải vụn sau quá trình cắt may.
+
+Ở chiều ngược lại, nhiều doanh nghiệp khác vẫn phải mua nguyên liệu mới có tính
+chất tương tự để phục vụ hoạt động sản xuất. Một nhà máy có thể đang cần nhựa PP
+tái sử dụng, một cơ sở đóng gói có thể cần pallet gỗ, hoặc một đơn vị sản xuất
+vật liệu sinh học có thể sử dụng bã cà phê làm đầu vào. Như vậy, nguồn vật liệu
+dư của doanh nghiệp này có khả năng trở thành nguyên liệu đầu vào của doanh
+nghiệp khác.
+
+Mối quan hệ trên là một biểu hiện của kinh tế tuần hoàn, trong đó vòng đời của
+vật liệu được kéo dài thông qua hoạt động tái sử dụng, tái chế hoặc chuyển giao
+cho một quy trình sản xuất khác. Cách tiếp cận này vừa giúp bên cung giảm chi phí
+xử lý chất thải, vừa giúp bên mua tiếp cận nguồn nguyên liệu thay thế với chi phí
+hợp lý hơn, đồng thời góp phần giảm lượng chất thải đưa ra môi trường.
+
+Tuy nhiên, việc hình thành các giao dịch vật liệu tuần hoàn giữa doanh nghiệp
+hiện vẫn gặp nhiều trở ngại. Thông tin về nguồn cung và nhu cầu thường nằm rời
+rạc trong từng doanh nghiệp, được trao đổi qua quan hệ cá nhân, điện thoại, thư
+điện tử hoặc các nhóm mạng xã hội. Do thiếu một nền tảng B2B chuyên biệt, một
+nguồn vật liệu còn giá trị có thể bị xử lý như chất thải chỉ vì doanh nghiệp sở
+hữu không tìm được bên có nhu cầu tại đúng thời điểm.
+
+Từ bối cảnh đó, đề tài đề xuất xây dựng \textbf{Circular Materials Exchange}
+-- nền tảng trao đổi vật liệu tuần hoàn giữa các doanh nghiệp. Hệ thống đóng vai
+trò là không gian số tập trung để công bố nguồn cung, công bố nhu cầu, tìm kiếm
+đối tác, trao đổi đề nghị và theo dõi quá trình giao dịch.
+
+\section{Hiện trạng và các vấn đề cần giải quyết}
+\label{sec:hien-trang}
+
+\subsection{Thông tin cung và cầu bị phân tán}
+
+Doanh nghiệp có vật liệu dư thừa chưa có một kênh thống nhất để mô tả loại vật
+liệu, số lượng, chất lượng, vị trí, đơn giá và điều kiện giao nhận. Tương tự,
+doanh nghiệp cần mua vật liệu cũng thiếu nơi công bố nhu cầu theo một cấu trúc
+chuẩn. Việc thiếu dữ liệu tập trung khiến hai phía khó nhận biết nhau, ngay cả
+khi nguồn cung và nhu cầu có khả năng phù hợp.
+
+\subsection{Khó tìm kiếm và đánh giá cơ hội giao dịch}
+
+Khi thông tin được trao đổi qua nhiều kênh khác nhau, doanh nghiệp phải mất thời
+gian tổng hợp và xác minh dữ liệu. Người mua khó lọc vật liệu theo nhóm, vị trí,
+số lượng hoặc mức giá. Người bán cũng khó nhận biết doanh nghiệp nào đang có nhu
+cầu phù hợp. Thông tin về tư cách doanh nghiệp và lịch sử đánh giá đối tác chưa
+được quản lý một cách có hệ thống, làm tăng rủi ro khi thiết lập quan hệ giao
+dịch mới.
+
+\subsection{Quy trình thương lượng và theo dõi chưa được số hóa}
+
+Sau khi tìm thấy một nguồn vật liệu phù hợp, các bước gửi đề nghị, chấp nhận hoặc
+từ chối đề nghị, ghi nhận thỏa thuận và cập nhật tiến độ thường tiếp tục được
+thực hiện thủ công. Không có một mã giao dịch và lịch sử trạng thái thống nhất
+để cả bên mua, bên bán và người quản trị cùng theo dõi. Điều này có thể gây khó
+khăn khi cần xác định trách nhiệm, đối chiếu nội dung thỏa thuận hoặc đánh giá kết
+quả giao dịch.
+
+\subsection{Thiếu cơ chế tạo dựng niềm tin}
+
+Giao dịch B2B liên quan đến thông tin pháp lý của doanh nghiệp, chất lượng vật
+liệu và khả năng thực hiện cam kết. Nếu không có quy trình đăng ký hồ sơ doanh
+nghiệp, kiểm duyệt và đánh giá sau giao dịch, người dùng khó xác định mức độ uy
+tín của đối tác. Bên cạnh đó, việc không có thông báo tập trung khiến người dùng
+có thể bỏ lỡ đề nghị hoặc thay đổi trạng thái quan trọng.
+
+\subsection{Thanh toán và logistics chưa có hạ tầng tích hợp}
+
+Hệ sinh thái hiện tại chưa có cơ chế logistics chuyên biệt cho nhiều loại vật
+liệu công nghiệp và chưa có quy trình thanh toán điện tử được tích hợp thống
+nhất. Đây là bài toán lớn, liên quan đến ngân hàng, vận chuyển, kiểm định và pháp
+lý. Trong phạm vi prototype của môn học, hệ thống chỉ mô phỏng việc ghi nhận
+thanh toán, phí giao dịch, escrow và trạng thái giao nhận; việc chuyển tiền và
+vận chuyển thực tế vẫn được các doanh nghiệp thực hiện ngoài hệ thống.
+
+\subsection{Hệ quả của hiện trạng}
+
+Các hạn chế nêu trên dẫn đến ba nhóm hệ quả chính:
+
+\begin{itemize}[leftmargin=1.1cm]
+  \item \textbf{Về kinh tế:} doanh nghiệp phát sinh thêm chi phí xử lý vật liệu
+  dư, trong khi doanh nghiệp khác vẫn phải mua nguyên liệu mới với chi phí cao.
+
+  \item \textbf{Về vận hành:} quá trình tìm đối tác, thương lượng và theo dõi
+  giao dịch phụ thuộc nhiều vào thao tác thủ công, khó kiểm soát và khó truy vết.
+
+  \item \textbf{Về môi trường:} vật liệu còn khả năng tái sử dụng hoặc tái chế
+  vẫn bị đưa vào luồng chất thải, làm giảm hiệu quả sử dụng tài nguyên và tăng áp
+  lực lên hoạt động xử lý chất thải.
+\end{itemize}
+
+\section{Nhu cầu xây dựng hệ thống}
+\label{sec:nhu-cau}
+
+Từ các vấn đề trên, cần xây dựng một hệ thống thông tin có khả năng chuẩn hóa và
+kết nối các hoạt động chính trong quá trình trao đổi vật liệu tuần hoàn. Hệ thống
+cần đáp ứng các nhu cầu sau:
+
+\begin{enumerate}[leftmargin=1.1cm]
+  \item Tạo một nơi công bố tập trung cho nguồn vật liệu dư thừa và nhu cầu mua
+  vật liệu của doanh nghiệp.
+
+  \item Cho phép người dùng tìm kiếm, lọc và xem thông tin chi tiết để phát hiện
+  cơ hội kết nối cung -- cầu.
+
+  \item Hỗ trợ doanh nghiệp gửi đề nghị với số lượng, mức giá và lời nhắn cụ thể;
+  đồng thời cho phép bên nhận chấp nhận hoặc từ chối đề nghị.
+
+  \item Chuyển một đề nghị đã được chấp nhận thành giao dịch có mã định danh,
+  trạng thái và lịch sử sự kiện rõ ràng.
+
+  \item Hỗ trợ hồ sơ doanh nghiệp, quy trình phê duyệt và đánh giá sau giao dịch
+  nhằm tăng tính minh bạch và mức độ tin cậy giữa các bên.
+
+  \item Cung cấp chức năng quản trị để kiểm soát doanh nghiệp, danh mục vật liệu,
+  tin đăng, giao dịch và các dữ liệu tài chính ở mức prototype.
+
+  \item Tạo nền tảng dữ liệu và kiến trúc kỹ thuật có thể mở rộng trong tương lai
+  cho thuật toán gợi ý, tự động ghép cặp cung -- cầu, thanh toán điện tử và tích
+  hợp logistics.
+\end{enumerate}
+
+\section{Mục tiêu và phạm vi của đề tài}
+\label{sec:muc-tieu-pham-vi}
+
+\subsection{Mục tiêu tổng quát}
+
+Mục tiêu của đề tài là phân tích, thiết kế và xây dựng prototype một nền tảng B2B
+giúp doanh nghiệp trao đổi vật liệu dư thừa theo hướng kinh tế tuần hoàn. Hệ thống
+phải thể hiện được luồng xuyên suốt từ công bố vật liệu, tìm kiếm, gửi đề nghị,
+hình thành giao dịch, theo dõi trạng thái đến đánh giá đối tác.
+
+\subsection{Mục tiêu cụ thể}
+
+\begin{itemize}[leftmargin=1.1cm]
+  \item Số hóa thông tin nguồn cung và nhu cầu vật liệu theo cấu trúc thống nhất.
+  \item Rút ngắn quá trình tìm kiếm và liên hệ giữa doanh nghiệp mua và bán.
+  \item Ghi nhận đầy đủ đề nghị, giao dịch và lịch sử thay đổi trạng thái.
+  \item Hỗ trợ kiểm duyệt doanh nghiệp và quản trị dữ liệu hệ thống.
+  \item Xây dựng backend theo kiến trúc microservice để phân tách trách nhiệm
+  nghiệp vụ và tạo khả năng mở rộng.
+  \item Triển khai được một phiên bản hoạt động trên môi trường máy chủ để phục
+  vụ thử nghiệm và trình diễn.
+\end{itemize}
+
+\subsection{Phạm vi MVP}
+
+Trong phạm vi bài tập lớn, sản phẩm được xác định là một MVP/prototype học thuật.
+Các chức năng thuộc phạm vi thực hiện gồm:
+
+\begin{itemize}[leftmargin=1.1cm]
+  \item đăng ký, đăng nhập và quản lý phiên bằng JWT bearer token; middleware
+  vẫn giữ tương thích với demo token cũ trong môi trường trình diễn;
+  \item tạo hồ sơ doanh nghiệp và thực hiện phê duyệt hoặc từ chối bởi Admin;
+  \item quản lý danh mục và nguồn cung; hiển thị nhu cầu vật liệu, trong khi thao
+  tác tạo nhu cầu hiện mới ở mức stub và chưa ghi cơ sở dữ liệu;
+  \item tìm kiếm, lọc và xem chi tiết tin đăng;
+  \item gửi, tiếp nhận, chấp nhận hoặc từ chối đề nghị mua;
+  \item tạo giao dịch, cập nhật trạng thái và lưu lịch sử giao dịch;
+  \item tải ảnh vật liệu, gửi đánh giá và nhận thông báo trong ứng dụng;
+  \item ghi nhận phí, escrow và ví người bán ở mức prototype;
+  \item cung cấp các màn hình quản trị và thống kê cơ bản.
+\end{itemize}
+
+Các nội dung ngoài phạm vi MVP gồm tích hợp ngân hàng hoặc cổng thanh toán thật,
+điều phối logistics, theo dõi vận chuyển theo thời gian thực, hợp đồng điện tử,
+chữ ký số, kiểm định chất lượng bởi bên thứ ba, xác minh pháp lý tự động và quy
+trình giải quyết tranh chấp hoàn chỉnh.
+
+Mục tiêu ``tự động kết nối cung -- cầu'' là định hướng phát triển của hệ thống.
+Phiên bản hiện tại chưa cài đặt thuật toán tự động matching hoặc recommendation.
+Việc kết nối đang được thực hiện thông qua công bố tập trung, tìm kiếm, lọc, xem
+chi tiết và gửi Offer. Cách xác định phạm vi này giúp báo cáo phản ánh đúng năng
+lực của mã nguồn hiện có, đồng thời vẫn giữ được định hướng mở rộng của đề tài.
+
+\section{Mô tả sơ bộ các yêu cầu chức năng}
+\label{sec:yeu-cau-chuc-nang-so-bo}
+
+Các tác nhân chính của hệ thống gồm Guest, Business User và Admin. Buyer và
+Seller là hai vai trò nghiệp vụ của Business User, không phải hai loại tài khoản
+tách biệt; một doanh nghiệp có thể vừa mua vừa bán tùy từng giao dịch.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Các tác nhân chính của hệ thống}
+  \label{tab:tac-nhan-chinh}
+  \begin{tabularx}{\textwidth}{p{3.0cm}Y}
+    \toprule
+    \textbf{Tác nhân} & \textbf{Vai trò sơ bộ} \\
+    \midrule
+    Guest &
+    Xem marketplace, danh sách nhu cầu và chi tiết vật liệu; tìm kiếm thông tin;
+    đăng ký và đăng nhập. \\
+
+    Business User &
+    Quản lý hồ sơ cá nhân, tạo hồ sơ doanh nghiệp, theo dõi trạng thái phê duyệt
+    và sử dụng các chức năng nghiệp vụ sau khi đăng nhập. \\
+
+    Buyer &
+    Đăng nhu cầu, tìm nguồn cung, gửi đề nghị mua, theo dõi giao dịch và đánh giá
+    Seller. \\
+
+    Seller &
+    Đăng nguồn cung, tiếp nhận và xử lý đề nghị, cập nhật giao dịch, theo dõi ví
+    và đánh giá Buyer. \\
+
+    Admin &
+    Duyệt doanh nghiệp; quản lý danh mục, tin đăng và giao dịch; theo dõi dữ liệu
+    tài chính, escrow và các yêu cầu quản trị. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Từ góc nhìn chức năng, hệ thống được chia sơ bộ thành các nhóm sau:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Các nhóm yêu cầu chức năng sơ bộ}
+  \label{tab:nhom-chuc-nang}
+  \begin{tabularx}{\textwidth}{p{3.5cm}Y}
+    \toprule
+    \textbf{Nhóm chức năng} & \textbf{Mô tả} \\
+    \midrule
+    Tài khoản và xác thực &
+    Đăng ký, đăng nhập, phát hành JWT bearer token, lấy thông tin người dùng hiện
+    tại và bảo vệ các chức năng yêu cầu xác thực. Middleware vẫn hỗ trợ token
+    demo cũ để không làm gián đoạn phiên trình diễn. \\
+
+    Hồ sơ doanh nghiệp &
+    Tạo và xem hồ sơ doanh nghiệp; Admin duyệt hoặc từ chối; chỉ doanh nghiệp đã
+    được xác minh mới được thực hiện các thao tác mua hoặc đăng bán quan trọng. \\
+
+    Quản lý vật liệu &
+    Xem danh mục; đăng và xem nguồn cung; lưu thông tin mô tả, số lượng, đơn vị,
+    mức giá, vị trí, đóng gói và hình ảnh. Route cập nhật/xóa nguồn cung và tạo
+    nhu cầu hiện mới ở mức stub. \\
+
+    Khám phá cung -- cầu &
+    Công khai marketplace; tìm kiếm và lọc nguồn cung hoặc nhu cầu; xem chi tiết
+    để người dùng tự xác định cơ hội phù hợp trong phạm vi MVP. \\
+
+    Đề nghị giao dịch &
+    Buyer gửi Offer gắn với nguồn cung, trong đó có số lượng, giá đề xuất và lời
+    nhắn; Seller xem, chấp nhận hoặc từ chối đề nghị. \\
+
+    Giao dịch và timeline &
+    Tự động tạo Transaction khi Offer được chấp nhận; cho phép xem danh sách,
+    chi tiết, cập nhật trạng thái và lưu TransactionEvent để hình thành lịch sử
+    xử lý. \\
+
+    Tài chính prototype &
+    Ghi nhận số tiền, phí nền tảng, escrow, giải ngân, ví Seller và yêu cầu rút
+    tiền. Đây là sổ ghi nhận trong prototype, không phải tích hợp chuyển tiền
+    ngân hàng thực tế. \\
+
+    Đánh giá và thông báo &
+    Tạo đánh giá sau giao dịch; xem điểm và nhận xét; nhận thông báo, đánh dấu đã
+    đọc hoặc đánh dấu tất cả đã đọc. \\
+
+    Quản trị hệ thống &
+    Cung cấp dashboard và các chức năng quản lý doanh nghiệp, danh mục, tin đăng,
+    giao dịch, báo cáo, tài chính và escrow. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Luồng nghiệp vụ cốt lõi của hệ thống được mô tả sơ bộ như sau:
+
+\begin{enumerate}[leftmargin=1.1cm]
+  \item Người dùng đăng ký, đăng nhập và tạo hồ sơ doanh nghiệp.
+  \item Admin xem xét, sau đó phê duyệt hoặc từ chối hồ sơ.
+  \item Seller đăng nguồn cung vật liệu; Buyer xem nhu cầu đã công bố. Chức năng
+  tạo nhu cầu hiện mới là stub và chưa ghi cơ sở dữ liệu.
+  \item Buyer tìm kiếm marketplace, xem chi tiết nguồn cung và gửi Offer.
+  \item Seller tiếp nhận Offer và quyết định chấp nhận hoặc từ chối.
+  \item Khi Offer được chấp nhận, hệ thống tạo Transaction và sự kiện khởi tạo.
+  \item Hai bên tự thỏa thuận thanh toán và giao nhận bên ngoài nền tảng; hệ thống
+  chỉ ghi nhận trạng thái và timeline tương ứng.
+  \item Sau khi hoàn tất, các bên có thể đánh giá nhau; dữ liệu được dùng để tăng
+  tính minh bạch cho những giao dịch tiếp theo.
+\end{enumerate}
+
+\section{Mô tả sơ bộ giải pháp xây dựng hệ thống}
+\label{sec:giai-phap-so-bo}
+
+\subsection{Giải pháp nghiệp vụ}
+
+Giải pháp được xây dựng theo mô hình sàn giao dịch B2B. Thay vì trực tiếp sở hữu
+vật liệu hoặc thực hiện vận chuyển, hệ thống tập trung vào quản lý thông tin và
+quy trình kết nối. Mỗi nguồn cung và nhu cầu được biểu diễn bằng một bản ghi có
+cấu trúc. Người dùng có thể tìm kiếm dữ liệu, gửi đề nghị và theo dõi giao dịch
+trên cùng một nền tảng.
+
+Hồ sơ doanh nghiệp và trạng thái phê duyệt được sử dụng như một lớp kiểm soát
+trước khi người dùng thực hiện các thao tác quan trọng. Offer đóng vai trò là đối
+tượng thương lượng giữa Buyer và Seller. Khi Offer được chấp nhận, hệ thống tạo
+Transaction và TransactionEvent để tách giai đoạn thương lượng khỏi giai đoạn
+thực hiện giao dịch. Review và Notification hỗ trợ tạo dựng uy tín và duy trì
+thông tin liên tục cho người dùng.
+
+\subsection{Giải pháp kiến trúc}
+
+Backend được tổ chức theo định hướng microservice. Frontend gửi yêu cầu REST đến
+API Gateway; Gateway thực hiện middleware xác thực, kiểm tra quyền và chuyển đổi
+REST/JSON thành lời gọi gRPC. Sáu service nghiệp vụ xử lý theo cấu trúc
+Handler--Service--Repository và chỉ repository của service mới truy cập cơ sở dữ
+liệu thuộc miền đó. Gateway không chứa SQL hoặc driver PostgreSQL.
+
+Hệ thống hiện gồm sáu microservice chính:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Các microservice của hệ thống}
+  \label{tab:danh-sach-microservice}
+  \begin{tabularx}{\textwidth}{p{3.4cm}p{2.6cm}Y}
+    \toprule
+    \textbf{Thành phần} & \textbf{Cơ sở dữ liệu} & \textbf{Trách nhiệm} \\
+    \midrule
+    Auth Service & \texttt{auth\_db} &
+    Đăng ký, đăng nhập, xác thực và thông tin người dùng. \\
+
+    Company Service & \texttt{company\_db} &
+    Hồ sơ doanh nghiệp và quy trình phê duyệt. \\
+
+    Material Service & \texttt{material\_db} &
+    Danh mục, nguồn cung, nhu cầu, tìm kiếm và lọc vật liệu. \\
+
+    Order Service & \texttt{order\_db} &
+    Offer, Transaction, TransactionEvent và dữ liệu tài chính liên quan. \\
+
+    Review Service & \texttt{review\_db} &
+    Đánh giá, nhận xét và điểm trung bình của đối tác. \\
+
+    Notification Service & \texttt{notif\_db} &
+    Thông báo trong ứng dụng và trạng thái đã đọc. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Theo thiết kế, mỗi service sở hữu một cơ sở dữ liệu logic riêng theo nguyên tắc
+\textit{Database per Service}. Trong môi trường project, sáu cơ sở dữ liệu được
+đặt trong cùng một container PostgreSQL 15 để giảm chi phí triển khai. Các quan
+hệ xuyên database được lưu bằng ID logic. Khi một luồng cần dữ liệu từ nhiều
+miền, Gateway điều phối các lời gọi gRPC, ví dụ kiểm tra Company trước khi tạo
+Listing hoặc tra User trước khi tạo Review.
+
+\subsection{Giải pháp công nghệ}
+
+Các công nghệ chính được lựa chọn gồm:
+
+\begin{itemize}[leftmargin=1.1cm]
+  \item \textbf{Frontend:} React, TypeScript và Vite để xây dựng ứng dụng web
+  dạng SPA; Nginx phục vụ tập tin tĩnh và chuyển tiếp các yêu cầu
+  \texttt{/api/}.
+
+  \item \textbf{API Gateway và microservice:} ngôn ngữ Go; Gin cho REST API tại
+  Gateway; gRPC và Protocol Buffers cho giao tiếp đồng bộ giữa các service.
+
+  \item \textbf{Xác thực và phân quyền:} Auth Service phát JWT; middleware gọi
+  Auth Service để xác minh token và kiểm tra quyền Admin.
+
+  \item \textbf{Lưu trữ dữ liệu:} PostgreSQL 15 với sáu database logic; MinIO
+  được cấu hình làm kho đối tượng cho tệp và hình ảnh.
+
+  \item \textbf{Giao tiếp bất đồng bộ:} Order Service công bố sự kiện
+  \texttt{cme.orders.*} qua NATS; Notification Service subscribe theo queue group
+  và dùng mã tham chiếu để chống ghi thông báo trùng.
+
+  \item \textbf{Đóng gói và triển khai:} Docker và Docker Compose cho backend;
+  frontend và backend được triển khai trên hai máy chủ tách biệt trong môi
+  trường demo.
+\end{itemize}
+
+Kiến trúc trên phù hợp với mục tiêu của bài tập vì giúp thể hiện rõ ranh giới
+nghiệp vụ, lớp giao diện, lớp dịch vụ và lớp lưu trữ. Đồng thời, việc tách service
+tạo điều kiện mở rộng từng nhóm chức năng mà không phải chuyển toàn bộ hệ thống
+thành một khối nguyên khối.
+
+\subsection{Định hướng mở rộng}
+
+Từ nền tảng dữ liệu của MVP, hệ thống có thể phát triển thêm các khả năng sau:
+
+\begin{itemize}[leftmargin=1.1cm]
+  \item xây dựng thuật toán matching dựa trên loại vật liệu, thuộc tính kỹ thuật,
+  số lượng, vị trí, thời hạn và mức giá;
+  \item gợi ý nguồn cung hoặc nhu cầu phù hợp theo lịch sử tương tác;
+  \item tích hợp cổng thanh toán và dịch vụ ngân hàng để thay thế cơ chế tài
+  chính mô phỏng;
+  \item tích hợp doanh nghiệp logistics và theo dõi vận chuyển;
+  \item bổ sung kiểm định chất lượng, hợp đồng điện tử và xử lý tranh chấp;
+  \item bổ sung retry/dead-letter cho sự kiện và cơ chế giám sát, tracing
+  microservice.
+\end{itemize}
+
+\section{Kết chương}
+\label{sec:ket-chuong-1}
+
+Chương này đã trình bày bối cảnh phát sinh vật liệu dư thừa trong sản xuất, những
+hạn chế của phương thức kết nối hiện tại và nhu cầu xây dựng một nền tảng trao
+đổi vật liệu tuần hoàn B2B. Circular Materials Exchange được đề xuất nhằm tập
+trung hóa thông tin cung -- cầu, số hóa quá trình gửi đề nghị và theo dõi giao
+dịch, đồng thời hỗ trợ kiểm duyệt và đánh giá để tăng mức độ tin cậy.
+
+Trong phạm vi bài tập lớn, hệ thống được triển khai ở mức MVP với kiến trúc
+microservice, gồm API Gateway và sáu service nghiệp vụ. Các chức năng thanh toán,
+escrow và giao nhận chỉ được ghi nhận hoặc mô phỏng; thuật toán tự động ghép cặp
+cung -- cầu được xác định là hướng phát triển tiếp theo. Các chương sau sẽ tiếp
+tục phân tích nghiệp vụ, đặc tả yêu cầu và trình bày thiết kế chi tiết cho hệ
+thống.
+
+\end{document}

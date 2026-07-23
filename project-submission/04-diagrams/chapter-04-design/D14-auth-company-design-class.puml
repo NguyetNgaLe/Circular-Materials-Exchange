@@ -1,91 +1,66 @@
 @startuml
-title D14 - Design Class Diagram: Auth và Company
+allowmixing
+title D14 - Design Class: Auth và Company microservice as-built
 skinparam classAttributeIconSize 0
 
+package "API Gateway - REST/gRPC adapter" {
+  class JWTAuthMiddleware <<Middleware>> {
+    -authClient: AuthServiceClient
+    +JWTAuth()
+    +AdminOnly()
+  }
+
+  class AuthHTTPHandler <<Controller>> {
+    -authClient: AuthServiceClient
+    -companyClient: CompanyServiceClient
+    +Register(ctx)
+    +Login(ctx)
+    +GetMe(ctx)
+  }
+
+  class CompanyHTTPHandler <<Controller>> {
+    -client: CompanyServiceClient
+    +CreateCompany(ctx)
+    +GetCompany(ctx)
+    +ListCompanies(ctx)
+    +ApproveCompany(ctx)
+    +RejectCompany(ctx)
+  }
+}
+
 package "Auth Service" {
-  class AuthHandler <<Controller>> {
-    +Register(ctx, request)
-    +Login(ctx, request)
-    +VerifyToken(ctx, request)
-    +GetUser(ctx, request)
-    +UpdateProfile(ctx, request)
-  }
-
-  class AuthService <<Service>> {
-    -repo: UserRepository
-    -jwtSecret: string
-    +Register(name, email, password, phone)
-    +Login(email, password)
-    +VerifyToken(token)
-    +GetUser(id)
-    +UpdateProfile(id, name, phone, avatar)
-  }
-
-  class UserRepository <<Repository>> {
-    -db: sql.DB
-    +Create(user)
-    +FindByEmail(email)
-    +FindByID(id)
-    +Update(user)
-  }
-
-  class User <<Entity>> {
-    +ID: string
-    +Name: string
-    +Email: string
-    +Phone: string
-    +PasswordHash: string
-    +Role: string
-    +CompanyID: string
-  }
+  class AuthGRPCHandler <<Controller>>
+  class AuthService <<Service>>
+  class UserRepository <<Repository>>
+  class User <<Entity>>
+  AuthGRPCHandler --> AuthService
+  AuthService --> UserRepository
+  UserRepository --> User
 }
 
 package "Company Service" {
-  class CompanyHandler <<Controller>> {
-    +CreateCompany(ctx, request)
-    +GetCompany(ctx, request)
-    +ListCompanies(ctx, request)
-    +UpdateCompany(ctx, request)
-    +ApproveCompany(ctx, request)
-    +RejectCompany(ctx, request)
-  }
-
-  class CompanyService <<Service>> {
-    -repo: CompanyRepository
-    +CreateCompany(...)
-    +GetCompany(id)
-    +ListCompanies(status, page, pageSize)
-    +UpdateCompany(...)
-    +ApproveCompany(id)
-    +RejectCompany(id, reason)
-  }
-
-  class CompanyRepository <<Repository>> {
-    -db: sql.DB
-    +Create(company)
-    +FindByID(id)
-    +FindByOwnerID(ownerID)
-    +List(status, page, pageSize)
-    +Update(company)
-  }
-
-  class Company <<Entity>> {
-    +ID: string
-    +Name: string
-    +TaxCode: string
-    +Status: string
-    +RejectReason: string
-    +OwnerID: string
-    +Rating: float64
-  }
+  class CompanyGRPCHandler <<Controller>>
+  class CompanyService <<Service>>
+  class CompanyRepository <<Repository>>
+  class Company <<Entity>>
+  CompanyGRPCHandler --> CompanyService
+  CompanyService --> CompanyRepository
+  CompanyRepository --> Company
 }
 
-AuthHandler --> AuthService
-AuthService --> UserRepository
-UserRepository --> User
-CompanyHandler --> CompanyService
-CompanyService --> CompanyRepository
-CompanyRepository --> Company
-User ..> Company : CompanyID / OwnerID\nlogical reference
-@enduml
+database "auth_db" as AuthDB
+database "company_db" as CompanyDB
 
+JWTAuthMiddleware --> AuthGRPCHandler : VerifyToken/GetUserByEmail
+AuthHTTPHandler --> AuthGRPCHandler : Login/Register/GetUser
+AuthHTTPHandler --> CompanyGRPCHandler : GetCompanyByOwner
+CompanyHTTPHandler --> CompanyGRPCHandler : Company RPC
+UserRepository --> AuthDB : SQL
+CompanyRepository --> CompanyDB : SQL
+User ..> Company : logical CompanyID / OwnerID
+
+note bottom
+  Gateway không giữ sql.DB.
+  Auth và Company tự sở hữu repository/database.
+end note
+@enduml

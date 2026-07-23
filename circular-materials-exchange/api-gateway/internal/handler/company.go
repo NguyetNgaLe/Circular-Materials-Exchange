@@ -1,40 +1,20 @@
 package handler
 
 import (
-	"database/sql"
-	"fmt"
+	companypb "api-gateway/internal/pb/company"
+	"context"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
-	"google.golang.org/grpc"
-	_ "github.com/lib/pq"
 )
 
 type CompanyHandler struct {
-	conn    *grpc.ClientConn
-	db      *sql.DB
-	authDB  *sql.DB
+	client companypb.CompanyServiceClient
 }
 
-func NewCompanyHandler(conn *grpc.ClientConn) *CompanyHandler {
-	dbHost := getEnv("DB_HOST", "localhost")
-	dbPort := getEnv("DB_PORT", "5433")
-	dbUser := getEnv("DB_USER", "cme")
-	dbPass := getEnv("DB_PASSWORD", "cme_secret_2024")
-
-	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=company_db sslmode=disable", dbHost, dbPort, dbUser, dbPass)
-	db, err := sql.Open("postgres", dsn)
-	if err != nil {
-		db = nil
-	}
-
-	authDSN := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=auth_db sslmode=disable", dbHost, dbPort, dbUser, dbPass)
-	authDB, err := sql.Open("postgres", authDSN)
-	if err != nil {
-		authDB = nil
-	}
-
-	return &CompanyHandler{conn: conn, db: db, authDB: authDB}
+func NewCompanyHandler(client companypb.CompanyServiceClient) *CompanyHandler {
+	return &CompanyHandler{client: client}
 }
 
 func (h *CompanyHandler) CreateCompany(c *gin.Context) {
@@ -50,126 +30,121 @@ func (h *CompanyHandler) CreateCompany(c *gin.Context) {
 		return
 	}
 	userID, _ := c.Get("user_id")
-
-	if h.db == nil {
-		c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"id": "comp-new", "name": req.Name, "status": "pending"}})
-		return
-	}
-
-	var id string
-	err := h.db.QueryRow(`INSERT INTO companies (name, tax_code, address, city, description, owner_id, status) VALUES ($1,$2,$3,$4,$5,$6,'pending') RETURNING id`,
-		req.Name, req.TaxCode, req.Address, req.City, req.Description, userID).Scan(&id)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
-		return
-	}
-
-	// Cap nhat company_id cho user trong auth_db
-	if h.authDB != nil {
-		h.authDB.Exec("UPDATE users SET company_id=$1 WHERE id=$2", id, userID)
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data": gin.H{
-			"id": id, "name": req.Name, "tax_code": req.TaxCode,
-			"address": req.Address, "city": req.City, "description": req.Description,
-			"status": "pending", "owner_id": userID,
-		},
+	ctx, cancel := rpcContext(c)
+	defer cancel()
+	company, err := h.client.CreateCompany(ctx, &companypb.CreateCompanyRequest{
+		Name: req.Name, TaxCode: req.TaxCode, Address: req.Address,
+		City: req.City, Description: req.Description, OwnerId: stringValue(userID),
 	})
+	if err != nil {
+		writeRPCError(c, err, "Loi tao doanh nghiep")
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "data": companyJSON(company)})
 }
 
 func (h *CompanyHandler) GetCompany(c *gin.Context) {
-	id := c.Param("id")
-	if h.db == nil {
-		c.JSON(http.StatusNotFound, gin.H{"success": false, "message": "Not found"})
-		return
-	}
-
-	var name, status, ownerID string
-	var taxCode, address, city, description, rejectReason, memberSince, certifications, imageURL sql.NullString
-	var rating sql.NullFloat64
-	var reviewCount sql.NullInt64
-
-	err := h.db.QueryRow(`SELECT name, tax_code, address, city, description, status, reject_reason, owner_id, rating, review_count, member_since::text, certifications, COALESCE(image_url,'') FROM companies WHERE id=$1`, id).Scan(
-		&name, &taxCode, &address, &city, &description, &status, &rejectReason, &ownerID, &rating, &reviewCount, &memberSince, &certifications, &imageURL)
+	ctx, cancel := rpcContext(c)
+	defer cancel()
+	company, err := h.client.GetCompany(ctx, &companypb.GetCompanyRequest{Id: c.Param("id")})
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"success": false, "message": "Not found"})
+		writeRPCError(c, err, "Not found")
 		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{
-		"id": id, "name": name, "taxCode": taxCode.String, "address": address.String,
-		"city": city.String, "description": description.String, "status": status,
-		"rejectReason": rejectReason.String, "ownerId": ownerID,
-		"rating": rating.Float64, "reviewCount": reviewCount.Int64,
-		"memberSince": memberSince.String, "certifications": certifications.String,
-		"imageUrl": imageURL.String,
-	}})
+	c.JSON(http.StatusOK, gin.H{"success": true, "data": companyJSON(company)})
 }
 
 func (h *CompanyHandler) ListCompanies(c *gin.Context) {
-	if h.db == nil {
-		c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"companies": []gin.H{}, "total": 0}})
-		return
-	}
-
-	userID, _ := c.Get("user_id")
+	ctx, cancel := rpcContext(c)
+	defer cancel()
 	role, _ := c.Get("role")
+	userID, _ := c.Get("user_id")
 
-	var rows *sql.Rows
-	var err error
-
-	if role == "admin" {
-		rows, err = h.db.Query(`SELECT id, name, COALESCE(tax_code,''), COALESCE(address,''), COALESCE(city,''), COALESCE(description,''), status, COALESCE(reject_reason,''), owner_id, COALESCE(rating,0), COALESCE(review_count,0), member_since::text, COALESCE(certifications,''), COALESCE(image_url,'') FROM companies ORDER BY created_at DESC`)
-	} else {
-		rows, err = h.db.Query(`SELECT id, name, COALESCE(tax_code,''), COALESCE(address,''), COALESCE(city,''), COALESCE(description,''), status, COALESCE(reject_reason,''), owner_id, COALESCE(rating,0), COALESCE(review_count,0), member_since::text, COALESCE(certifications,''), COALESCE(image_url,'') FROM companies WHERE owner_id=$1 ORDER BY created_at DESC`, userID)
-	}
-
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"companies": []gin.H{}, "total": 0}})
-		return
-	}
-	defer rows.Close()
-
-	var companies []gin.H
-	for rows.Next() {
-		var id, name, taxCode, address, city, description, status, rejectReason, ownerID, memberSince, certifications, imageURL string
-		var rating float64
-		var reviewCount int
-		rows.Scan(&id, &name, &taxCode, &address, &city, &description, &status, &rejectReason, &ownerID, &rating, &reviewCount, &memberSince, &certifications, &imageURL)
-		companies = append(companies, gin.H{
-			"id": id, "name": name, "taxCode": taxCode, "address": address,
-			"city": city, "description": description, "status": status,
-			"rejectReason": rejectReason, "ownerId": ownerID,
-			"rating": rating, "reviewCount": reviewCount,
-			"memberSince": memberSince, "certifications": certifications,
-			"imageUrl": imageURL,
+	companies := []*companypb.Company{}
+	total := 0
+	if stringValue(role) == "admin" {
+		page, pageSize := pagination(c)
+		response, err := h.client.ListCompanies(ctx, &companypb.ListCompaniesRequest{
+			Status: c.Query("status"), Page: page, PageSize: pageSize,
 		})
+		if err != nil {
+			writeRPCError(c, err, "Loi lay danh sach doanh nghiep")
+			return
+		}
+		companies = response.GetCompanies()
+		total = int(response.GetTotal())
+	} else {
+		company, err := h.client.GetCompanyByOwner(ctx, &companypb.GetCompanyByOwnerRequest{OwnerId: stringValue(userID)})
+		if err == nil && company != nil {
+			companies = append(companies, company)
+		}
+		total = len(companies)
 	}
-	if companies == nil {
-		companies = []gin.H{}
+
+	items := make([]gin.H, 0, len(companies))
+	for _, company := range companies {
+		items = append(items, companyJSON(company))
 	}
-	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"companies": companies, "total": len(companies)}})
+	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"companies": items, "total": total}})
 }
 
 func (h *CompanyHandler) ApproveCompany(c *gin.Context) {
-	id := c.Param("id")
-	if h.db != nil {
-		h.db.Exec("UPDATE companies SET status='verified', updated_at=NOW() WHERE id=$1", id)
+	ctx, cancel := rpcContext(c)
+	defer cancel()
+	company, err := h.client.ApproveCompany(ctx, &companypb.ApproveCompanyRequest{Id: c.Param("id")})
+	if err != nil {
+		writeRPCError(c, err, "Loi duyet doanh nghiep")
+		return
 	}
-	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"id": id, "status": "verified"}})
+	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"id": company.GetId(), "status": company.GetStatus()}})
 }
 
 func (h *CompanyHandler) RejectCompany(c *gin.Context) {
-	id := c.Param("id")
 	var req struct {
 		Reason string `json:"reason"`
 	}
-	c.ShouldBindJSON(&req)
-
-	if h.db != nil {
-		h.db.Exec("UPDATE companies SET status='rejected', reject_reason=$1, updated_at=NOW() WHERE id=$2", req.Reason, id)
+	_ = c.ShouldBindJSON(&req)
+	ctx, cancel := rpcContext(c)
+	defer cancel()
+	company, err := h.client.RejectCompany(ctx, &companypb.RejectCompanyRequest{Id: c.Param("id"), Reason: req.Reason})
+	if err != nil {
+		writeRPCError(c, err, "Loi tu choi doanh nghiep")
+		return
 	}
-	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"id": id, "status": "rejected", "reject_reason": req.Reason}})
+	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{
+		"id": company.GetId(), "status": company.GetStatus(), "reject_reason": company.GetRejectReason(),
+	}})
+}
+
+func companyJSON(company *companypb.Company) gin.H {
+	if company == nil {
+		return gin.H{}
+	}
+	return gin.H{
+		"id":             company.GetId(),
+		"name":           company.GetName(),
+		"taxCode":        company.GetTaxCode(),
+		"address":        company.GetAddress(),
+		"city":           company.GetCity(),
+		"description":    company.GetDescription(),
+		"status":         company.GetStatus(),
+		"rejectReason":   company.GetRejectReason(),
+		"ownerId":        company.GetOwnerId(),
+		"rating":         company.GetRating(),
+		"reviewCount":    company.GetReviewCount(),
+		"memberSince":    company.GetMemberSince(),
+		"certifications": strings.Join(company.GetCertifications(), ","),
+		"imageUrl":       company.GetImageUrl(),
+	}
+}
+
+func getCompanyByOwner(ctx context.Context, client companypb.CompanyServiceClient, ownerID string) (*companypb.Company, error) {
+	return client.GetCompanyByOwner(ctx, &companypb.GetCompanyByOwnerRequest{OwnerId: ownerID})
+}
+
+func stringValue(value interface{}) string {
+	if text, ok := value.(string); ok {
+		return text
+	}
+	return ""
 }

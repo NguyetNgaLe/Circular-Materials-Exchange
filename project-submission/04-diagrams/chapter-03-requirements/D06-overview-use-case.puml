@@ -13,16 +13,18 @@ Buyer -|> Business
 Seller -|> Business
 
 rectangle "Circular Materials Exchange" {
-  usecase "Xem và tìm kiếm\nmarketplace\nhu cau mua" as UC1
+  usecase "Xem và tìm kiếm\nmarketplace / nhu cầu" as UC1
   usecase "Đăng ký / đăng nhập" as UC2
-  usecase "Quản lý hồ sơ\ndoanh nghiệp" as UC3
-  usecase "Đăng nguồn cung" as UC4
-  usecase "Đăng nhu cầu mua" as UC5
-  usecase "Gửi và xử lý Offer" as UC6
-  usecase "Theo dõi giao dịch" as UC7
-  usecase "Đánh giá đối tác" as UC8
-  usecase "Xem thông báo" as UC9
-  usecase "Quản trị và\nkiểm duyệt" as UC10
+  usecase "Tạo / xem hồ sơ\ndoanh nghiệp" as UC3
+  usecase "Upload ảnh và\nđăng nguồn cung" as UC4
+  usecase "Đăng nhu cầu\n<<partial>>" as UC5
+  usecase "Gửi / xử lý Offer" as UC6
+  usecase "Theo dõi và\nhoàn tất giao dịch" as UC7
+  usecase "Xem Seller wallet" as UC8
+  usecase "Đánh giá đối tác" as UC9
+  usecase "Xem thông báo" as UC10
+  usecase "Duyệt doanh nghiệp" as UC11
+  usecase "Quản trị finance /\nescrow prototype" as UC12
 }
 
 Guest --> UC1
@@ -34,9 +36,15 @@ Buyer --> UC6
 Seller --> UC6
 Buyer --> UC7
 Seller --> UC7
-Buyer --> UC8
 Seller --> UC8
-Business --> UC9
-Admin --> UC10
+Buyer --> UC9
+Seller --> UC9
+Business --> UC10
+Admin --> UC11
+Admin --> UC12
+
+note bottom of UC5
+  Endpoint tạo Demand chưa ghi database.
+end note
 @enduml
 

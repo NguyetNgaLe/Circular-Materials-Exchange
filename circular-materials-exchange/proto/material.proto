@@ -13,12 +13,14 @@ service MaterialService {
   rpc CreateDemand(CreateDemandRequest) returns (DemandListing);
   rpc GetDemand(GetDemandRequest) returns (DemandListing);
   rpc ListDemands(ListDemandsRequest) returns (ListDemandsResponse);
+  rpc UploadImage(UploadImageRequest) returns (UploadImageResponse);
 }
 
 message Category {
   string id = 1;
   string name = 2;
   string icon = 3;
+  string image_url = 4;
 }
 
 message SupplyListing {
@@ -71,6 +73,7 @@ message CreateListingRequest {
   string location = 11;
   double min_order_quantity = 12;
   string packaging = 13;
+  repeated string images = 14;
 }
 
 message GetListingRequest {
@@ -144,3 +147,13 @@ message CreateCategoryRequest {
 }
 
 message Empty {}
+
+message UploadImageRequest {
+  string filename = 1;
+  string content_type = 2;
+  bytes content = 3;
+}
+
+message UploadImageResponse {
+  string image_url = 1;
+}

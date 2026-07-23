@@ -23,6 +23,7 @@ func (h *NotificationHandler) CreateNotification(ctx context.Context, req *pb.Cr
 		req.GetTitle(),
 		req.GetMessage(),
 		req.GetType(),
+		req.GetReferenceId(),
 	)
 	if err != nil {
 		return nil, err
@@ -79,12 +80,13 @@ func (h *NotificationHandler) GetUnreadCount(ctx context.Context, req *pb.GetUnr
 
 func notificationToProto(n *repository.Notification) *pb.Notification {
 	return &pb.Notification{
-		Id:        n.ID,
-		UserId:    n.UserID,
-		Title:     n.Title,
-		Message:   n.Message,
-		Type:      n.Type,
-		Read:      n.Read,
-		CreatedAt: n.CreatedAt.Format(time.RFC3339),
+		Id:          n.ID,
+		UserId:      n.UserID,
+		Title:       n.Title,
+		Message:     n.Message,
+		Type:        n.Type,
+		ReferenceId: n.ReferenceID,
+		Read:        n.Read,
+		CreatedAt:   n.CreatedAt.Format(time.RFC3339),
 	}
 }

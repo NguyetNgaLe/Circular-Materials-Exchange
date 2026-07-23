@@ -3,46 +3,70 @@ title D03 - Quy trình trao đổi vật liệu và giao dịch
 
 |Seller|
 start
-:Đăng nguồn cung vật liệu dư;
+:Upload ảnh vật liệu;
+:Đăng nguồn cung;
 
 |Hệ thống|
-:Công bố nguồn cung trên marketplace;
+:Kiểm tra doanh nghiệp verified;
+:Công bố nguồn cung active;
 
 |Buyer|
-:Tìm kiếm và lọc nguồn cung;
+:Tìm kiếm/lọc nguồn cung;
 if (Tìm thấy vật liệu phù hợp?) then (Có)
-  :Xem chi tiết vật liệu;
-  :Gửi Offer gồm số lượng và giá đề xuất;
+  :Xem chi tiết;
+  :Nhập số lượng, giá và lời nhắn;
+  :Gửi Offer;
 else (Không)
-  :Có thể đăng nhu cầu mua;
-  |Hệ thống|
-  :Công khai nhu cầu mua;
+  :Xem sàn nhu cầu;
+  note right
+    Create Demand hiện là stub;
+    chưa ghi database.
+  end note
   stop
 endif
+
+|Hệ thống|
+:Kiểm tra doanh nghiệp Buyer verified;
+:Tạo Offer pending;
+:Ghi escrow ledger holding;
+:Tạo Notification cho Seller;
 
 |Seller|
 :Xem Offer nhận được;
 if (Chấp nhận Offer?) then (Có)
   |Hệ thống|
-  :Đổi Offer sang accepted;
-  :Tạo Transaction trạng thái confirmed;
-  :Tạo sự kiện lịch sử giao dịch;
+  :Cập nhật Offer accepted;
+  :Tạo Transaction confirmed;
+  :Tạo TransactionEvent;
+  :Gắn escrow với Transaction;
+  :Thông báo cho Buyer;
 else (Không)
   |Hệ thống|
-  :Đổi Offer sang rejected;
+  :Cập nhật Offer rejected;
   stop
 endif
 
-|Buyer và Seller|
-:Thỏa thuận thanh toán và giao nhận ngoài hệ thống;
-:Cập nhật tiến độ giao dịch;
-:Hai bên xác nhận hoàn tất;
-
+|Seller|
+:Xác nhận đã giao hàng;
 |Hệ thống|
-:Lưu timeline và trạng thái completed;
+:Transaction -> in_progress;
+:Lưu TransactionEvent;
 
-|Buyer và Seller|
-:Đánh giá đối tác;
+|Buyer|
+:Xác nhận đã nhận hàng;
+|Hệ thống|
+:Transaction -> completed;
+:Release escrow ledger;
+:Ghi phí 2% và cộng Seller wallet;
+:Thông báo hai bên;
+
+|Buyer|
+:Đánh giá Seller;
 stop
+
+legend bottom
+  Escrow, phí và wallet chỉ là ledger prototype.
+  Không có chuyển tiền hoặc logistics thật.
+endlegend
 @enduml
 

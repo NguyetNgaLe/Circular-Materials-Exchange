@@ -58,6 +58,9 @@ func (s *MaterialService) CreateListing(title, categoryID, sellerID, companyID, 
 		CreatedAt:        time.Now(),
 		UpdatedAt:        time.Now(),
 	}
+	if len(images) > 0 {
+		listing.ImageURL = images[0]
+	}
 
 	if err := s.repo.CreateListing(listing); err != nil {
 		return nil, err

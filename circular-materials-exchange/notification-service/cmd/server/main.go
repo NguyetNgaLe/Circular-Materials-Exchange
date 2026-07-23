@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"notification-service/internal/messaging"
 	"os"
 
 	_ "github.com/lib/pq"
+	"github.com/nats-io/nats.go"
 	"google.golang.org/grpc"
 	"notification-service/internal/handler"
 	"notification-service/internal/repository"
@@ -21,6 +23,7 @@ func main() {
 	dbName := getEnv("DB_NAME", "notification_db")
 	dbUser := getEnv("DB_USER", "cme")
 	dbPass := getEnv("DB_PASSWORD", "")
+	natsURL := getEnv("NATS_URL", "nats://localhost:4222")
 	grpcPort := getEnv("GRPC_PORT", "50056")
 
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
@@ -39,6 +42,16 @@ func main() {
 	repo := repository.NewNotificationRepository(db)
 	svc := service.NewNotificationService(repo)
 	h := handler.NewNotificationHandler(svc)
+
+	natsConnection, err := nats.Connect(natsURL)
+	if err != nil {
+		log.Printf("NATS unavailable; synchronous gRPC notifications remain active: %v", err)
+	} else {
+		defer natsConnection.Close()
+		if err := messaging.SubscribeOrderEvents(natsConnection, svc); err != nil {
+			log.Printf("Failed to subscribe to order events: %v", err)
+		}
+	}
 
 	lis, err := net.Listen("tcp", ":"+grpcPort)
 	if err != nil {

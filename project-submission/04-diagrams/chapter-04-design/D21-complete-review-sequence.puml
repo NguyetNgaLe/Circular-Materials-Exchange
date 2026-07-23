@@ -1,47 +1,66 @@
 @startuml
-title D21 - Sequence hoàn tất giao dịch và đánh giá
+title D21 - Sequence giao hàng, hoàn tất, release ledger và Review
 autonumber
 
-actor "Buyer/Seller" as User
+actor Seller
+actor Buyer
 participant "React SPA" as Web
 participant "API Gateway" as Gateway
 participant "Order Service" as Order
-participant "Order Repository" as OrderRepo
-database "order_db" as OrderDB
-queue NATS
+participant "Notification Service" as Notification
+participant "Auth Service" as AuthService
 participant "Review Service" as Review
-participant "Review Repository" as ReviewRepo
+queue NATS
+database "order_db" as OrderDB
+database "notif_db" as NotifDB
+database "auth_db" as AuthDB
 database "review_db" as ReviewDB
 
-User -> Web : Xác nhận hoàn tất
-Web -> Gateway : POST /api/transactions/{id}/status
-Gateway -> Order : UpdateTransactionStatus(completed) [gRPC]
-Order -> OrderRepo : FindTransactionByID(id)
-OrderRepo -> OrderDB : SELECT transaction
-OrderDB --> OrderRepo : Transaction
-Order -> OrderRepo : UpdateTransaction(status=completed)
-OrderRepo -> OrderDB : UPDATE transactions
-Order -> OrderRepo : CreateTransactionEvent(from, to, actor)
-OrderRepo -> OrderDB : INSERT transaction_events
-Order -> NATS : publish cme.orders.transaction.completed
+Seller -> Web : Xác nhận đã giao hàng
+Web -> Gateway : POST /api/transactions/{id}/status\nstatus=in_progress
+Gateway -> Order : UpdateTransactionStatus(gRPC)
+Order -> OrderDB : UPDATE Transaction(in_progress)
+Order -> OrderDB : INSERT TransactionEvent
+Order -> NATS : publish transaction.in_progress
+Order --> Gateway : Transaction(in_progress)
+NATS -> Notification : Notify Buyer
+Notification -> NotifDB : INSERT Notification
+Gateway -> Notification : CreateNotification(gRPC, idempotent)
+Gateway --> Web : success
+
+Buyer -> Web : Xác nhận đã nhận hàng
+Web -> Gateway : POST /api/transactions/{id}/status\nstatus=completed
+Gateway -> Order : UpdateTransactionStatus(gRPC)
+Order -> OrderDB : UPDATE Transaction(completed)
+Order -> OrderDB : INSERT TransactionEvent
+Order -> OrderDB : SELECT Escrow holding theo transaction_id
+Order -> OrderDB : UPDATE Escrow(released)
+Order -> OrderDB : INSERT PlatformFee(2%)
+Order -> OrderDB : UPSERT SellerWallet
+Order -> OrderDB : UPDATE PlatformWallet
+Order -> OrderDB : INSERT SellerWalletTransaction
+Order -> NATS : publish transaction.completed
 Order --> Gateway : Transaction(completed)
-Gateway --> Web : HTTP 200
-Web --> User : Hiển thị hoàn tất
+NATS -> Notification : Notify Seller
+Notification -> NotifDB : INSERT Notification
+Gateway -> Notification : CreateNotification(gRPC, idempotent)
+Gateway --> Web : success
 
-== Người dùng chủ động gửi đánh giá ==
-User -> Web : Nhập rating và comment
-Web -> Gateway : POST /api/reviews + JWT
-Gateway -> Review : CreateReview(request) [gRPC]
-Review -> ReviewRepo : Create(review)
-ReviewRepo -> ReviewDB : INSERT reviews
-ReviewDB --> ReviewRepo : OK
-Review --> Gateway : Review
-Gateway --> Web : HTTP 201
-Web --> User : Hiển thị đánh giá thành công
+== Buyer chủ động đánh giá ==
+Buyer -> Web : Nhập rating và comment
+Web -> Gateway : POST /api/reviews + token
+Gateway -> AuthService : GetUser(reviewee_id)
+AuthService -> AuthDB : SELECT tên Seller
+AuthDB --> AuthService : reviewee_name
+AuthService --> Gateway : User
+Gateway -> Review : CreateReview(gRPC)
+Review -> ReviewDB : INSERT Review
+ReviewDB --> Review : OK
+Review --> Web : HTTP 200
 
-note over Order,NATS
-  Sự kiện completed được publish,
-  nhưng chưa có consumer trong Notification Service.
+note over Order,OrderDB
+  Release/fee/wallet là ledger prototype.
+  Release escrow dùng SQL transaction; cập nhật status/event
+  và release vẫn chưa nằm trong cùng một transaction tổng.
 end note
 @enduml
-
