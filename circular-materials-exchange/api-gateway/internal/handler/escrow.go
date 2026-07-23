@@ -22,7 +22,7 @@ func NewEscrowHandler(conn *grpc.ClientConn) *EscrowHandler {
 	dbPort := getEnv("DB_PORT", "5433")
 	dbName := "order_db"
 	dbUser := getEnv("DB_USER", "cme")
-	dbPass := getEnv("DB_PASSWORD", "")
+	dbPass := getEnv("DB_PASSWORD", "cme_secret_2024")
 
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", dbHost, dbPort, dbUser, dbPass, dbName)
 	db, err := sql.Open("postgres", dsn)
@@ -435,4 +435,3 @@ func (h *EscrowHandler) RejectWithdrawal(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"id": id, "status": "rejected"}})
 }
-

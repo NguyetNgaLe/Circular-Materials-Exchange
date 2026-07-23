@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -12,23 +13,35 @@ import (
 )
 
 type OrderHandler struct {
-	conn *grpc.ClientConn
-	db   *sql.DB
+	conn         *grpc.ClientConn
+	db           *sql.DB
+	companyDB    *sql.DB
+	notifHandler *NotificationHandler
 }
 
 func NewOrderHandler(conn *grpc.ClientConn) *OrderHandler {
 	dbHost := getEnv("DB_HOST", "localhost")
 	dbPort := getEnv("DB_PORT", "5433")
-	dbName := "order_db"
 	dbUser := getEnv("DB_USER", "cme")
-	dbPass := getEnv("DB_PASSWORD", "")
+	dbPass := getEnv("DB_PASSWORD", "cme_secret_2024")
 
-	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", dbHost, dbPort, dbUser, dbPass, dbName)
+	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=order_db sslmode=disable", dbHost, dbPort, dbUser, dbPass)
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
-		return &OrderHandler{conn: conn, db: nil}
+		db = nil
 	}
-	return &OrderHandler{conn: conn, db: db}
+
+	companyDSN := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=company_db sslmode=disable", dbHost, dbPort, dbUser, dbPass)
+	companyDB, err := sql.Open("postgres", companyDSN)
+	if err != nil {
+		companyDB = nil
+	}
+
+	return &OrderHandler{conn: conn, db: db, companyDB: companyDB}
+}
+
+func (h *OrderHandler) SetNotificationHandler(nh *NotificationHandler) {
+	h.notifHandler = nh
 }
 
 func (h *OrderHandler) CreateOffer(c *gin.Context) {
@@ -52,6 +65,20 @@ func (h *OrderHandler) CreateOffer(c *gin.Context) {
 	}
 	userID, _ := c.Get("user_id")
 
+	// Kiem tra doanh nghiep buyer da duoc duyet chua
+	if h.companyDB != nil {
+		var companyStatus string
+		err := h.companyDB.QueryRow("SELECT status FROM companies WHERE owner_id=$1 LIMIT 1", userID).Scan(&companyStatus)
+		if err != nil {
+			c.JSON(http.StatusForbidden, gin.H{"success": false, "message": "Ban can co ho do doanh nghiep de gui de nghi mua"})
+			return
+		}
+		if companyStatus != "verified" {
+			c.JSON(http.StatusForbidden, gin.H{"success": false, "message": "Doanh nghiep chua duoc admin duyet"})
+			return
+		}
+	}
+
 	if h.db == nil {
 		c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"id": "of-demo"}})
 		return
@@ -63,6 +90,25 @@ func (h *OrderHandler) CreateOffer(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
 		return
+	}
+
+	// Tao escrow (giu tien) khi buyer thanh toan
+	totalAmount := req.Quantity * req.ProposedPrice
+	feeRate := 0.02
+	feeAmount := totalAmount * feeRate
+	sellerAmount := totalAmount - feeAmount
+	escrowID := uuid.New().String()
+	holdUntil := time.Now().AddDate(0, 0, 3) // 3 ngay
+
+	h.db.Exec(`INSERT INTO escrow_transactions (id, transaction_id, buyer_id, buyer_name, seller_id, seller_name, amount, fee_rate, fee_amount, seller_amount, status, hold_until) VALUES ($1,NULL,$2,$3,$4,$5,$6,$7,$8,$9,'holding',$10)`,
+		escrowID, userID, req.BuyerName, req.SellerID, req.SellerName, totalAmount, feeRate, feeAmount, sellerAmount, holdUntil)
+
+	// Tao thong bao cho seller
+	if h.notifHandler != nil {
+		h.notifHandler.CreateNotification(req.SellerID,
+			"De nghi mua moi",
+			fmt.Sprintf("%s muon mua %s %.0f %s voi gia %.0f VND/%s", req.BuyerName, req.ListingTitle, req.Quantity, req.Unit, req.ProposedPrice, req.Unit),
+			"offer", id)
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -163,11 +209,31 @@ func (h *OrderHandler) AcceptOffer(c *gin.Context) {
 	h.db.Exec(`INSERT INTO transaction_events (id, transaction_id, actor_id, actor_name, from_status, to_status, note) VALUES ($1,$2,$3,$4,'offer.accepted','transaction.confirmed','Giao dich duoc tao tu dong khi seller chap nhan offer')`,
 		evID, txID, offer.SellerID, offer.SellerName)
 
+	// Create escrow (tu dong giu tien)
+	totalAmount := offer.Quantity * offer.ProposedPrice
+	feeRate := 0.02
+	feeAmount := totalAmount * feeRate
+	sellerAmount := totalAmount - feeAmount
+	escrowID := uuid.New().String()
+	holdUntil := time.Now().AddDate(0, 0, 3) // 3 ngay
+
+	h.db.Exec(`INSERT INTO escrow_transactions (id, transaction_id, buyer_id, buyer_name, seller_id, seller_name, amount, fee_rate, fee_amount, seller_amount, status, hold_until) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,'holding',$11)`,
+		escrowID, txID, offer.BuyerID, offer.BuyerName, offer.SellerID, offer.SellerName, totalAmount, feeRate, feeAmount, sellerAmount, holdUntil)
+
+	// Tao thong bao cho buyer
+	if h.notifHandler != nil {
+		h.notifHandler.CreateNotification(offer.BuyerID,
+			"De nghi da duoc chap nhan",
+			fmt.Sprintf("%s da chap nhan de nghi mua %s. Giao dich da duoc tao.", offer.SellerName, offer.ListingTitle),
+			"offer_accepted", offerID)
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"data": gin.H{
 			"id": offerID, "status": "accepted",
 			"transaction": gin.H{"id": txID, "status": "confirmed"},
+			"escrow": gin.H{"id": escrowID, "amount": totalAmount, "feeAmount": feeAmount, "sellerAmount": sellerAmount, "holdUntil": holdUntil},
 		},
 	})
 }
@@ -313,7 +379,62 @@ func (h *OrderHandler) UpdateTransactionStatus(c *gin.Context) {
 	h.db.Exec(`INSERT INTO transaction_events (id, transaction_id, actor_id, actor_name, from_status, to_status, note) VALUES ($1,$2,$3,$4,$5,$6,$7)`,
 		evID, id, userID, userID, "transaction."+oldStatus, "transaction."+req.Status, req.Note)
 
+	// Neu transaction completed -> tu dong giai ngan escrow
+	if req.Status == "completed" {
+		var escrowID, sellerID, sellerName, buyerID, buyerName string
+		var sellerAmount, feeAmount, totalAmount float64
+		err := h.db.QueryRow("SELECT id, seller_id, seller_name, buyer_id, buyer_name, amount, seller_amount, fee_amount FROM escrow_transactions WHERE transaction_id=$1 AND status='holding'", id).Scan(
+			&escrowID, &sellerID, &sellerName, &buyerID, &buyerName, &totalAmount, &sellerAmount, &feeAmount)
+		if err == nil {
+			// Giai ngan escrow
+			h.db.Exec("UPDATE escrow_transactions SET status='released', released_at=NOW() WHERE id=$1", escrowID)
+
+			// Them vao platform_fees (de FinanceHandler doc duoc)
+			feeID := uuid.New().String()
+			h.db.Exec(`INSERT INTO platform_fees (id, transaction_id, seller_id, buyer_id, transaction_amount, fee_rate, fee_amount, fee_type, status, collected_at) VALUES ($1,$2,$3,$4,$5,0.02,$6,'transaction','collected',NOW())`,
+				feeID, id, sellerID, buyerID, totalAmount, feeAmount)
+
+			// Cap nhat seller_wallet
+			h.db.Exec(`INSERT INTO seller_wallet (seller_id, seller_name, balance, total_earned, total_fees_paid) 
+				VALUES ($1, $2, $3, $3, $4) 
+				ON CONFLICT (seller_id) DO UPDATE SET 
+				balance = seller_wallet.balance + $3, 
+				total_earned = seller_wallet.total_earned + $3,
+				total_fees_paid = seller_wallet.total_fees_paid + $4,
+				updated_at = NOW()`,
+				sellerID, sellerName, sellerAmount, feeAmount)
+
+			// Cap nhat platform_wallet (san nhan phi)
+			h.db.Exec("UPDATE platform_wallet SET balance = balance + $1, total_income = total_income + $1, updated_at = NOW()", feeAmount)
+
+			// Lay so du moi
+			var newBalance float64
+			h.db.QueryRow("SELECT balance FROM seller_wallet WHERE seller_id=$1", sellerID).Scan(&newBalance)
+
+			// Tao lich su vi seller
+			walletTxID := uuid.New().String()
+			h.db.Exec(`INSERT INTO seller_wallet_transactions (id, seller_id, type, amount, balance_after, reference_type, reference_id, description) VALUES ($1,$2,'credit',$3,$4,'escrow_release',$5,$6)`,
+				walletTxID, sellerID, sellerAmount, newBalance, escrowID, fmt.Sprintf("Nhan tien tu giao dich %s (tru phi %.0f%%)", id[:8], feeAmount/sellerAmount*100))
+		}
+	}
+
+	// Tao thong bao khi trang thai giao dich thay doi
+	if h.notifHandler != nil {
+		var buyerID, sellerID, listingTitle string
+		h.db.QueryRow("SELECT buyer_id, seller_id, listing_title FROM transactions WHERE id=$1", id).Scan(&buyerID, &sellerID, &listingTitle)
+
+		if req.Status == "in_progress" {
+			h.notifHandler.CreateNotification(buyerID,
+				"Seller da giao hang",
+				fmt.Sprintf("San pham %s da duoc giao. Vui long xac nhan nhan hang.", listingTitle),
+				"transaction", id)
+		} else if req.Status == "completed" {
+			h.notifHandler.CreateNotification(sellerID,
+				"Giao dich hoan tat",
+				fmt.Sprintf("Giao dich %s da hoan tat. Tien da chuyen vao vi cua ban.", listingTitle),
+				"transaction", id)
+		}
+	}
+
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"id": id, "status": req.Status}})
 }
-
-

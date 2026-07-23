@@ -11,23 +11,30 @@ import (
 )
 
 type CompanyHandler struct {
-	conn *grpc.ClientConn
-	db   *sql.DB
+	conn    *grpc.ClientConn
+	db      *sql.DB
+	authDB  *sql.DB
 }
 
 func NewCompanyHandler(conn *grpc.ClientConn) *CompanyHandler {
 	dbHost := getEnv("DB_HOST", "localhost")
 	dbPort := getEnv("DB_PORT", "5433")
-	dbName := "company_db"
 	dbUser := getEnv("DB_USER", "cme")
-	dbPass := getEnv("DB_PASSWORD", "")
+	dbPass := getEnv("DB_PASSWORD", "cme_secret_2024")
 
-	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", dbHost, dbPort, dbUser, dbPass, dbName)
+	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=company_db sslmode=disable", dbHost, dbPort, dbUser, dbPass)
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
-		return &CompanyHandler{conn: conn, db: nil}
+		db = nil
 	}
-	return &CompanyHandler{conn: conn, db: db}
+
+	authDSN := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=auth_db sslmode=disable", dbHost, dbPort, dbUser, dbPass)
+	authDB, err := sql.Open("postgres", authDSN)
+	if err != nil {
+		authDB = nil
+	}
+
+	return &CompanyHandler{conn: conn, db: db, authDB: authDB}
 }
 
 func (h *CompanyHandler) CreateCompany(c *gin.Context) {
@@ -55,6 +62,11 @@ func (h *CompanyHandler) CreateCompany(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
 		return
+	}
+
+	// Cap nhat company_id cho user trong auth_db
+	if h.authDB != nil {
+		h.authDB.Exec("UPDATE users SET company_id=$1 WHERE id=$2", id, userID)
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -161,5 +173,3 @@ func (h *CompanyHandler) RejectCompany(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"id": id, "status": "rejected", "reject_reason": req.Reason}})
 }
-
-

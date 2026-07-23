@@ -26,6 +26,12 @@ func main() {
 	orderHandler := handler.NewOrderHandler(clients.OrderConn)
 	reviewHandler := handler.NewReviewHandler(clients.ReviewConn)
 	notificationHandler := handler.NewNotificationHandler(clients.NotificationConn)
+	financeHandler := handler.NewFinanceHandler(clients.OrderConn)
+	escrowHandler := handler.NewEscrowHandler(clients.OrderConn)
+	uploadHandler := handler.NewUploadHandler()
+
+	// Ket noi OrderHandler voi NotificationHandler de tao thong bao
+	orderHandler.SetNotificationHandler(notificationHandler)
 
 	// Setup Gin
 	r := gin.Default()
@@ -51,6 +57,9 @@ func main() {
 	api.GET("/listings/:id", materialHandler.GetListing)
 	api.GET("/categories", materialHandler.ListCategories)
 	api.GET("/demands", materialHandler.ListDemands)
+
+	// Upload (auth required)
+	api.POST("/upload", middleware.JWTAuth(), uploadHandler.UploadImage)
 
 	// Protected routes
 	protected := api.Group("")
@@ -91,6 +100,34 @@ func main() {
 		protected.PUT("/notifications/:id/read", notificationHandler.MarkRead)
 		protected.PUT("/notifications/read-all", notificationHandler.MarkAllRead)
 		protected.GET("/notifications/unread-count", notificationHandler.GetUnreadCount)
+
+		// Seller Wallet
+		protected.GET("/seller/wallet", escrowHandler.GetSellerWallet)
+		protected.GET("/seller/wallet/transactions", escrowHandler.GetSellerWalletTransactions)
+		protected.POST("/seller/withdraw", escrowHandler.CreateWithdrawal)
+		protected.GET("/seller/withdrawals", escrowHandler.GetSellerWithdrawals)
+	}
+
+	// Admin routes
+	admin := api.Group("/admin")
+	admin.Use(middleware.JWTAuth(), middleware.AdminOnly())
+	{
+		// Finance
+		admin.GET("/finance/overview", financeHandler.GetOverview)
+		admin.GET("/finance/fees", financeHandler.ListFees)
+		admin.GET("/finance/wallet", financeHandler.GetWallet)
+		admin.GET("/finance/wallet-transactions", financeHandler.ListWalletTransactions)
+		admin.POST("/finance/collect-fee", financeHandler.CollectFee)
+
+		// Escrow
+		admin.POST("/escrow", escrowHandler.CreateEscrow)
+		admin.GET("/escrow", escrowHandler.ListEscrows)
+		admin.POST("/escrow/:id/release", escrowHandler.ReleaseEscrow)
+
+		// Withdrawals
+		admin.GET("/withdrawals", escrowHandler.ListWithdrawals)
+		admin.POST("/withdrawals/:id/approve", escrowHandler.ApproveWithdrawal)
+		admin.POST("/withdrawals/:id/reject", escrowHandler.RejectWithdrawal)
 	}
 
 	log.Printf("API Gateway running on :%s", httpPort)

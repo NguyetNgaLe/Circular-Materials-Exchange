@@ -18,7 +18,7 @@ func init() {
 	dbHost := getEnv("DB_HOST", "localhost")
 	dbPort := getEnv("DB_PORT", "5433")
 	dbUser := getEnv("DB_USER", "cme")
-	dbPass := getEnv("DB_PASSWORD", "")
+	dbPass := getEnv("DB_PASSWORD", "cme_secret_2024")
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=auth_db sslmode=disable", dbHost, dbPort, dbUser, dbPass)
 	authDB, _ = sql.Open("postgres", dsn)
 }
@@ -39,7 +39,7 @@ type UserInfo struct {
 func JWTAuth() gin.HandlerFunc {
 	jwtSecret := os.Getenv("JWT_SECRET")
 	if jwtSecret == "" {
-		jwtSecret = ""
+		jwtSecret = "cme_jwt_secret_2024"
 	}
 
 	return func(c *gin.Context) {
@@ -158,5 +158,3 @@ func CORSMiddleware() gin.HandlerFunc {
 		c.Next()
 	}
 }
-
-

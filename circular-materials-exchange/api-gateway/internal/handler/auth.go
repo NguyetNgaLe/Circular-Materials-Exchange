@@ -22,7 +22,7 @@ func NewAuthHandler(conn *grpc.ClientConn) *AuthHandler {
 	dbPort := getEnv("DB_PORT", "5433")
 	dbName := "auth_db"
 	dbUser := getEnv("DB_USER", "cme")
-	dbPass := getEnv("DB_PASSWORD", "")
+	dbPass := getEnv("DB_PASSWORD", "cme_secret_2024")
 
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", dbHost, dbPort, dbUser, dbPass, dbName)
 	db, err := sql.Open("postgres", dsn)
@@ -218,5 +218,3 @@ func getNameByEmail(email string) string {
 	}
 	return "User"
 }
-
-

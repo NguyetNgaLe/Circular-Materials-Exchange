@@ -2,6 +2,7 @@ package handler
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
 	"os"
 
@@ -11,23 +12,30 @@ import (
 )
 
 type MaterialHandler struct {
-	conn *grpc.ClientConn
-	db   *sql.DB
+	conn      *grpc.ClientConn
+	db        *sql.DB
+	companyDB *sql.DB
 }
 
 func NewMaterialHandler(conn *grpc.ClientConn) *MaterialHandler {
 	dbHost := getEnv("DB_HOST", "localhost")
 	dbPort := getEnv("DB_PORT", "5433")
-	dbName := "material_db"
 	dbUser := getEnv("DB_USER", "cme")
-	dbPass := getEnv("DB_PASSWORD", "")
+	dbPass := getEnv("DB_PASSWORD", "cme_secret_2024")
 
-	dsn := "host=" + dbHost + " port=" + dbPort + " user=" + dbUser + " password=" + dbPass + " dbname=" + dbName + " sslmode=disable"
+	dsn := "host=" + dbHost + " port=" + dbPort + " user=" + dbUser + " password=" + dbPass + " dbname=material_db sslmode=disable"
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
-		return &MaterialHandler{conn: conn, db: nil}
+		db = nil
 	}
-	return &MaterialHandler{conn: conn, db: db}
+
+	companyDSN := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=company_db sslmode=disable", dbHost, dbPort, dbUser, dbPass)
+	companyDB, err := sql.Open("postgres", companyDSN)
+	if err != nil {
+		companyDB = nil
+	}
+
+	return &MaterialHandler{conn: conn, db: db, companyDB: companyDB}
 }
 
 func getEnv(key, fallback string) string {
@@ -110,7 +118,7 @@ func (h *MaterialHandler) ListListings(c *gin.Context) {
 		rows.Scan(&l.ID, &l.Title, &l.CategoryID, &l.SellerID, &l.CompanyID, &l.Description, &l.Specs, &l.Quantity, &l.Unit, &l.PricePerUnit, &l.Currency, &l.Location, &l.MinOrderQty, &l.Packaging, &l.Status, &l.CreatedAt, &imageURL)
 		listings = append(listings, gin.H{
 			"id": l.ID, "title": l.Title, "categoryId": l.CategoryID,
-			"sellerId": l.SellerID, "description": l.Description,
+			"sellerId": l.SellerID, "companyId": l.CompanyID, "description": l.Description,
 			"specs": parseSpecs(l.Specs), "quantity": l.Quantity, "unit": l.Unit,
 			"pricePerUnit": l.PricePerUnit, "currency": l.Currency,
 			"location": l.Location, "status": l.Status, "createdAt": l.CreatedAt,
@@ -138,9 +146,21 @@ func (h *MaterialHandler) GetListing(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"success": false, "message": "Not found"})
 		return
 	}
+
+	// Tim ten cong ty cua seller
+	sellerName := ""
+	if h.companyDB != nil {
+		var cName sql.NullString
+		h.companyDB.QueryRow("SELECT name FROM companies WHERE owner_id=$1 LIMIT 1", l.SellerID).Scan(&cName)
+		if cName.Valid {
+			sellerName = cName.String
+		}
+	}
+
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{
 		"id": l.ID, "title": l.Title, "categoryId": l.CategoryID,
-		"sellerId": l.SellerID, "description": l.Description,
+		"sellerId": l.SellerID, "companyId": l.CompanyID, "sellerName": sellerName,
+		"description": l.Description,
 		"specs": parseSpecs(l.Specs), "quantity": l.Quantity, "unit": l.Unit,
 		"pricePerUnit": l.PricePerUnit, "currency": l.Currency,
 		"location": l.Location, "status": l.Status, "createdAt": l.CreatedAt,
@@ -162,6 +182,7 @@ func (h *MaterialHandler) CreateListing(c *gin.Context) {
 		Location     string            `json:"location"`
 		MinOrderQty  float64           `json:"min_order_quantity"`
 		Packaging    string            `json:"packaging"`
+		ImageUrl     string            `json:"image_url"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
@@ -169,14 +190,28 @@ func (h *MaterialHandler) CreateListing(c *gin.Context) {
 	}
 	userID, _ := c.Get("user_id")
 
+	// Kiem tra doanh nghiep da duoc duyet chua
+	if h.companyDB != nil {
+		var companyStatus string
+		err := h.companyDB.QueryRow("SELECT status FROM companies WHERE owner_id=$1 LIMIT 1", userID).Scan(&companyStatus)
+		if err != nil {
+			c.JSON(http.StatusForbidden, gin.H{"success": false, "message": "Ban can co ho do doanh nghiep de dang nguon cung"})
+			return
+		}
+		if companyStatus != "verified" {
+			c.JSON(http.StatusForbidden, gin.H{"success": false, "message": "Doanh nghiep chua duoc admin duyet"})
+			return
+		}
+	}
+
 	if h.db == nil {
 		c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"id": "new"}})
 		return
 	}
 
 	var id string
-	err := h.db.QueryRow("INSERT INTO supply_listings (title, category_id, seller_id, description, quantity, unit, price_per_unit, currency, location, min_order_quantity, packaging, status) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,'active') RETURNING id",
-		req.Title, req.CategoryID, userID, req.Description, req.Quantity, req.Unit, req.PricePerUnit, req.Currency, req.Location, req.MinOrderQty, req.Packaging).Scan(&id)
+	err := h.db.QueryRow("INSERT INTO supply_listings (title, category_id, seller_id, description, quantity, unit, price_per_unit, currency, location, min_order_quantity, packaging, image_url, status) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,'active') RETURNING id",
+		req.Title, req.CategoryID, userID, req.Description, req.Quantity, req.Unit, req.PricePerUnit, req.Currency, req.Location, req.MinOrderQty, req.Packaging, req.ImageUrl).Scan(&id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
 		return
@@ -251,5 +286,3 @@ func parseSpecs(s *string) map[string]string {
 	// For now return empty if parsing fails
 	return result
 }
-
-
