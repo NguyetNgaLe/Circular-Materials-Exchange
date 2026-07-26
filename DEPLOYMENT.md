@@ -75,9 +75,27 @@
 ├── scripts/
 │   ├── init-databases.sql    # Fresh bootstrap 6 databases/18 tables
 │   └── migrate-existing.sql  # Nâng cấp idempotent volume hiện có
+├── .env.example              # Mẫu biến môi trường, không chứa secret thật
 ├── docker-compose.yml
 └── proto/                 # gRPC proto definitions
 ```
+
+### Biến môi trường bắt buộc
+
+Trước khi chạy bất kỳ lệnh `docker compose up` hoặc `docker compose build`,
+tạo file `.env` ngay trong thư mục backend:
+
+```bash
+cd /home/ubuntu/circular-materials-exchange
+cp .env.example .env
+chmod 600 .env
+# Thay cả ba placeholder bằng secret thật:
+# DB_PASSWORD, JWT_SECRET, MINIO_PASSWORD
+```
+
+Không commit `.env`. `docker-compose.yml` sử dụng cú pháp
+`${VARIABLE:?message}` nên sẽ dừng ngay nếu thiếu secret, tránh recreate
+container với mật khẩu rỗng.
 
 ### Docker Compose
 
@@ -88,7 +106,7 @@ services:
     container_name: cme-postgres
     environment:
       POSTGRES_USER: cme
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
       POSTGRES_DB: auth_db
     ports:
       - "5433:5432"
@@ -119,8 +137,8 @@ services:
       DB_PORT: "5432"
       DB_NAME: auth_db
       DB_USER: cme
-      DB_PASSWORD: ${DB_PASSWORD}
-      JWT_SECRET: ${JWT_SECRET}
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
     depends_on:
       postgres: { condition: service_healthy }
 

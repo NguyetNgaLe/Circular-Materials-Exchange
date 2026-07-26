@@ -4,7 +4,6 @@ import (
 	companypb "api-gateway/internal/pb/company"
 	"context"
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -133,7 +132,7 @@ func companyJSON(company *companypb.Company) gin.H {
 		"rating":         company.GetRating(),
 		"reviewCount":    company.GetReviewCount(),
 		"memberSince":    company.GetMemberSince(),
-		"certifications": strings.Join(company.GetCertifications(), ","),
+		"certifications": company.GetCertifications(),
 		"imageUrl":       company.GetImageUrl(),
 	}
 }

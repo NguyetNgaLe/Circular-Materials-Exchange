@@ -62,6 +62,12 @@ export default function MaterialDetailPage() {
     return <Layout><div className="empty-state"><h3>Không tìm thấy vật liệu</h3></div></Layout>
   }
 
+  const companyCertifications = Array.isArray(company?.certifications)
+    ? company.certifications
+    : typeof company?.certifications === 'string'
+      ? company.certifications.split(',').map((item: string) => item.trim()).filter(Boolean)
+      : []
+
   return (
     <Layout showSidebar={!!store.currentUser}>
       <nav className="breadcrumbs">
@@ -224,7 +230,9 @@ export default function MaterialDetailPage() {
                 <span><Truck size={14} /> Thời gian điều phối: 3-5 ngày</span>
               </div>
               <div className="cert-tags">
-                {company.certifications.map(c => <span key={c} className="tag tag-outline">{c}</span>)}
+                {companyCertifications.map((certification: string) => (
+                  <span key={certification} className="tag tag-outline">{certification}</span>
+                ))}
               </div>
             </div>
           )}
