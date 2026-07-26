@@ -119,6 +119,7 @@ func companyJSON(company *companypb.Company) gin.H {
 	if company == nil {
 		return gin.H{}
 	}
+	certifications := append([]string{}, company.GetCertifications()...)
 	return gin.H{
 		"id":             company.GetId(),
 		"name":           company.GetName(),
@@ -132,7 +133,7 @@ func companyJSON(company *companypb.Company) gin.H {
 		"rating":         company.GetRating(),
 		"reviewCount":    company.GetReviewCount(),
 		"memberSince":    company.GetMemberSince(),
-		"certifications": company.GetCertifications(),
+		"certifications": certifications,
 		"imageUrl":       company.GetImageUrl(),
 	}
 }
