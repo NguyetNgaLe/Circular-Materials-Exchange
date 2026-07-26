@@ -193,7 +193,7 @@ export default function MaterialDetailPage() {
                 Gửi Đề Nghị Mua
               </button>
             )}
-            {store.currentUser && store.currentUser.id !== listing.sellerId && (!buyerCompany || buyerCompany.status !== 'verified') && (
+            {store.currentUser && store.currentUser.role !== 'admin' && store.currentUser.id !== listing.sellerId && (!buyerCompany || buyerCompany.status !== 'verified') && (
               <button
                 className="btn btn-full"
                 disabled

@@ -44,7 +44,7 @@ export default function AdminListingsPage() {
       <div className="table-responsive">
         <table className="table">
           <thead>
-            <tr><th>Vật liệu</th><th>Danh mục</th><th>Doanh nghiệp</th><th>Số lượng</th><th>Giá</th><th>Địa điểm</th><th>Trạng thái</th><th>Thao tác</th></tr>
+            <tr><th>Vật liệu</th><th>Danh mục</th><th>Doanh nghiệp</th><th>Số lượng</th><th>Giá</th><th>Địa điểm</th><th>Trạng thái</th></tr>
           </thead>
           <tbody>
             {listings.map(l => (
@@ -61,12 +61,6 @@ export default function AdminListingsPage() {
                 <td>{l.pricePerUnit?.toLocaleString()}đ</td>
                 <td>{l.location}</td>
                 <td><StatusBadge status={l.status} /></td>
-                <td>
-                  <div className="action-btns">
-                    <button className="btn btn-sm btn-outline">Duyệt</button>
-                    <button className="btn btn-sm btn-ghost">Ẩn</button>
-                  </div>
-                </td>
               </tr>
             ))}
           </tbody>
