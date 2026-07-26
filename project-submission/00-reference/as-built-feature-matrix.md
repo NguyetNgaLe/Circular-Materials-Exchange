@@ -22,7 +22,7 @@
 | F10 | Marketplace | Xem/tìm nguồn cung | Đã chạy | Public list/detail; lọc phía handler còn đơn giản |
 | F11 | Marketplace | Upload ảnh | Đã chạy | Gateway truyền byte ảnh qua Material gRPC; Material Service PUT tới MinIO |
 | F12 | Marketplace | Đăng nguồn cung | Đã chạy | Yêu cầu doanh nghiệp `verified` |
-| F13 | Marketplace | Sửa/xóa nguồn cung | Một phần | Route có nhưng handler đang trả kết quả stub |
+| F13 | Marketplace | Sửa/xóa nguồn cung | Một phần | Sửa còn stub; xóa đã kiểm tra Owner/Admin và gọi Material gRPC để xóa database |
 | F14 | Demand | Xem nhu cầu | Đã chạy | Public `GET /api/demands` |
 | F15 | Demand | Đăng nhu cầu | Một phần | `POST /api/demands` chưa INSERT database |
 | F16 | Demand | Seller báo giá Demand | Chưa có | Chưa có API/luồng UI |

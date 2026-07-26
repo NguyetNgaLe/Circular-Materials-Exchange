@@ -57,6 +57,7 @@ MaterialHTTPHandler ..> UploadHandler : nhận image_url từ UI
 
 note bottom
   image_url/images đã có trong bootstrap và migration.
-  Update/Delete Listing và Create Demand là stub.
+  Update Listing và Create Demand còn stub.
+  Delete Listing kiểm tra Owner/Admin rồi gọi Material gRPC.
 end note
 @enduml

@@ -15,7 +15,7 @@
 
 - [ ] Activity chỉ mô tả nghiệp vụ, không lẫn chi tiết SQL/gRPC.
 - [ ] Actor nằm ngoài biên hệ thống.
-- [ ] D08 ghi Update/Delete Listing và Create Demand là stub.
+- [ ] D08 ghi Update Listing và Create Demand là stub; Delete Listing đã triển khai ownership.
 - [ ] Không thêm Seller báo giá Demand như chức năng đã có.
 - [ ] D09-D10 có finance/escrow/wallet đúng mức prototype.
 

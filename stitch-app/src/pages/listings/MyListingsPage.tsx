@@ -11,6 +11,7 @@ export default function MyListingsPage() {
   const [listings, setListings] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [company, setCompany] = useState<any>(null)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   useEffect(() => {
     if (!user) return
@@ -36,11 +37,19 @@ export default function MyListingsPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Bạn có chắc chắn muốn xóa vật liệu này?')) return
+    setDeletingId(id)
     try {
-      // await store.deleteListing(id) // TODO: Add deleteListing to store
+      const deleted = await store.deleteListing(id)
+      if (!deleted) {
+        alert('Không thể xóa vật liệu. Vui lòng tải lại trang và thử lại.')
+        return
+      }
       setListings(prev => prev.filter(l => l.id !== id))
     } catch (err) {
       console.error('Failed to delete listing:', err)
+      alert('Không thể xóa vật liệu. Vui lòng thử lại.')
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -109,7 +118,12 @@ export default function MyListingsPage() {
                       <button className="icon-btn-sm" title={l.status === 'hidden' ? 'Hiện' : 'Ẩn'}>
                         {l.status === 'hidden' ? <Eye size={16} /> : <EyeOff size={16} />}
                       </button>
-                      <button className="icon-btn-sm" title="Xóa" onClick={() => handleDelete(l.id)}>
+                      <button
+                        className="icon-btn-sm"
+                        title="Xóa"
+                        disabled={deletingId === l.id}
+                        onClick={() => handleDelete(l.id)}
+                      >
                         <Trash2 size={16} />
                       </button>
                     </div>

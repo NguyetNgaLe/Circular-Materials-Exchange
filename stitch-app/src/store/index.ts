@@ -82,6 +82,15 @@ export function useStore() {
       } catch { return null }
     },
 
+    async deleteListing(id: string): Promise<boolean> {
+      try {
+        const res = await api.deleteListing(id)
+        return res.success === true
+      } catch {
+        return false
+      }
+    },
+
     async getDemands(params?: { category_id?: string; keyword?: string }) {
       try {
         const res = await api.getDemands(params)

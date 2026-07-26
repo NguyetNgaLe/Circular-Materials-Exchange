@@ -16,7 +16,7 @@ rectangle "Marketplace" {
   usecase "UC011 - Upload ảnh" as Upload
   usecase "UC012 - Đăng nguồn cung" as CreateSupply
   usecase "UC013 - Cập nhật nguồn cung\n<<stub>>" as UpdateSupply
-  usecase "UC014 - Xóa nguồn cung\n<<stub>>" as DeleteSupply
+  usecase "UC014 - Xóa nguồn cung" as DeleteSupply
   usecase "UC015 - Xem nhu cầu" as ListDemand
   usecase "UC016 - Đăng nhu cầu\n<<stub>>" as CreateDemand
   usecase "Kiểm tra Company verified" as VerifyCompany
@@ -35,8 +35,8 @@ CreateSupply .> Upload : <<include>>
 CreateSupply .> VerifyCompany : <<include>>
 
 note bottom
-  Update/Delete Listing chỉ trả success;
+  Update Listing chỉ trả success;
+  Delete Listing kiểm tra Owner/Admin và xóa database;
   Create Demand chưa INSERT database.
 end note
 @enduml
-

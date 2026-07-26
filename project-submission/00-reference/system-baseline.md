@@ -137,7 +137,8 @@ Escrow, ví và giải ngân chỉ là **sổ ghi nhận trong prototype**. Hệ
 
 - Chưa có thuật toán tự động matching/recommendation.
 - `POST /api/demands` đang trả ID demo, chưa ghi `demand_listings`.
-- `PUT` và `DELETE /api/listings/:id` đang là stub, chưa cập nhật/xóa database.
+- `PUT /api/listings/:id` vẫn là stub. `DELETE /api/listings/:id` đã kiểm tra Seller sở hữu
+  (hoặc Admin), gọi Material Service qua gRPC và xóa dữ liệu trong `material_db`.
 - Chưa có route cập nhật hồ sơ người dùng, cập nhật doanh nghiệp hoặc hủy Offer.
 - Chưa có luồng Seller gửi báo giá trực tiếp cho Demand.
 - Một số trang Admin (category, listing, report, export) chủ yếu là UI/mock và chưa có REST CRUD tương ứng.

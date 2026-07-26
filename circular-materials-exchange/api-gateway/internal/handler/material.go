@@ -122,12 +122,36 @@ func (h *MaterialHandler) CreateListing(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"id": listing.GetId()}})
 }
 
-// These two endpoints intentionally preserve the current public behavior.
+// UpdateListing intentionally preserves the current public behavior.
 func (h *MaterialHandler) UpdateListing(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"id": c.Param("id")}})
 }
 
 func (h *MaterialHandler) DeleteListing(c *gin.Context) {
+	ctx, cancel := rpcContext(c)
+	defer cancel()
+
+	listing, err := h.material.GetListing(ctx, &materialpb.GetListingRequest{Id: c.Param("id")})
+	if err != nil {
+		writeRPCError(c, err, "Khong tim thay nguon cung")
+		return
+	}
+
+	userID, _ := c.Get("user_id")
+	role, _ := c.Get("role")
+	if stringValue(role) != "admin" && listing.GetSellerId() != stringValue(userID) {
+		c.JSON(http.StatusForbidden, gin.H{
+			"success": false,
+			"message": "Ban khong co quyen xoa nguon cung nay",
+		})
+		return
+	}
+
+	if _, err := h.material.DeleteListing(ctx, &materialpb.DeleteListingRequest{Id: listing.GetId()}); err != nil {
+		writeRPCError(c, err, "Loi xoa nguon cung")
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{"success": true, "message": "deleted"})
 }
 

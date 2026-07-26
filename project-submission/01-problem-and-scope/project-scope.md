@@ -20,7 +20,7 @@
 - Login kiểm tra mật khẩu thật nhưng phát demo token thay vì JWT thật.
 - Tìm kiếm/lọc còn đơn giản.
 - Tạo Demand chưa ghi database.
-- Sửa/xóa SupplyListing đang là stub.
+- Sửa SupplyListing vẫn là stub; xóa SupplyListing đã ghi database và kiểm tra quyền sở hữu.
 - State transition chưa được backend kiểm tra chặt.
 - Một số màn Admin category/listing/report/export mới ở mức UI/mock.
 - Luồng REST chính đi qua Gateway và 6 gRPC service; Gateway không truy cập database trực tiếp.
