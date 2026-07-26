@@ -89,7 +89,7 @@ Nguồn soạn chính: `architecture-design.md`.
 
 1. Kết quả: marketplace, Offer, Transaction, timeline, ledger prototype và deployment.
 2. Giá trị kinh tế tuần hoàn.
-3. Hạn chế: nhánh tương thích token demo, Create Demand/Update Listing còn stub, ownership/state/atomicity.
+3. Hạn chế: nhánh tương thích token demo, Create Demand còn stub, ownership/state/atomicity ở các luồng khác.
 4. Hướng phát triển: matching, payment/logistics, security, testing và observability.
 
 Nguồn soạn: `conclusion-notes.md`.

@@ -9,6 +9,7 @@ import MaterialDetailPage from './pages/material/MaterialDetailPage'
 import CompanyProfilePage from './pages/company/CompanyProfilePage'
 import PostMaterialPage from './pages/listings/PostMaterialPage'
 import MyListingsPage from './pages/listings/MyListingsPage'
+import EditListingPage from './pages/listings/EditListingPage'
 import NewOfferPage from './pages/offers/NewOfferPage'
 import SentOffersPage from './pages/offers/SentOffersPage'
 import ReceivedOffersPage from './pages/offers/ReceivedOffersPage'
@@ -48,6 +49,7 @@ export default function App() {
       <Route path="/company" element={<ProtectedRoute><CompanyProfilePage /></ProtectedRoute>} />
       <Route path="/listings" element={<ProtectedRoute><MyListingsPage /></ProtectedRoute>} />
       <Route path="/listings/new" element={<ProtectedRoute><PostMaterialPage /></ProtectedRoute>} />
+      <Route path="/listings/edit/:id" element={<ProtectedRoute><EditListingPage /></ProtectedRoute>} />
       <Route path="/offers/new/:listingId" element={<ProtectedRoute><NewOfferPage /></ProtectedRoute>} />
       <Route path="/offers/sent" element={<ProtectedRoute><SentOffersPage /></ProtectedRoute>} />
       <Route path="/offers/received" element={<ProtectedRoute><ReceivedOffersPage /></ProtectedRoute>} />

@@ -12,14 +12,15 @@ export default function MyListingsPage() {
   const [loading, setLoading] = useState(true)
   const [company, setCompany] = useState<any>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [updatingId, setUpdatingId] = useState<string | null>(null)
 
   useEffect(() => {
     if (!user) return
     const fetchListings = async () => {
       setLoading(true)
       try {
-        const [data] = await Promise.all([store.getListings()])
-        setListings(data.filter((l: any) => l.sellerId === user.id))
+        const [data] = await Promise.all([store.getMyListings()])
+        setListings(data)
         if (user.companyId) {
           const companyData = await store.getCompany(user.companyId)
           setCompany(companyData)
@@ -50,6 +51,24 @@ export default function MyListingsPage() {
       alert('Không thể xóa vật liệu. Vui lòng thử lại.')
     } finally {
       setDeletingId(null)
+    }
+  }
+
+  const handleToggleVisibility = async (listing: any) => {
+    const nextStatus = listing.status === 'hidden' ? 'active' : 'hidden'
+    setUpdatingId(listing.id)
+    try {
+      const updated = await store.updateListing(listing.id, { status: nextStatus })
+      if (!updated) {
+        alert('Không thể cập nhật trạng thái vật liệu. Vui lòng thử lại.')
+        return
+      }
+      setListings(prev => prev.map(item => item.id === listing.id ? updated : item))
+    } catch (err) {
+      console.error('Failed to update listing status:', err)
+      alert('Không thể cập nhật trạng thái vật liệu. Vui lòng thử lại.')
+    } finally {
+      setUpdatingId(null)
     }
   }
 
@@ -115,7 +134,12 @@ export default function MyListingsPage() {
                   <td>
                     <div className="action-btns">
                       <Link to={`/listings/edit/${l.id}`} className="icon-btn-sm" title="Chỉnh sửa"><Edit size={16} /></Link>
-                      <button className="icon-btn-sm" title={l.status === 'hidden' ? 'Hiện' : 'Ẩn'}>
+                      <button
+                        className="icon-btn-sm"
+                        title={l.status === 'hidden' ? 'Hiện' : 'Ẩn'}
+                        disabled={updatingId === l.id}
+                        onClick={() => handleToggleVisibility(l)}
+                      >
                         {l.status === 'hidden' ? <Eye size={16} /> : <EyeOff size={16} />}
                       </button>
                       <button

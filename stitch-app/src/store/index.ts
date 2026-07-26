@@ -75,9 +75,23 @@ export function useStore() {
       } catch { return null }
     },
 
+    async getMyListings() {
+      try {
+        const res = await api.getMyListings()
+        return res.success ? res.data.listings || [] : []
+      } catch { return [] }
+    },
+
     async createListing(data: any) {
       try {
         const res = await api.createListing(data)
+        return res.success ? res.data : null
+      } catch { return null }
+    },
+
+    async updateListing(id: string, data: any) {
+      try {
+        const res = await api.updateListing(id, data)
         return res.success ? res.data : null
       } catch { return null }
     },

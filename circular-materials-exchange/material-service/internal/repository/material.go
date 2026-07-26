@@ -194,8 +194,17 @@ func (r *MaterialRepository) ListListings(categoryID, keyword, location string, 
 func (r *MaterialRepository) UpdateListing(listing *SupplyListing) error {
 	listing.UpdatedAt = time.Now()
 	_, err := r.db.Exec(
-		`UPDATE supply_listings SET title=$1, description=$2, quantity=$3, price_per_unit=$4, status=$5, updated_at=$6 WHERE id=$7`,
-		listing.Title, listing.Description, listing.Quantity, listing.PricePerUnit, listing.Status, listing.UpdatedAt, listing.ID,
+		`UPDATE supply_listings SET
+			title=$1, category_id=$2, description=$3, specs=$4, quantity=$5,
+			unit=$6, price_per_unit=$7, currency=$8, location=$9,
+			min_order_quantity=$10, packaging=$11, status=$12, images=$13,
+			image_url=$14, updated_at=$15
+		 WHERE id=$16`,
+		listing.Title, listing.CategoryID, listing.Description, listing.Specs,
+		listing.Quantity, listing.Unit, listing.PricePerUnit, listing.Currency,
+		listing.Location, listing.MinOrderQuantity, listing.Packaging,
+		listing.Status, listing.Images, listing.ImageURL, listing.UpdatedAt,
+		listing.ID,
 	)
 	return err
 }

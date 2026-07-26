@@ -79,6 +79,10 @@ class ApiService {
     return this.request(`/listings/${id}`);
   }
 
+  async getMyListings() {
+    return this.request('/my/listings');
+  }
+
   async createListing(data: any) {
     return this.request('/listings', {
       method: 'POST',

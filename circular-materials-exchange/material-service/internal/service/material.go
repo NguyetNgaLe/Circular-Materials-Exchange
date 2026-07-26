@@ -83,7 +83,17 @@ func (s *MaterialService) ListListings(categoryID, keyword, location string, pag
 	return s.repo.ListListings(categoryID, keyword, location, page, pageSize)
 }
 
-func (s *MaterialService) UpdateListing(id, title, description string, quantity, pricePerUnit float64, status string) (*repository.SupplyListing, error) {
+func (s *MaterialService) UpdateListing(
+	id, title, categoryID, description string,
+	specs map[string]string,
+	quantity float64,
+	unit string,
+	pricePerUnit float64,
+	currency, location string,
+	minOrderQuantity float64,
+	packaging, status string,
+	images []string,
+) (*repository.SupplyListing, error) {
 	listing, err := s.repo.FindListingByID(id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -92,20 +102,22 @@ func (s *MaterialService) UpdateListing(id, title, description string, quantity,
 		return nil, err
 	}
 
-	if title != "" {
-		listing.Title = title
-	}
-	if description != "" {
-		listing.Description = description
-	}
-	if quantity > 0 {
-		listing.Quantity = quantity
-	}
-	if pricePerUnit > 0 {
-		listing.PricePerUnit = pricePerUnit
-	}
-	if status != "" {
-		listing.Status = status
+	listing.Title = title
+	listing.CategoryID = categoryID
+	listing.Description = description
+	listing.Specs = repository.SpecsToJSON(specs)
+	listing.Quantity = quantity
+	listing.Unit = unit
+	listing.PricePerUnit = pricePerUnit
+	listing.Currency = currency
+	listing.Location = location
+	listing.MinOrderQuantity = minOrderQuantity
+	listing.Packaging = packaging
+	listing.Status = status
+	listing.Images = repository.ImagesToString(images)
+	listing.ImageURL = ""
+	if len(images) > 0 {
+		listing.ImageURL = images[0]
 	}
 
 	if err := s.repo.UpdateListing(listing); err != nil {

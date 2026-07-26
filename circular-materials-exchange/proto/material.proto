@@ -100,6 +100,14 @@ message UpdateListingRequest {
   double quantity = 4;
   double price_per_unit = 5;
   string status = 6;
+  string category_id = 7;
+  map<string, string> specs = 8;
+  string unit = 9;
+  string currency = 10;
+  string location = 11;
+  double min_order_quantity = 12;
+  string packaging = 13;
+  repeated string images = 14;
 }
 
 message DeleteListingRequest {

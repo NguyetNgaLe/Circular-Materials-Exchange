@@ -4,6 +4,7 @@ import (
 	companypb "api-gateway/internal/pb/company"
 	materialpb "api-gateway/internal/pb/material"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -56,6 +57,31 @@ func (h *MaterialHandler) ListListings(c *gin.Context) {
 		items = append(items, listingJSON(listing, ""))
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"listings": items, "total": response.GetTotal()}})
+}
+
+func (h *MaterialHandler) ListMyListings(c *gin.Context) {
+	ctx, cancel := rpcContext(c)
+	defer cancel()
+
+	userID, _ := c.Get("user_id")
+	response, err := h.material.ListListings(ctx, &materialpb.ListListingsRequest{
+		Page: 1, PageSize: 1000,
+	})
+	if err != nil {
+		writeRPCError(c, err, "Loi lay danh sach nguon cung")
+		return
+	}
+
+	items := make([]gin.H, 0)
+	for _, listing := range response.GetListings() {
+		if listing.GetSellerId() == stringValue(userID) {
+			items = append(items, listingJSON(listing, ""))
+		}
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    gin.H{"listings": items, "total": len(items)},
+	})
 }
 
 func (h *MaterialHandler) GetListing(c *gin.Context) {
@@ -122,9 +148,146 @@ func (h *MaterialHandler) CreateListing(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"id": listing.GetId()}})
 }
 
-// UpdateListing intentionally preserves the current public behavior.
 func (h *MaterialHandler) UpdateListing(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"id": c.Param("id")}})
+	var req struct {
+		Title        *string           `json:"title"`
+		CategoryID   *string           `json:"category_id"`
+		Description  *string           `json:"description"`
+		Specs        map[string]string `json:"specs"`
+		Quantity     *float64          `json:"quantity"`
+		Unit         *string           `json:"unit"`
+		PricePerUnit *float64          `json:"price_per_unit"`
+		Currency     *string           `json:"currency"`
+		Location     *string           `json:"location"`
+		MinOrderQty  *float64          `json:"min_order_quantity"`
+		Packaging    *string           `json:"packaging"`
+		Status       *string           `json:"status"`
+		ImageURL     *string           `json:"image_url"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
+		return
+	}
+
+	ctx, cancel := rpcContext(c)
+	defer cancel()
+	current, err := h.material.GetListing(ctx, &materialpb.GetListingRequest{Id: c.Param("id")})
+	if err != nil {
+		writeRPCError(c, err, "Khong tim thay nguon cung")
+		return
+	}
+
+	userID, _ := c.Get("user_id")
+	role, _ := c.Get("role")
+	if stringValue(role) != "admin" && current.GetSellerId() != stringValue(userID) {
+		c.JSON(http.StatusForbidden, gin.H{
+			"success": false,
+			"message": "Ban khong co quyen chinh sua nguon cung nay",
+		})
+		return
+	}
+
+	title := current.GetTitle()
+	categoryID := current.GetCategoryId()
+	description := current.GetDescription()
+	specs := current.GetSpecs()
+	quantity := current.GetQuantity()
+	unit := current.GetUnit()
+	pricePerUnit := current.GetPricePerUnit()
+	currency := current.GetCurrency()
+	location := current.GetLocation()
+	minOrderQuantity := current.GetMinOrderQuantity()
+	packaging := current.GetPackaging()
+	status := current.GetStatus()
+	images := append([]string(nil), current.GetImages()...)
+
+	if req.Title != nil {
+		title = strings.TrimSpace(*req.Title)
+		if title == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Ten vat lieu khong duoc de trong"})
+			return
+		}
+	}
+	if req.CategoryID != nil {
+		categoryID = strings.TrimSpace(*req.CategoryID)
+		if categoryID == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Danh muc khong duoc de trong"})
+			return
+		}
+	}
+	if req.Description != nil {
+		description = *req.Description
+	}
+	if req.Specs != nil {
+		specs = req.Specs
+	}
+	if req.Quantity != nil {
+		if *req.Quantity <= 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "So luong phai lon hon 0"})
+			return
+		}
+		quantity = *req.Quantity
+	}
+	if req.Unit != nil {
+		unit = strings.TrimSpace(*req.Unit)
+		if unit == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Don vi khong duoc de trong"})
+			return
+		}
+	}
+	if req.PricePerUnit != nil {
+		if *req.PricePerUnit < 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Gia khong duoc am"})
+			return
+		}
+		pricePerUnit = *req.PricePerUnit
+	}
+	if req.Currency != nil {
+		currency = strings.TrimSpace(*req.Currency)
+	}
+	if req.Location != nil {
+		location = strings.TrimSpace(*req.Location)
+		if location == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Dia diem khong duoc de trong"})
+			return
+		}
+	}
+	if req.MinOrderQty != nil {
+		if *req.MinOrderQty < 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Don hang toi thieu khong duoc am"})
+			return
+		}
+		minOrderQuantity = *req.MinOrderQty
+	}
+	if req.Packaging != nil {
+		packaging = *req.Packaging
+	}
+	if req.Status != nil {
+		status = strings.TrimSpace(*req.Status)
+		if status != "active" && status != "hidden" {
+			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Trang thai chi co the la active hoac hidden"})
+			return
+		}
+	}
+	if req.ImageURL != nil {
+		images = nil
+		if imageURL := strings.TrimSpace(*req.ImageURL); imageURL != "" {
+			images = []string{imageURL}
+		}
+	}
+
+	updated, err := h.material.UpdateListing(ctx, &materialpb.UpdateListingRequest{
+		Id: current.GetId(), Title: title, CategoryId: categoryID,
+		Description: description, Specs: specs, Quantity: quantity, Unit: unit,
+		PricePerUnit: pricePerUnit, Currency: currency, Location: location,
+		MinOrderQuantity: minOrderQuantity, Packaging: packaging, Status: status,
+		Images: images,
+	})
+	if err != nil {
+		writeRPCError(c, err, "Loi cap nhat nguon cung")
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "data": listingJSON(updated, "")})
 }
 
 func (h *MaterialHandler) DeleteListing(c *gin.Context) {

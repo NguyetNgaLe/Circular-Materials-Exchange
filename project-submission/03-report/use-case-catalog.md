@@ -23,7 +23,7 @@
 | UC010 | Xem chi tiết nguồn cung | Guest | Đã chạy | D08, D19 |
 | UC011 | Upload ảnh vật liệu | Seller | Đã chạy | D08, D18 |
 | UC012 | Đăng nguồn cung | Seller | Đã chạy | D03, D08, D18 |
-| UC013 | Cập nhật nguồn cung | Seller | Một phần: handler stub | D08 |
+| UC013 | Cập nhật và ẩn/hiện nguồn cung | Seller | Đã chạy: kiểm tra ownership và cập nhật qua Material gRPC | D08 |
 | UC014 | Xóa nguồn cung | Seller | Đã chạy: kiểm tra ownership và xóa qua Material gRPC | D08 |
 | UC015 | Xem danh sách nhu cầu | Guest | Đã chạy | D08 |
 | UC016 | Đăng nhu cầu mua | Buyer | Một phần: chưa INSERT database | D03, D08 |

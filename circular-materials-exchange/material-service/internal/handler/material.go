@@ -85,8 +85,10 @@ func (h *MaterialHandler) ListListings(ctx context.Context, req *pb.ListListings
 
 func (h *MaterialHandler) UpdateListing(ctx context.Context, req *pb.UpdateListingRequest) (*pb.SupplyListing, error) {
 	listing, err := h.svc.UpdateListing(
-		req.GetId(), req.GetTitle(), req.GetDescription(),
-		req.GetQuantity(), req.GetPricePerUnit(), req.GetStatus(),
+		req.GetId(), req.GetTitle(), req.GetCategoryId(), req.GetDescription(),
+		req.GetSpecs(), req.GetQuantity(), req.GetUnit(), req.GetPricePerUnit(),
+		req.GetCurrency(), req.GetLocation(), req.GetMinOrderQuantity(),
+		req.GetPackaging(), req.GetStatus(), req.GetImages(),
 	)
 	if err != nil {
 		return nil, err

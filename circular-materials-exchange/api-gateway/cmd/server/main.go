@@ -83,6 +83,7 @@ func main() {
 		protected.POST("/companies/:id/reject", middleware.AdminOnly(), companyHandler.RejectCompany)
 
 		// Material listings (write ops)
+		protected.GET("/my/listings", materialHandler.ListMyListings)
 		protected.POST("/listings", materialHandler.CreateListing)
 		protected.PUT("/listings/:id", materialHandler.UpdateListing)
 		protected.DELETE("/listings/:id", materialHandler.DeleteListing)
