@@ -47,9 +47,9 @@ CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
 
 -- Demo accounts use the same bcrypt password as the deployed demo environment.
 INSERT INTO users (id, name, email, phone, password_hash, role) VALUES
-('a0000000-0000-0000-0000-000000000001', 'Admin', 'admin@cme.vn', '0900000000', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'admin'),
-('a0000000-0000-0000-0000-000000000002', 'Nguyễn Văn An', 'an@ecopoly.vn', '0901234567', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'business'),
-('a0000000-0000-0000-0000-000000000003', 'Trần Thị Bình', 'binh@greenpack.vn', '0912345678', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'business')
+('a0000000-0000-0000-0000-000000000001', 'Admin', 'admin@cme.vn', '0900000000', '$2b$10$3DaI2cqjne4Upgni.s2pneWCo0wvk.DFMEnaxvpho2hkEduKjrvaC', 'admin'),
+('a0000000-0000-0000-0000-000000000002', 'Nguyễn Văn An', 'an@ecopoly.vn', '0901234567', '$2b$10$xtopKkO8pAZzrGThiTa3/OpbKVpdm..tLAdy6H6qoLQv6E5uOAZgC', 'business'),
+('a0000000-0000-0000-0000-000000000003', 'Trần Thị Bình', 'binh@greenpack.vn', '0912345678', '$2b$10$UGayKxvI6Nzsk5Vm2g/YPOnEI9Ow2sNOnfC3NhJI87Qhb5RHG5mj.', 'business')
 ON CONFLICT (email) DO NOTHING;
 
 -- ============================================================================
