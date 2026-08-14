@@ -23,7 +23,7 @@ func (h *MaterialHandler) ListCategories(c *gin.Context) {
 	defer cancel()
 	response, err := h.material.ListCategories(ctx, &materialpb.ListCategoriesRequest{})
 	if err != nil {
-		writeRPCError(c, err, "Loi lay danh muc")
+		writeRPCError(c, err, "Lỗi lấy danh mục")
 		return
 	}
 	items := make([]gin.H, 0, len(response.GetCategories()))
@@ -45,7 +45,7 @@ func (h *MaterialHandler) ListListings(c *gin.Context) {
 		Location: c.Query("location"), Page: page, PageSize: pageSize,
 	})
 	if err != nil {
-		writeRPCError(c, err, "Loi lay danh sach nguon cung")
+		writeRPCError(c, err, "Lỗi lấy danh sách nguồn cung")
 		return
 	}
 	role, _ := c.Get("role")
@@ -68,7 +68,7 @@ func (h *MaterialHandler) ListMyListings(c *gin.Context) {
 		Page: 1, PageSize: 1000,
 	})
 	if err != nil {
-		writeRPCError(c, err, "Loi lay danh sach nguon cung")
+		writeRPCError(c, err, "Lỗi lấy danh sách nguồn cung")
 		return
 	}
 
@@ -89,7 +89,7 @@ func (h *MaterialHandler) GetListing(c *gin.Context) {
 	defer cancel()
 	listing, err := h.material.GetListing(ctx, &materialpb.GetListingRequest{Id: c.Param("id")})
 	if err != nil {
-		writeRPCError(c, err, "Not found")
+		writeRPCError(c, err, "Không tìm thấy nguồn cung")
 		return
 	}
 	sellerName := ""
@@ -123,11 +123,11 @@ func (h *MaterialHandler) CreateListing(c *gin.Context) {
 	defer cancel()
 	company, err := getCompanyByOwner(ctx, h.company, stringValue(userID))
 	if err != nil {
-		c.JSON(http.StatusForbidden, gin.H{"success": false, "message": "Ban can co ho so doanh nghiep de dang nguon cung"})
+		c.JSON(http.StatusForbidden, gin.H{"success": false, "message": "Bạn cần có hồ sơ doanh nghiệp để đăng nguồn cung"})
 		return
 	}
 	if company.GetStatus() != "verified" {
-		c.JSON(http.StatusForbidden, gin.H{"success": false, "message": "Doanh nghiep chua duoc admin duyet"})
+		c.JSON(http.StatusForbidden, gin.H{"success": false, "message": "Doanh nghiệp chưa được admin duyệt"})
 		return
 	}
 	images := []string{}
@@ -142,7 +142,7 @@ func (h *MaterialHandler) CreateListing(c *gin.Context) {
 		Packaging: req.Packaging, Images: images,
 	})
 	if err != nil {
-		writeRPCError(c, err, "Loi tao nguon cung")
+		writeRPCError(c, err, "Lỗi tạo nguồn cung")
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"id": listing.GetId()}})
@@ -173,7 +173,7 @@ func (h *MaterialHandler) UpdateListing(c *gin.Context) {
 	defer cancel()
 	current, err := h.material.GetListing(ctx, &materialpb.GetListingRequest{Id: c.Param("id")})
 	if err != nil {
-		writeRPCError(c, err, "Khong tim thay nguon cung")
+		writeRPCError(c, err, "Không tìm thấy nguồn cung")
 		return
 	}
 
@@ -182,7 +182,7 @@ func (h *MaterialHandler) UpdateListing(c *gin.Context) {
 	if stringValue(role) != "admin" && current.GetSellerId() != stringValue(userID) {
 		c.JSON(http.StatusForbidden, gin.H{
 			"success": false,
-			"message": "Ban khong co quyen chinh sua nguon cung nay",
+			"message": "Bạn không có quyền chỉnh sửa nguồn cung này",
 		})
 		return
 	}
@@ -204,14 +204,14 @@ func (h *MaterialHandler) UpdateListing(c *gin.Context) {
 	if req.Title != nil {
 		title = strings.TrimSpace(*req.Title)
 		if title == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Ten vat lieu khong duoc de trong"})
+			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Tên vật liệu không được để trống"})
 			return
 		}
 	}
 	if req.CategoryID != nil {
 		categoryID = strings.TrimSpace(*req.CategoryID)
 		if categoryID == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Danh muc khong duoc de trong"})
+			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Danh mục không được để trống"})
 			return
 		}
 	}
@@ -223,7 +223,7 @@ func (h *MaterialHandler) UpdateListing(c *gin.Context) {
 	}
 	if req.Quantity != nil {
 		if *req.Quantity <= 0 {
-			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "So luong phai lon hon 0"})
+			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Số lượng phải lớn hơn 0"})
 			return
 		}
 		quantity = *req.Quantity
@@ -231,13 +231,13 @@ func (h *MaterialHandler) UpdateListing(c *gin.Context) {
 	if req.Unit != nil {
 		unit = strings.TrimSpace(*req.Unit)
 		if unit == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Don vi khong duoc de trong"})
+			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Đơn vị không được để trống"})
 			return
 		}
 	}
 	if req.PricePerUnit != nil {
 		if *req.PricePerUnit < 0 {
-			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Gia khong duoc am"})
+			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Giá không được âm"})
 			return
 		}
 		pricePerUnit = *req.PricePerUnit
@@ -248,13 +248,13 @@ func (h *MaterialHandler) UpdateListing(c *gin.Context) {
 	if req.Location != nil {
 		location = strings.TrimSpace(*req.Location)
 		if location == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Dia diem khong duoc de trong"})
+			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Địa điểm không được để trống"})
 			return
 		}
 	}
 	if req.MinOrderQty != nil {
 		if *req.MinOrderQty < 0 {
-			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Don hang toi thieu khong duoc am"})
+			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Đơn hàng tối thiểu không được âm"})
 			return
 		}
 		minOrderQuantity = *req.MinOrderQty
@@ -284,7 +284,7 @@ func (h *MaterialHandler) UpdateListing(c *gin.Context) {
 		Images: images,
 	})
 	if err != nil {
-		writeRPCError(c, err, "Loi cap nhat nguon cung")
+		writeRPCError(c, err, "Lỗi cập nhật nguồn cung")
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": listingJSON(updated, "")})
@@ -296,7 +296,7 @@ func (h *MaterialHandler) DeleteListing(c *gin.Context) {
 
 	listing, err := h.material.GetListing(ctx, &materialpb.GetListingRequest{Id: c.Param("id")})
 	if err != nil {
-		writeRPCError(c, err, "Khong tim thay nguon cung")
+		writeRPCError(c, err, "Không tìm thấy nguồn cung")
 		return
 	}
 
@@ -305,13 +305,13 @@ func (h *MaterialHandler) DeleteListing(c *gin.Context) {
 	if stringValue(role) != "admin" && listing.GetSellerId() != stringValue(userID) {
 		c.JSON(http.StatusForbidden, gin.H{
 			"success": false,
-			"message": "Ban khong co quyen xoa nguon cung nay",
+			"message": "Bạn không có quyền xóa nguồn cung này",
 		})
 		return
 	}
 
 	if _, err := h.material.DeleteListing(ctx, &materialpb.DeleteListingRequest{Id: listing.GetId()}); err != nil {
-		writeRPCError(c, err, "Loi xoa nguon cung")
+		writeRPCError(c, err, "Lỗi xóa nguồn cung")
 		return
 	}
 
@@ -339,7 +339,7 @@ func (h *MaterialHandler) ListDemands(c *gin.Context) {
 		CategoryId: c.Query("category_id"), Keyword: c.Query("keyword"), Page: page, PageSize: pageSize,
 	})
 	if err != nil {
-		writeRPCError(c, err, "Loi lay danh sach nhu cau")
+		writeRPCError(c, err, "Lỗi lấy danh sách nhu cầu")
 		return
 	}
 	items := make([]gin.H, 0, len(response.GetDemands()))

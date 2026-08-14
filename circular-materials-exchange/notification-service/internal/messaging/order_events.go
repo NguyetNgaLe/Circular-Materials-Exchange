@@ -26,32 +26,32 @@ func SubscribeOrderEvents(connection *nats.Conn, notifications *service.Notifica
 	subscriptions := map[string]func(orderEvent) (string, string, string, string, string){
 		"cme.orders.offer.created": func(event orderEvent) (string, string, string, string, string) {
 			message := fmt.Sprintf(
-				"%s muon mua %s %.0f %s voi gia %.0f VND/%s",
+				"%s muốn mua %s %.0f %s với giá %.0f VND/%s",
 				event.BuyerName, event.ListingTitle, event.Quantity, event.Unit,
 				event.ProposedPrice, event.Unit,
 			)
-			return event.SellerID, "De nghi mua moi", message, "offer", event.OfferID
+			return event.SellerID, "Đề nghị mua mới", message, "offer", event.OfferID
 		},
 		"cme.orders.transaction.created": func(event orderEvent) (string, string, string, string, string) {
 			message := fmt.Sprintf(
-				"%s da chap nhan de nghi mua %s. Giao dich da duoc tao.",
+				"%s đã chấp nhận đề nghị mua %s. Giao dịch đã được tạo.",
 				event.SellerName, event.ListingTitle,
 			)
-			return event.BuyerID, "De nghi da duoc chap nhan", message, "offer_accepted", event.OfferID
+			return event.BuyerID, "Đề nghị đã được chấp nhận", message, "offer_accepted", event.OfferID
 		},
 		"cme.orders.transaction.in_progress": func(event orderEvent) (string, string, string, string, string) {
 			message := fmt.Sprintf(
-				"San pham %s da duoc giao. Vui long xac nhan nhan hang.",
+				"Sản phẩm %s đã được giao. Vui lòng xác nhận nhận hàng.",
 				event.ListingTitle,
 			)
-			return event.BuyerID, "Seller da giao hang", message, "transaction", event.TransactionID
+			return event.BuyerID, "Người bán đã giao hàng", message, "transaction", event.TransactionID
 		},
 		"cme.orders.transaction.completed": func(event orderEvent) (string, string, string, string, string) {
 			message := fmt.Sprintf(
-				"Giao dich %s da hoan tat. Tien da chuyen vao vi cua ban.",
+				"Giao dịch %s đã hoàn tất. Tiền đã chuyển vào ví của bạn.",
 				event.ListingTitle,
 			)
-			return event.SellerID, "Giao dich hoan tat", message, "transaction", event.TransactionID
+			return event.SellerID, "Giao dịch hoàn tất", message, "transaction", event.TransactionID
 		},
 	}
 

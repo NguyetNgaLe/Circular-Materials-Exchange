@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS transactions (
     currency VARCHAR(10) DEFAULT 'VND',
     payment_status VARCHAR(20) DEFAULT 'bypassed_demo',
     payment_method VARCHAR(20) DEFAULT 'manual_offline',
-    settlement_note TEXT DEFAULT 'Thanh toan duoc thuc hien ngoai he thong trong pham vi prototype',
+    settlement_note TEXT DEFAULT 'Thanh toán được thực hiện ngoài hệ thống trong phạm vi prototype',
     status VARCHAR(20) DEFAULT 'confirmed',
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()

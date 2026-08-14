@@ -45,7 +45,7 @@ func (h *ReviewHandler) CreateReview(c *gin.Context) {
 		RevieweeName: revieweeName, Rating: req.Rating, Comment: req.Comment,
 	})
 	if err != nil {
-		writeRPCError(c, err, "Loi tao danh gia")
+		writeRPCError(c, err, "Lỗi tạo đánh giá")
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": reviewJSON(review)})
@@ -63,7 +63,7 @@ func (h *ReviewHandler) ListReviews(c *gin.Context) {
 	defer cancel()
 	response, err := h.review.ListReviews(ctx, request)
 	if err != nil {
-		writeRPCError(c, err, "Loi lay danh gia")
+		writeRPCError(c, err, "Lỗi lấy đánh giá")
 		return
 	}
 	items := make([]gin.H, 0, len(response.GetReviews()))

@@ -46,11 +46,11 @@ func (h *OrderHandler) CreateOffer(c *gin.Context) {
 	defer cancel()
 	company, err := getCompanyByOwner(ctx, h.company, stringValue(userID))
 	if err != nil {
-		c.JSON(http.StatusForbidden, gin.H{"success": false, "message": "Ban can co ho so doanh nghiep de gui de nghi mua"})
+		c.JSON(http.StatusForbidden, gin.H{"success": false, "message": "Bạn cần có hồ sơ doanh nghiệp để gửi đề nghị mua"})
 		return
 	}
 	if company.GetStatus() != "verified" {
-		c.JSON(http.StatusForbidden, gin.H{"success": false, "message": "Doanh nghiep chua duoc admin duyet"})
+		c.JSON(http.StatusForbidden, gin.H{"success": false, "message": "Doanh nghiệp chưa được admin duyệt"})
 		return
 	}
 	buyerName := req.BuyerName
@@ -64,12 +64,12 @@ func (h *OrderHandler) CreateOffer(c *gin.Context) {
 		ProposedPrice: req.ProposedPrice, Currency: req.Currency, Message: req.Message,
 	})
 	if err != nil {
-		writeRPCError(c, err, "Loi tao de nghi")
+		writeRPCError(c, err, "Lỗi tạo đề nghị")
 		return
 	}
 	if h.notification != nil {
-		h.notification.CreateNotification(req.SellerID, "De nghi mua moi",
-			fmt.Sprintf("%s muon mua %s %.0f %s voi gia %.0f VND/%s",
+		h.notification.CreateNotification(req.SellerID, "Đề nghị mua mới",
+			fmt.Sprintf("%s muốn mua %s %.0f %s với giá %.0f VND/%s",
 				buyerName, req.ListingTitle, req.Quantity, req.Unit, req.ProposedPrice, req.Unit),
 			"offer", offer.GetId())
 	}
@@ -91,7 +91,7 @@ func (h *OrderHandler) ListOffers(c *gin.Context) {
 		Page: page, PageSize: pageSize,
 	})
 	if err != nil {
-		writeRPCError(c, err, "Loi lay danh sach de nghi")
+		writeRPCError(c, err, "Lỗi lấy danh sách đề nghị")
 		return
 	}
 	items := make([]gin.H, 0, len(response.GetOffers()))
@@ -113,12 +113,12 @@ func (h *OrderHandler) AcceptOffer(c *gin.Context) {
 		OfferId: c.Param("id"), ActorId: stringValue(userID), ActorName: stringValue(actorName),
 	})
 	if err != nil {
-		writeRPCError(c, err, "Loi chap nhan de nghi")
+		writeRPCError(c, err, "Lỗi chấp nhận đề nghị")
 		return
 	}
 	if h.notification != nil {
-		h.notification.CreateNotification(transaction.GetBuyerId(), "De nghi da duoc chap nhan",
-			fmt.Sprintf("%s da chap nhan de nghi mua %s. Giao dich da duoc tao.",
+		h.notification.CreateNotification(transaction.GetBuyerId(), "Đề nghị đã được chấp nhận",
+			fmt.Sprintf("%s đã chấp nhận đề nghị mua %s. Giao dịch đã được tạo.",
 				transaction.GetSellerName(), transaction.GetListingTitle()),
 			"offer_accepted", c.Param("id"))
 	}
@@ -144,7 +144,7 @@ func (h *OrderHandler) RejectOffer(c *gin.Context) {
 	defer cancel()
 	offer, err := h.order.RejectOffer(ctx, &orderpb.RejectOfferRequest{OfferId: c.Param("id"), ActorId: stringValue(userID)})
 	if err != nil {
-		writeRPCError(c, err, "Loi tu choi de nghi")
+		writeRPCError(c, err, "Lỗi từ chối đề nghị")
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"id": offer.GetId(), "status": offer.GetStatus()}})
@@ -164,7 +164,7 @@ func (h *OrderHandler) ListTransactions(c *gin.Context) {
 		UserId: filterUserID, Status: c.Query("status"), Page: page, PageSize: pageSize,
 	})
 	if err != nil {
-		writeRPCError(c, err, "Loi lay danh sach giao dich")
+		writeRPCError(c, err, "Lỗi lấy danh sách giao dịch")
 		return
 	}
 	items := make([]gin.H, 0, len(response.GetTransactions()))
@@ -179,7 +179,7 @@ func (h *OrderHandler) GetTransaction(c *gin.Context) {
 	defer cancel()
 	transaction, err := h.order.GetTransaction(ctx, &orderpb.GetTransactionRequest{Id: c.Param("id")})
 	if err != nil {
-		writeRPCError(c, err, "Not found")
+		writeRPCError(c, err, "Không tìm thấy giao dịch")
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": transactionJSON(transaction)})
@@ -206,18 +206,18 @@ func (h *OrderHandler) UpdateTransactionStatus(c *gin.Context) {
 		ActorId: stringValue(userID), ActorName: stringValue(actorName), Note: req.Note,
 	})
 	if err != nil {
-		writeRPCError(c, err, "Loi cap nhat giao dich")
+		writeRPCError(c, err, "Lỗi cập nhật giao dịch")
 		return
 	}
 	if h.notification != nil {
 		switch req.Status {
 		case "in_progress":
-			h.notification.CreateNotification(transaction.GetBuyerId(), "Seller da giao hang",
-				fmt.Sprintf("San pham %s da duoc giao. Vui long xac nhan nhan hang.", transaction.GetListingTitle()),
+			h.notification.CreateNotification(transaction.GetBuyerId(), "Người bán đã giao hàng",
+				fmt.Sprintf("Sản phẩm %s đã được giao. Vui lòng xác nhận nhận hàng.", transaction.GetListingTitle()),
 				"transaction", transaction.GetId())
 		case "completed":
-			h.notification.CreateNotification(transaction.GetSellerId(), "Giao dich hoan tat",
-				fmt.Sprintf("Giao dich %s da hoan tat. Tien da chuyen vao vi cua ban.", transaction.GetListingTitle()),
+			h.notification.CreateNotification(transaction.GetSellerId(), "Giao dịch hoàn tất",
+				fmt.Sprintf("Giao dịch %s đã hoàn tất. Tiền đã chuyển vào ví của bạn.", transaction.GetListingTitle()),
 				"transaction", transaction.GetId())
 		}
 	}

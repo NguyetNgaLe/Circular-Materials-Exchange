@@ -36,7 +36,7 @@ func (h *EscrowHandler) CreateEscrow(c *gin.Context) {
 		SellerId: req.SellerID, SellerName: req.SellerName, Amount: req.Amount, HoldDays: 3,
 	})
 	if err != nil {
-		writeRPCError(c, err, "Loi tao escrow")
+		writeRPCError(c, err, "Lỗi tạo escrow")
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{
@@ -50,7 +50,7 @@ func (h *EscrowHandler) ReleaseEscrow(c *gin.Context) {
 	defer cancel()
 	escrow, err := h.order.ReleaseEscrow(ctx, &orderpb.ReleaseEscrowRequest{Id: c.Param("id")})
 	if err != nil {
-		writeRPCError(c, err, "Escrow not found or already released")
+		writeRPCError(c, err, "Escrow không tồn tại hoặc đã được giải ngân")
 		return
 	}
 	wallet, _ := h.order.GetSellerWallet(ctx, &orderpb.SellerRequest{SellerId: escrow.GetSellerId()})
@@ -67,7 +67,7 @@ func (h *EscrowHandler) GetSellerWallet(c *gin.Context) {
 	defer cancel()
 	wallet, err := h.order.GetSellerWallet(ctx, &orderpb.SellerRequest{SellerId: stringValue(userID)})
 	if err != nil {
-		writeRPCError(c, err, "Loi lay vi seller")
+		writeRPCError(c, err, "Lỗi lấy ví người bán")
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{
@@ -85,7 +85,7 @@ func (h *EscrowHandler) GetSellerWalletTransactions(c *gin.Context) {
 		SellerId: stringValue(userID), Page: page, PageSize: pageSize,
 	})
 	if err != nil {
-		writeRPCError(c, err, "Loi lay lich su vi seller")
+		writeRPCError(c, err, "Lỗi lấy lịch sử ví người bán")
 		return
 	}
 	items := make([]gin.H, 0, len(response.GetTransactions()))
@@ -123,10 +123,10 @@ func (h *EscrowHandler) CreateWithdrawal(c *gin.Context) {
 	})
 	if err != nil {
 		if strings.Contains(strings.ToLower(err.Error()), "insufficient balance") {
-			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "So du khong du"})
+			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Số dư không đủ"})
 			return
 		}
-		writeRPCError(c, err, "Loi tao yeu cau rut tien")
+		writeRPCError(c, err, "Lỗi tạo yêu cầu rút tiền")
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{
@@ -144,7 +144,7 @@ func (h *EscrowHandler) GetSellerWithdrawals(c *gin.Context) {
 		SellerId: stringValue(userID), Page: page, PageSize: pageSize,
 	})
 	if err != nil {
-		writeRPCError(c, err, "Loi lay yeu cau rut tien")
+		writeRPCError(c, err, "Lỗi lấy yêu cầu rút tiền")
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"withdrawals": withdrawalsJSON(response.GetWithdrawals(), false)}})
@@ -156,7 +156,7 @@ func (h *EscrowHandler) ListEscrows(c *gin.Context) {
 	defer cancel()
 	response, err := h.order.ListEscrows(ctx, &orderpb.PageRequest{Page: page, PageSize: pageSize})
 	if err != nil {
-		writeRPCError(c, err, "Loi lay danh sach escrow")
+		writeRPCError(c, err, "Lỗi lấy danh sách escrow")
 		return
 	}
 	totalHolding := 0.0
@@ -184,7 +184,7 @@ func (h *EscrowHandler) ListWithdrawals(c *gin.Context) {
 	defer cancel()
 	response, err := h.order.ListWithdrawals(ctx, &orderpb.PageRequest{Page: page, PageSize: pageSize})
 	if err != nil {
-		writeRPCError(c, err, "Loi lay yeu cau rut tien")
+		writeRPCError(c, err, "Lỗi lấy yêu cầu rút tiền")
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"withdrawals": withdrawalsJSON(response.GetWithdrawals(), true)}})
@@ -195,7 +195,7 @@ func (h *EscrowHandler) ApproveWithdrawal(c *gin.Context) {
 	defer cancel()
 	item, err := h.order.ApproveWithdrawal(ctx, &orderpb.ProcessWithdrawalRequest{Id: c.Param("id")})
 	if err != nil {
-		writeRPCError(c, err, "Not found or already processed")
+		writeRPCError(c, err, "Không tìm thấy hoặc yêu cầu đã được xử lý")
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"id": item.GetId(), "status": item.GetStatus()}})
@@ -210,7 +210,7 @@ func (h *EscrowHandler) RejectWithdrawal(c *gin.Context) {
 	defer cancel()
 	item, err := h.order.RejectWithdrawal(ctx, &orderpb.ProcessWithdrawalRequest{Id: c.Param("id"), Reason: req.Reason})
 	if err != nil {
-		writeRPCError(c, err, "Not found or already processed")
+		writeRPCError(c, err, "Không tìm thấy hoặc yêu cầu đã được xử lý")
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"id": item.GetId(), "status": item.GetStatus()}})

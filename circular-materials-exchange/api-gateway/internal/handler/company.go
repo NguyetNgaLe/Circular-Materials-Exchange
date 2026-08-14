@@ -36,7 +36,7 @@ func (h *CompanyHandler) CreateCompany(c *gin.Context) {
 		City: req.City, Description: req.Description, OwnerId: stringValue(userID),
 	})
 	if err != nil {
-		writeRPCError(c, err, "Loi tao doanh nghiep")
+		writeRPCError(c, err, "Lỗi tạo doanh nghiệp")
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": companyJSON(company)})
@@ -47,7 +47,7 @@ func (h *CompanyHandler) GetCompany(c *gin.Context) {
 	defer cancel()
 	company, err := h.client.GetCompany(ctx, &companypb.GetCompanyRequest{Id: c.Param("id")})
 	if err != nil {
-		writeRPCError(c, err, "Not found")
+		writeRPCError(c, err, "Không tìm thấy doanh nghiệp")
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": companyJSON(company)})
@@ -67,7 +67,7 @@ func (h *CompanyHandler) ListCompanies(c *gin.Context) {
 			Status: c.Query("status"), Page: page, PageSize: pageSize,
 		})
 		if err != nil {
-			writeRPCError(c, err, "Loi lay danh sach doanh nghiep")
+			writeRPCError(c, err, "Lỗi lấy danh sách doanh nghiệp")
 			return
 		}
 		companies = response.GetCompanies()
@@ -92,7 +92,7 @@ func (h *CompanyHandler) ApproveCompany(c *gin.Context) {
 	defer cancel()
 	company, err := h.client.ApproveCompany(ctx, &companypb.ApproveCompanyRequest{Id: c.Param("id")})
 	if err != nil {
-		writeRPCError(c, err, "Loi duyet doanh nghiep")
+		writeRPCError(c, err, "Lỗi duyệt doanh nghiệp")
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"id": company.GetId(), "status": company.GetStatus()}})
@@ -107,7 +107,7 @@ func (h *CompanyHandler) RejectCompany(c *gin.Context) {
 	defer cancel()
 	company, err := h.client.RejectCompany(ctx, &companypb.RejectCompanyRequest{Id: c.Param("id"), Reason: req.Reason})
 	if err != nil {
-		writeRPCError(c, err, "Loi tu choi doanh nghiep")
+		writeRPCError(c, err, "Lỗi từ chối doanh nghiệp")
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{

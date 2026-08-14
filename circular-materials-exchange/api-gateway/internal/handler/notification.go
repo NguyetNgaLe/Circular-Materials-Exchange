@@ -38,7 +38,7 @@ func (h *NotificationHandler) ListNotifications(c *gin.Context) {
 		UserId: stringValue(userID), Page: page, PageSize: pageSize,
 	})
 	if err != nil {
-		writeRPCError(c, err, "Loi lay thong bao")
+		writeRPCError(c, err, "Lỗi lấy thông báo")
 		return
 	}
 	items := make([]gin.H, 0, len(response.GetNotifications()))
@@ -57,7 +57,7 @@ func (h *NotificationHandler) MarkRead(c *gin.Context) {
 	defer cancel()
 	notification, err := h.client.MarkRead(ctx, &notificationpb.MarkReadRequest{Id: c.Param("id")})
 	if err != nil {
-		writeRPCError(c, err, "Loi cap nhat thong bao")
+		writeRPCError(c, err, "Lỗi cập nhật thông báo")
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"id": notification.GetId(), "read": notification.GetRead()}})
@@ -68,7 +68,7 @@ func (h *NotificationHandler) MarkAllRead(c *gin.Context) {
 	ctx, cancel := rpcContext(c)
 	defer cancel()
 	if _, err := h.client.MarkAllRead(ctx, &notificationpb.MarkAllReadRequest{UserId: stringValue(userID)}); err != nil {
-		writeRPCError(c, err, "Loi cap nhat thong bao")
+		writeRPCError(c, err, "Lỗi cập nhật thông báo")
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "message": "Da doc tat ca thong bao"})
@@ -80,7 +80,7 @@ func (h *NotificationHandler) GetUnreadCount(c *gin.Context) {
 	defer cancel()
 	response, err := h.client.GetUnreadCount(ctx, &notificationpb.GetUnreadCountRequest{UserId: stringValue(userID)})
 	if err != nil {
-		writeRPCError(c, err, "Loi dem thong bao")
+		writeRPCError(c, err, "Lỗi đếm thông báo")
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"count": response.GetCount()}})

@@ -92,7 +92,7 @@ func (s *OrderService) AcceptOffer(offerID, actorID, actorName string) (*reposit
 		Currency:       offer.Currency,
 		PaymentStatus:  "bypassed_demo",
 		PaymentMethod:  "manual_offline",
-		SettlementNote: "Thanh toan duoc thuc hien ngoai he thong trong pham vi prototype",
+		SettlementNote: "Thanh toán được thực hiện ngoài hệ thống trong phạm vi prototype",
 		Status:         "confirmed",
 		CreatedAt:      time.Now(),
 		UpdatedAt:      time.Now(),
@@ -111,7 +111,7 @@ func (s *OrderService) AcceptOffer(offerID, actorID, actorName string) (*reposit
 		ActorName:     actorName,
 		FromStatus:    "offer.accepted",
 		ToStatus:      "transaction.confirmed",
-		Note:          "Giao dich duoc tao tu dong khi seller chap nhan offer",
+		Note:          "Giao dịch được tạo tự động khi người bán chấp nhận đề nghị",
 		CreatedAt:     time.Now(),
 	}
 	if err := s.repo.CreateTransactionEvent(event); err != nil {

@@ -20,7 +20,7 @@ func (h *FinanceHandler) GetOverview(c *gin.Context) {
 	defer cancel()
 	response, err := h.order.GetFinanceOverview(ctx, &orderpb.Empty{})
 	if err != nil {
-		writeRPCError(c, err, "Loi lay tong quan tai chinh")
+		writeRPCError(c, err, "Lỗi lấy tổng quan tài chính")
 		return
 	}
 	monthly := make([]gin.H, 0, len(response.GetMonthlyRevenue()))
@@ -40,7 +40,7 @@ func (h *FinanceHandler) ListFees(c *gin.Context) {
 	defer cancel()
 	response, err := h.order.ListPlatformFees(ctx, &orderpb.PageRequest{Page: page, PageSize: pageSize})
 	if err != nil {
-		writeRPCError(c, err, "Loi lay danh sach phi")
+		writeRPCError(c, err, "Lỗi lấy danh sách phí")
 		return
 	}
 	items := make([]gin.H, 0, len(response.GetFees()))
@@ -62,7 +62,7 @@ func (h *FinanceHandler) GetWallet(c *gin.Context) {
 	defer cancel()
 	response, err := h.order.GetPlatformWallet(ctx, &orderpb.Empty{})
 	if err != nil {
-		writeRPCError(c, err, "Loi lay vi san")
+		writeRPCError(c, err, "Lỗi lấy ví sàn")
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{
@@ -77,7 +77,7 @@ func (h *FinanceHandler) ListWalletTransactions(c *gin.Context) {
 	defer cancel()
 	response, err := h.order.ListPlatformWalletTransactions(ctx, &orderpb.PageRequest{Page: page, PageSize: pageSize})
 	if err != nil {
-		writeRPCError(c, err, "Loi lay lich su vi san")
+		writeRPCError(c, err, "Lỗi lấy lịch sử ví sàn")
 		return
 	}
 	items := make([]gin.H, 0, len(response.GetTransactions()))
@@ -110,7 +110,7 @@ func (h *FinanceHandler) CollectFee(c *gin.Context) {
 		SellerId: req.SellerID, BuyerId: req.BuyerID, FeeRate: 0.02,
 	})
 	if err != nil {
-		writeRPCError(c, err, "Loi thu phi")
+		writeRPCError(c, err, "Lỗi thu phí")
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{

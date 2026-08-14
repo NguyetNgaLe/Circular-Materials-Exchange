@@ -32,7 +32,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	defer cancel()
 	response, err := h.auth.Login(ctx, &authpb.LoginRequest{Email: req.Email, Password: req.Password})
 	if err != nil {
-		writeRPCError(c, err, "Email hoac mat khau khong dung")
+		writeRPCError(c, err, "Email hoặc mật khẩu không đúng")
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -62,7 +62,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		Name: req.Name, Email: req.Email, Password: req.Password, Phone: req.Phone,
 	})
 	if err != nil {
-		writeRPCError(c, err, "Loi tao tai khoan")
+		writeRPCError(c, err, "Lỗi tạo tài khoản")
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -80,7 +80,7 @@ func (h *AuthHandler) GetMe(c *gin.Context) {
 	defer cancel()
 	response, err := h.auth.GetUser(ctx, &authpb.GetUserRequest{Id: stringValue(userID)})
 	if err != nil {
-		writeRPCError(c, err, "Khong tim thay nguoi dung")
+		writeRPCError(c, err, "Không tìm thấy người dùng")
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": h.userJSON(ctx, response.GetUser())})
