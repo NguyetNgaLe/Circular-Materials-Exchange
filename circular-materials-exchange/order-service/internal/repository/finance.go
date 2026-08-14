@@ -216,7 +216,7 @@ func (r *OrderRepository) CollectFee(transactionID, sellerID, buyerID string, am
 		return "", 0, 0, err
 	}
 	if _, err = tx.Exec(`INSERT INTO wallet_transactions (id,wallet_id,type,amount,reference_type,reference_id,description,balance_after)
-		VALUES ($1,$2,'credit',$3,'transaction_fee',NULLIF($4,'')::uuid,'Phi giao dich',$5)`,
+		VALUES ($1,$2,'credit',$3,'transaction_fee',NULLIF($4,'')::uuid,'Phí giao dịch',$5)`,
 		uuid.New().String(), walletID, feeAmount, transactionID, balance); err != nil {
 		return "", 0, 0, err
 	}
@@ -351,7 +351,7 @@ func (r *OrderRepository) ReleaseEscrow(id string, collectPlatformFee bool) (*Es
 	}
 	if _, err = tx.Exec(`INSERT INTO seller_wallet_transactions
 		(id,seller_id,type,amount,balance_after,reference_type,reference_id,description)
-		VALUES ($1,$2,'credit',$3,$4,'escrow_release',$5,'Giai phong escrow')`,
+		VALUES ($1,$2,'credit',$3,$4,'escrow_release',$5,'Giải phóng escrow')`,
 		uuid.New().String(), item.SellerID, item.SellerAmount, balance, item.ID); err != nil {
 		return nil, err
 	}
