@@ -4,6 +4,7 @@ import (
 	companypb "api-gateway/internal/pb/company"
 	orderpb "api-gateway/internal/pb/order"
 	"fmt"
+	"math"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -174,6 +175,93 @@ func (h *OrderHandler) ListTransactions(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{"transactions": items, "total": response.GetTotal()}})
 }
 
+type companySettlementEntry struct {
+	ID            string  `json:"id"`
+	ListingTitle  string  `json:"listingTitle"`
+	Direction     string  `json:"direction"`
+	Counterparty  string  `json:"counterparty"`
+	GrossAmount   float64 `json:"grossAmount"`
+	FeeAmount     float64 `json:"feeAmount"`
+	SettledAmount float64 `json:"settledAmount"`
+	CreatedAt     string  `json:"createdAt"`
+}
+
+type companySettlement struct {
+	TotalReceived float64                  `json:"totalReceived"`
+	TotalPaid     float64                  `json:"totalPaid"`
+	Entries       []companySettlementEntry `json:"entries"`
+}
+
+const platformFeeRate = 0.02
+
+func currencyAmount(value float64) float64 {
+	return math.Round(value*100) / 100
+}
+
+func calculateCompanySettlement(userID string, transactions []*orderpb.Transaction) companySettlement {
+	result := companySettlement{Entries: make([]companySettlementEntry, 0)}
+	for _, transaction := range transactions {
+		if transaction.GetStatus() != "completed" {
+			continue
+		}
+
+		grossAmount := currencyAmount(transaction.GetQuantity() * transaction.GetAgreedPrice())
+		entry := companySettlementEntry{
+			ID: transaction.GetId(), ListingTitle: transaction.GetListingTitle(),
+			GrossAmount: grossAmount, CreatedAt: transaction.GetCreatedAt(),
+		}
+
+		switch userID {
+		case transaction.GetBuyerId():
+			entry.Direction = "expense"
+			entry.Counterparty = transaction.GetSellerName()
+			entry.SettledAmount = grossAmount
+			result.TotalPaid = currencyAmount(result.TotalPaid + grossAmount)
+		case transaction.GetSellerId():
+			entry.Direction = "income"
+			entry.Counterparty = transaction.GetBuyerName()
+			entry.FeeAmount = currencyAmount(grossAmount * platformFeeRate)
+			entry.SettledAmount = currencyAmount(grossAmount - entry.FeeAmount)
+			result.TotalReceived = currencyAmount(result.TotalReceived + entry.SettledAmount)
+		default:
+			continue
+		}
+
+		result.Entries = append(result.Entries, entry)
+	}
+	return result
+}
+
+func (h *OrderHandler) GetCompanySettlement(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	companyUserID := stringValue(userID)
+	if companyUserID == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"success": false, "message": "Bạn chưa đăng nhập"})
+		return
+	}
+
+	ctx, cancel := rpcContext(c)
+	defer cancel()
+
+	const pageSize int32 = 200
+	transactions := make([]*orderpb.Transaction, 0)
+	for page := int32(1); ; page++ {
+		response, err := h.order.ListTransactions(ctx, &orderpb.ListTransactionsRequest{
+			UserId: companyUserID, Status: "completed", Page: page, PageSize: pageSize,
+		})
+		if err != nil {
+			writeRPCError(c, err, "Lỗi lấy dữ liệu đối soát")
+			return
+		}
+		transactions = append(transactions, response.GetTransactions()...)
+		if len(response.GetTransactions()) == 0 || len(transactions) >= int(response.GetTotal()) {
+			break
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{"success": true, "data": calculateCompanySettlement(companyUserID, transactions)})
+}
+
 func (h *OrderHandler) GetTransaction(c *gin.Context) {
 	ctx, cancel := rpcContext(c)
 	defer cancel()
@@ -217,7 +305,7 @@ func (h *OrderHandler) UpdateTransactionStatus(c *gin.Context) {
 				"transaction", transaction.GetId())
 		case "completed":
 			h.notification.CreateNotification(transaction.GetSellerId(), "Giao dịch hoàn tất",
-				fmt.Sprintf("Giao dịch %s đã hoàn tất. Tiền đã chuyển vào ví của bạn.", transaction.GetListingTitle()),
+				fmt.Sprintf("Giao dịch %s đã hoàn tất. Khoản thu sau phí sàn đã được ghi nhận trong đối soát.", transaction.GetListingTitle()),
 				"transaction", transaction.GetId())
 		}
 	}

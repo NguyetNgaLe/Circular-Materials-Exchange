@@ -101,6 +101,7 @@ func main() {
 		protected.GET("/transactions", orderHandler.ListTransactions)
 		protected.GET("/transactions/:id", orderHandler.GetTransaction)
 		protected.POST("/transactions/:id/status", orderHandler.UpdateTransactionStatus)
+		protected.GET("/company/settlement", orderHandler.GetCompanySettlement)
 
 		// Reviews
 		protected.POST("/reviews", reviewHandler.CreateReview)
