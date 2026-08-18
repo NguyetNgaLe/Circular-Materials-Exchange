@@ -2,7 +2,7 @@
 
 Deployment guide for the complete Circular Materials Exchange platform. The system connects companies that have surplus materials with companies that need reusable materials, then tracks offers, transactions, reviews, notifications, and company income/expense settlement.
 
-Live application: [http://42.1.71.99:13005](http://42.1.71.99:13005)
+
 
 ## 1. Architecture
 
