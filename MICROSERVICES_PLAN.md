@@ -161,7 +161,7 @@ circular-materials-exchange/
 │   ├── review.proto
 │   └── notification.proto
 │
-├── stitch-app/                     # Frontend React (giữ nguyên)
+├── ui/                             # Frontend React (giữ nguyên)
 │   └── ...
 │
 ├── docker-compose.yml              # Docker orchestration
@@ -1231,7 +1231,7 @@ services:
   # ========== Frontend ==========
   frontend:
     build:
-      context: ./stitch-app
+      context: ./ui
       dockerfile: Dockerfile
     container_name: cme-frontend
     ports:

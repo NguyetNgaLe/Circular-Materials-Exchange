@@ -45,7 +45,7 @@ The backend runs as Docker Compose services. The frontend is built with Vite and
 |   |-- review-service/
 |   |-- notification-service/
 |   `-- scripts/                  # Database initialization and demo seed
-|-- stitch-app/                   # React + TypeScript + Vite frontend
+|-- ui/                           # React + TypeScript + Vite frontend
 |-- images/                       # Seed images imported into MinIO
 `-- README.md                     # This deployment guide
 ```
@@ -178,7 +178,7 @@ The bucket name must remain `cme-images` because the Material Service writes upl
 ### 5.5 Build the frontend
 
 ```bash
-cd /home/ubuntu/pttkht_git/stitch-app
+cd /home/ubuntu/pttkht_git/ui
 npm ci
 npm run build
 sudo mkdir -p /home/ubuntu/cme-frontend
@@ -319,7 +319,7 @@ Use the same pattern for another service. Rebuild the API Gateway when its handl
 ### Frontend update with a recoverable backup
 
 ```bash
-cd /home/ubuntu/pttkht_git/stitch-app
+cd /home/ubuntu/pttkht_git/ui
 npm ci
 npm run build
 
@@ -427,7 +427,7 @@ docker compose exec minio mc mirror --overwrite /tmp/cme-seed-images local/cme-i
 Run the frontend development server in another terminal:
 
 ```bash
-cd stitch-app
+cd ui
 npm ci
 npm run dev -- --host 0.0.0.0
 ```
@@ -448,7 +448,7 @@ Do not add `-v` unless the PostgreSQL and MinIO volumes are intentionally being 
 Frontend:
 
 ```bash
-cd stitch-app
+cd ui
 npm ci
 npm run build
 ```
@@ -543,7 +543,7 @@ cd /home/ubuntu/pttkht_git && git pull --ff-only origin main
 cd circular-materials-exchange && docker compose up -d --build
 
 # Deploy frontend
-cd ../stitch-app && npm ci && npm run build
+cd ../ui && npm ci && npm run build
 sudo rsync -a --delete dist/ /home/ubuntu/cme-frontend/
 
 # Validate

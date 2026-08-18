@@ -11,7 +11,7 @@
 ┌─────────────────────────────────────────────────────────────────┐
 │         Frontend - Server FRONTEND_IP:13005                     │
 │         React + Vite + serve (SPA mode)                         │
-│         Files: /tmp/stitch-app/                                 │
+│         Files: /tmp/ui/                                         │
 └──────────────────────────┬──────────────────────────────────────┘
                            │ API calls (http://BACKEND_IP:8085)
                            ▼
@@ -207,7 +207,7 @@ curl http://localhost:8085/health
 ### Cấu trúc
 
 ```
-/tmp/stitch-app/
+/tmp/ui/
 ├── index.html
 ├── assets/
 │   ├── index-*.js    # React bundle
@@ -224,7 +224,7 @@ curl http://localhost:8085/health
 
 ### API Configuration
 
-File `stitch-app/src/services/api.ts`:
+File `ui/src/services/api.ts`:
 
 ```typescript
 const API_BASE_URL = 'http://${SERVER_BACKEND_IP}:8085/api';
@@ -280,7 +280,7 @@ export const api = new ApiService();
 
 ### State Management
 
-File `stitch-app/src/store/index.ts`:
+File `ui/src/store/index.ts`:
 
 - Sử dụng custom store pattern (không dùng Redux)
 - Tất cả methods là async, gọi API backend
@@ -317,16 +317,16 @@ export function useStore() {
 
 ```bash
 # Local build
-cd stitch-app
+cd ui
 npm install
 npm run build
 
 # Upload to server 33
-# Upload dist/ folder to /tmp/stitch-app/ trên server 33
+# Upload dist/ folder to /tmp/ui/ trên server 33
 
 # Start serve trên server 33
 pkill -f serve
-nohup serve -s /tmp/stitch-app -l 13005 > /tmp/serve.log 2>&1 &
+nohup serve -s /tmp/ui -l 13005 > /tmp/serve.log 2>&1 &
 ```
 
 ### Serve Mode
@@ -334,7 +334,7 @@ nohup serve -s /tmp/stitch-app -l 13005 > /tmp/serve.log 2>&1 &
 Sử dụng `serve` với flag `-s` (SPA mode) để trả về `index.html` cho mọi routes:
 
 ```bash
-serve -s /tmp/stitch-app -l 13005
+serve -s /tmp/ui -l 13005
 ```
 
 Flag `-s` rất quan trọng vì React Router dùng client-side routing. Không có flag này, truy cập `/login` hoặc `/marketplace` sẽ trả về 404.
