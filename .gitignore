@@ -67,3 +67,6 @@ __pycache__/
 # Go
 *.test
 *.out
+
+# Coursework/report artifacts kept only in the local workspace
+project-submission/
