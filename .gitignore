@@ -71,3 +71,6 @@ __pycache__/
 # Coursework/report artifacts kept only in the local workspace
 project-submission/
 design/
+DEPLOYMENT.md
+requirments.txt
+USECASE_GAP_ANALYSIS.md
